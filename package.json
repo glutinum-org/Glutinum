@@ -1,0 +1,15 @@
+{
+  "name": "fable-express",
+  "version": "0.0.0",
+  "private": true,
+  "description": "This repo is a meta repo for working on the binding for Express ecosystem",
+  "author": "Mangel Maxime <mangel.maxime@protonmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "mime": "^2.5.0"
+  },
+  "devDependencies": {
+    "esm": "^3.2.25",
+    "mocha": "^8.2.1"
+  }
+}
