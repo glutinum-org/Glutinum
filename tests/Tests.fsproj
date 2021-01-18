@@ -6,6 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Mime/Mime.Tests.fs" />
+    <Compile Include="Qs/Qs.Tests.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>
   <ItemGroup>
@@ -14,5 +15,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\Mime\Fable.Mime.fsproj" />
+    <ProjectReference Include="..\src\Qs\Fable.Qs.fsproj" />
   </ItemGroup>
 </Project>

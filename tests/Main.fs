@@ -5,6 +5,7 @@ open Fable.Mocha
 let allTests =
     testList "All" [
         Mime.Tests.all
+        Qs.Tests.all
     ]
 
 [<EntryPoint>]
