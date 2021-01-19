@@ -1,26 +1,27 @@
 namespace Mime
 
-open Fable.Mocha
+open Mocha
 open Mime
 open Fable.Core
+open Fable.Core.Testing
 open Fable.Core.JsInterop
 
 module Tests =
 
-    let all =
-        testList "Mime" [
+    let all () =
+        describe "Mime" (fun _ ->
 
-            testCase "Mime new constructor works" (fun _ ->
+            it "Mime new constructor works" (fun _ ->
                 let typeMap = createEmpty<Types.TypeMap>
                 typeMap.["text/a"] <- ResizeArray(["a"; "a1"])
                 typeMap.["text/b"] <- ResizeArray(["b"; "b1"])
 
                 let mime = Mime.Create(typeMap)
 
-                Expect.equal (mime.getType("a")) (Some "text/a") ""
+                Assert.AreEqual(mime.getType("a"), Some "text/a")
             )
 
-            testCase "define works" (fun _ ->
+            it "define works" (fun _ ->
                 let typeMap = createEmpty<Types.TypeMap>
                 typeMap.["text/a"] <- ResizeArray(["a"; "a1"])
                 typeMap.["text/b"] <- ResizeArray(["b"; "b1"])
@@ -32,15 +33,15 @@ module Tests =
 
                 mime.define(subTypeMap)
 
-                Expect.equal (mime.getType("c")) (Some "text/c") ""
+                Assert.AreEqual(mime.getType("c"), Some "text/c")
             )
 
-            testCase "getType() works" (fun _ ->
-                Expect.equal (mime.getType("txt")) (Some "text/plain") ""
+            it "getType() works" (fun _ ->
+                Assert.AreEqual(mime.getType("txt"), Some "text/plain")
             )
 
-            testCase "getExtension() works" (fun _ ->
-                Expect.equal (mime.getExtension("text/html")) (Some "html") ""
+            it "getExtension() works" (fun _ ->
+                Assert.AreEqual(mime.getExtension("text/html"), Some "html")
             )
 
-        ]
+        )

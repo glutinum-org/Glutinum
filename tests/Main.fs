@@ -1,14 +1,10 @@
 module Tests
 
-open Fable.Mocha
+open Mocha
 
-let allTests =
-    testList "All" [
-        Mime.Tests.all
-        Qs.Tests.all
-        RangeParser.Tests.all
-    ]
-
-[<EntryPoint>]
-let main _ =
-    Mocha.runTests allTests
+describe "All" (fun _ ->
+    Mime.Tests.all ()
+    Qs.Tests.all ()
+    RangeParser.Tests.all ()
+    Connect.Tests.all ()
+)

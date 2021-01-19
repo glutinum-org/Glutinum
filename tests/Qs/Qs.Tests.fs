@@ -1,8 +1,9 @@
 namespace Qs
 
-open Fable.Mocha
+open Mocha
 open Qs
 open Fable.Core
+open Fable.Core.Testing
 open Fable.Core.JsInterop
 
 module Tests =
@@ -13,16 +14,16 @@ module Tests =
     [<Emit("BigInt($0)")>]
     let JsBigInt _ : bigint = jsNative
 
-    let private parseApi =
-        testList "qs.parse()" [
+    let private parseApi () =
+        describe "qs.parse()" (fun _ ->
 
-            testCase "parses a simple string" (fun _ ->
+            it "parses a simple string" (fun _ ->
                 let res = qs.parse("0=foo")
 
-                Expect.equal res.["0"] (Some (!^ "foo")) ""
+                Assert.AreEqual(res.["0"], Some (!^ "foo"))
             )
 
-            testCase "arrayFormat: brackets allows only explicit arrays" (fun _ ->
+            it "arrayFormat: brackets allows only explicit arrays" (fun _ ->
                 let res =
                     qs.parse(
                         "a[0]=b&a[1]=c",
@@ -31,10 +32,10 @@ module Tests =
                         )
                     )
 
-                Expect.equal res.["a"] (Some (!^ ResizeArray(["b"; "c"]))) ""
+                Assert.AreEqual(res.["a"], Some (!^ ResizeArray(["b"; "c"])))
             )
 
-            testCase "allows for decoding keys and values differently" (fun  _ ->
+            it "allows for decoding keys and values differently" (fun  _ ->
                 let decoder =
                     // Code copied from Qs test but it seems typ is always undefined so it doesn't work /shrug
                     // So for now, I am using some stupid decoder just to test the API
@@ -71,25 +72,25 @@ module Tests =
                         )
                     )
 
-                Expect.equal res.["key"] (Some (!^ "VALUE")) ""
+                Assert.AreEqual(res.["key"], Some (!^ "VALUE"))
 
             )
 
-        ]
+        )
 
-    let private stringifyApi =
-        testList "qs.stringifyApi()" [
-            testCase "stringifies a querystring object" (fun _ ->
+    let private stringifyApi () =
+        describe "qs.stringifyApi()" (fun _ ->
+            it "stringifies a querystring object" (fun _ ->
                 let res =
                     qs.stringify(createObj [
                         "a" ==> "b"
                     ])
 
-                Expect.equal res "a=b" ""
+                Assert.AreEqual(res, "a=b")
 
             )
 
-            testCase "stringifies using encoder" (fun _->
+            it "stringifies using encoder" (fun _->
                 let encoder =
                     System.Func<_,Types.defaultEncoder,_,_,_> (fun value defaultEncoder charset _ ->
                         let result = defaultEncoder.Invoke(value, defaultEncoder, charset)
@@ -110,12 +111,12 @@ module Tests =
                         )
                     )
 
-                Expect.equal res "a=2n" ""
+                Assert.AreEqual(res, "a=2n")
             )
-        ]
+        )
 
-    let all =
-        testList "Qs" [
-            parseApi
-            stringifyApi
-        ]
+    let all () =
+        describe "Qs" (fun _ ->
+            parseApi ()
+            stringifyApi ()
+        )

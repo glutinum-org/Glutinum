@@ -1,23 +1,24 @@
 namespace RangeParser
 
-open Fable.Mocha
+open Mocha
 open RangeParser
 open Fable.Core
+open Fable.Core.Testing
 open Fable.Core.JsInterop
 
 module Tests =
 
-    let all =
-        testList "RangeParser" [
+    let all () =
+        describe "RangeParser" (fun _ ->
 
-            testList "parseRange(len, str)" [
+            describe "parseRange(len, str)" (fun _ ->
 
-                testCase "should return -2 (aka ResultInvalid) for invalid str" (fun _ ->
+                itAsync "should return -2 (aka ResultInvalid) for invalid str" (fun ok ->
                     let range = parseRange.Invoke(200, "malformed")
 
                     match range with
                     | ParseRangeResult.ResultInvalid ->
-                        Expect.pass () ""
+                        ok()
 
                     | ParseRangeResult.UnkownError _
                     | ParseRangeResult.ResultUnsatisfiable
@@ -25,12 +26,12 @@ module Tests =
                         failwith "Should not happen"
                 )
 
-                testCase "should return -1 if all specified ranges are invalid" (fun _ ->
+                itAsync "should return -1 if all specified ranges are invalid" (fun ok ->
                     let range = parseRange.Invoke(200, "bytes=500-20")
 
                     match range with
                     | ParseRangeResult.ResultUnsatisfiable ->
-                        Expect.pass () ""
+                        ok()
 
                     | ParseRangeResult.UnkownError _
                     | ParseRangeResult.ResultInvalid
@@ -38,7 +39,7 @@ module Tests =
                         failwith "Should not happen"
                 )
 
-                testCase "should parse str" (fun _ ->
+                it "should parse str" (fun _ ->
                     let range = parseRange.Invoke(1000, "bytes=0-499")
 
                     match range with
@@ -49,17 +50,17 @@ module Tests =
 
                     | ParseRangeResult.Range range ->
                         // Here you can access your successful result
-                        Expect.equal range.``type`` "bytes" ""
-                        Expect.equal range.Count 1 ""
-                        Expect.equal range.[0].start 0 ""
-                        Expect.equal range.[0].``end`` 499 ""
+                        Assert.AreEqual(range.``type``, "bytes")
+                        Assert.AreEqual(range.Count, 1)
+                        Assert.AreEqual(range.[0].start, 0)
+                        Assert.AreEqual(range.[0].``end``, 499)
                 )
 
-            ]
+            )
 
-            testList "when combine: true" [
+            describe "when combine: true" (fun _ ->
 
-                testCase "should combine overlapping ranges" (fun _ ->
+                it "should combine overlapping ranges" (fun _ ->
                     let range = parseRange.Invoke(
                                     150,
                                     "bytes=0-4,90-99,5-75,100-199,101-102",
@@ -76,15 +77,15 @@ module Tests =
 
                     | ParseRangeResult.Range range ->
                         // Here you can access your successful result
-                        Expect.equal range.``type`` "bytes" ""
-                        Expect.equal range.Count 2 ""
-                        Expect.equal range.[0].start 0 ""
-                        Expect.equal range.[0].``end`` 75  ""
-                        Expect.equal range.[1].start 90 ""
-                        Expect.equal range.[1].``end`` 149 ""
+                        Assert.AreEqual(range.``type``, "bytes")
+                        Assert.AreEqual(range.Count, 2)
+                        Assert.AreEqual(range.[0].start, 0)
+                        Assert.AreEqual(range.[0].``end``, 75 )
+                        Assert.AreEqual(range.[1].start, 90)
+                        Assert.AreEqual(range.[1].``end``, 149)
                 )
 
-                testCase "overload parseRange.Invoke with direct combine argument works" (fun _ ->
+                it "overload parseRange.Invoke with direct combine argument works" (fun _ ->
                     let range =
                         parseRange.Invoke(
                             150,
@@ -100,14 +101,14 @@ module Tests =
 
                     | ParseRangeResult.Range range ->
                         // Here you can access your successful result
-                        Expect.equal range.``type`` "bytes" ""
-                        Expect.equal range.Count 2 ""
-                        Expect.equal range.[0].start 0 ""
-                        Expect.equal range.[0].``end`` 75  ""
-                        Expect.equal range.[1].start 90 ""
-                        Expect.equal range.[1].``end`` 149 ""
+                        Assert.AreEqual(range.``type``, "bytes")
+                        Assert.AreEqual(range.Count, 2)
+                        Assert.AreEqual(range.[0].start, 0)
+                        Assert.AreEqual(range.[0].``end``, 75 )
+                        Assert.AreEqual(range.[1].start, 90)
+                        Assert.AreEqual(range.[1].``end``, 149)
                 )
 
-            ]
+            )
 
-        ]
+        )
