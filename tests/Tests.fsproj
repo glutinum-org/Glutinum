@@ -20,5 +20,6 @@
     <ProjectReference Include="..\src\Qs\Fable.Qs.fsproj" />
     <ProjectReference Include="..\src\RangeParser\Fable.RangeParser.fsproj" />
     <ProjectReference Include="..\src\Connect\Fable.Connect.fsproj" />
+    <ProjectReference Include="..\src\SuperTest\Fable.SuperTest.fsproj" />
   </ItemGroup>
 </Project>

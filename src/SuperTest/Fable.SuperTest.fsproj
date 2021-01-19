@@ -12,13 +12,15 @@
         </Description>
     </PropertyGroup>
     <ItemGroup>
-        <Compile Include="Connect.Types.fs" />
-        <Compile Include="Connect.Api.fs" />
-        <Compile Include="Connect.Ext.fs" />
+        <Compile Include="SuperTest.Types.fs" />
+        <Compile Include="SuperTest.Api.fs" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Fable.Core" Version="3.1.2" />
         <PackageReference Include="Fable.Node" Version="1.2.0" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\SuperAgent\Fable.SuperAgent.fsproj" />
     </ItemGroup>
     <!-- This package doesn't contain actual code
         so we don't need to add the sources -->
