@@ -7,6 +7,7 @@
   <ItemGroup>
     <Compile Include="Mime/Mime.Tests.fs" />
     <Compile Include="Qs/Qs.Tests.fs" />
+    <Compile Include="RangeParser/RangeParser.Tests.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>
   <ItemGroup>
@@ -16,5 +17,6 @@
   <ItemGroup>
     <ProjectReference Include="..\src\Mime\Fable.Mime.fsproj" />
     <ProjectReference Include="..\src\Qs\Fable.Qs.fsproj" />
+    <ProjectReference Include="..\src\RangeParser\Fable.RangeParser.fsproj" />
   </ItemGroup>
 </Project>
