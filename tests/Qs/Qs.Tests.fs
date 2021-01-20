@@ -5,6 +5,7 @@ open Qs
 open Fable.Core
 open Fable.Core.Testing
 open Fable.Core.JsInterop
+open Npm
 
 module Tests =
 
@@ -18,14 +19,14 @@ module Tests =
         describe "qs.parse()" (fun _ ->
 
             it "parses a simple string" (fun _ ->
-                let res = qs.parse("0=foo")
+                let res = npm.qs.parse("0=foo")
 
                 Assert.AreEqual(res.["0"], Some (!^ "foo"))
             )
 
             it "arrayFormat: brackets allows only explicit arrays" (fun _ ->
                 let res =
-                    qs.parse(
+                    npm.qs.parse(
                         "a[0]=b&a[1]=c",
                         jsOptions<Types.IParseOptions>(fun o ->
                             o.arrayFormat <- Types.IArrayFormat.Brackets
@@ -65,7 +66,7 @@ module Tests =
                     )
 
                 let res =
-                    qs.parse(
+                    npm.qs.parse(
                         "KeY=vAlUe",
                         jsOptions<Types.IParseOptions>(fun o ->
                             o.decoder <- decoder
@@ -82,7 +83,7 @@ module Tests =
         describe "qs.stringifyApi()" (fun _ ->
             it "stringifies a querystring object" (fun _ ->
                 let res =
-                    qs.stringify(createObj [
+                    npm.qs.stringify(createObj [
                         "a" ==> "b"
                     ])
 
@@ -102,7 +103,7 @@ module Tests =
                     )
 
                 let res =
-                    qs.stringify(
+                    npm.qs.stringify(
                         createObj [
                             "a" ==> JsBigInt 2
                         ],

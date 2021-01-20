@@ -3,6 +3,7 @@ namespace Mime
 open Npm
 open Mocha
 open Mime
+open BodyParser
 open Fable.Core
 open Fable.Core.Testing
 open Fable.Core.JsInterop

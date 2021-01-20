@@ -7,11 +7,6 @@ open Node
 
 type Function = System.Action
 
-type [<AllowNullLiteral>] IExports =
-    /// Create a new connect server.
-    [<Emit("$0()")>]
-    abstract Invoke: unit -> CreateServer.Server
-
 module CreateServer =
 
     // type [<AllowNullLiteral>] IExports =

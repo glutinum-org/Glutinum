@@ -7,6 +7,8 @@ open Fable.Core.JsInterop
 open Node
 open Connect
 open SuperTest
+open Npm
+
 module Tests =
 
     let all () =
@@ -15,7 +17,7 @@ module Tests =
             let mutable app : Types.CreateServer.Server = Unchecked.defaultof<_>
 
             beforeEach (fun _ ->
-                app <- connect()
+                app <- npm.connect()
             )
 
             itAsync "should inherit from event emitter" (fun ok ->
@@ -24,7 +26,7 @@ module Tests =
             )
 
             itAsync "should work in http.createServer" (fun ok ->
-                let app = connect()
+                let app = npm.connect()
 
                 // We need to help the compiler with a type hint
                 app.``use``(fun req (res : Http.ServerResponse) ->
@@ -33,15 +35,16 @@ module Tests =
 
                 let server = http.createServer(app)
 
-                supertest.supertest(box server)
+                npm.supertest.supertest(box server)
                     .get("/")
-                    ?expect(200, "Hello, world!", ok)
+                    .expect(200, box "Hello, world!", unbox<Types.Supertest.CallbackHandler> ok)
+                    |> ignore
             )
 
             describe "error handler" (fun _ ->
 
                 itAsync "should use custom error code" (fun ok ->
-                    let app = connect()
+                    let app = npm.connect()
 
                     app.``use``(fun req res next ->
                         let err = new System.Exception("boom!")
@@ -49,9 +52,10 @@ module Tests =
                         raise err |> ignore
                     ) |> ignore
 
-                    supertest.supertest(box app)
+                    npm.supertest.supertest(box app)
                         .get("/")
-                        ?expect(503, ok)
+                        .expect(503, unbox<Types.Supertest.CallbackHandler> ok)
+                        |> ignore
                 )
 
             )

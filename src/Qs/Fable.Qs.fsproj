@@ -13,10 +13,13 @@
     </PropertyGroup>
     <ItemGroup>
         <Compile Include="Qs.Types.fs" />
-        <Compile Include="Qs.Api.fs" />
+        <Compile Include="Qs.Exports.fs" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Fable.Core" Version="3.1.2" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Npm\Fable.Npm.fsproj" />
     </ItemGroup>
     <!-- This package doesn't contain actual code
         so we don't need to add the sources -->

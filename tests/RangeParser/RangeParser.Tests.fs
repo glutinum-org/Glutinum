@@ -5,6 +5,7 @@ open RangeParser
 open Fable.Core
 open Fable.Core.Testing
 open Fable.Core.JsInterop
+open Npm
 
 module Tests =
 
@@ -14,7 +15,7 @@ module Tests =
             describe "parseRange(len, str)" (fun _ ->
 
                 itAsync "should return -2 (aka ResultInvalid) for invalid str" (fun ok ->
-                    let range = parseRange.Invoke(200, "malformed")
+                    let range = npm.rangeParser(200, "malformed")
 
                     match range with
                     | ParseRangeResult.ResultInvalid ->
@@ -27,7 +28,7 @@ module Tests =
                 )
 
                 itAsync "should return -1 if all specified ranges are invalid" (fun ok ->
-                    let range = parseRange.Invoke(200, "bytes=500-20")
+                    let range = npm.rangeParser(200, "bytes=500-20")
 
                     match range with
                     | ParseRangeResult.ResultUnsatisfiable ->
@@ -40,7 +41,7 @@ module Tests =
                 )
 
                 it "should parse str" (fun _ ->
-                    let range = parseRange.Invoke(1000, "bytes=0-499")
+                    let range = npm.rangeParser(1000, "bytes=0-499")
 
                     match range with
                     | ParseRangeResult.UnkownError _
@@ -61,7 +62,7 @@ module Tests =
             describe "when combine: true" (fun _ ->
 
                 it "should combine overlapping ranges" (fun _ ->
-                    let range = parseRange.Invoke(
+                    let range = npm.rangeParser(
                                     150,
                                     "bytes=0-4,90-99,5-75,100-199,101-102",
                                     jsOptions<Types.Options>(fun o ->
@@ -85,9 +86,9 @@ module Tests =
                         Assert.AreEqual(range.[1].``end``, 149)
                 )
 
-                it "overload parseRange.Invoke with direct combine argument works" (fun _ ->
+                it "overload npm.rangeParser with direct combine argument works" (fun _ ->
                     let range =
-                        parseRange.Invoke(
+                        npm.rangeParser(
                             150,
                             "bytes=0-4,90-99,5-75,100-199,101-102",
                             true

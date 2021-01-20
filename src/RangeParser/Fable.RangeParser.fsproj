@@ -13,7 +13,7 @@
     </PropertyGroup>
     <ItemGroup>
         <Compile Include="RangeParser.Types.fs" />
-        <Compile Include="RangeParser.Api.fs" />
+        <Compile Include="RangeParser.Exports.fs" />
         <Compile Include="RangeParser.Ext.fs" />
     </ItemGroup>
     <ItemGroup>
@@ -21,5 +21,8 @@
     </ItemGroup>
     <ItemGroup>
         <Content Include="*.fsproj; *.fs" PackagePath="fable\" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Npm\Fable.Npm.fsproj" />
     </ItemGroup>
 </Project>

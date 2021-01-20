@@ -2,12 +2,6 @@ namespace BodyParser
 
 open Npm
 open Mocha
-open Fable.Core
-open Fable.Core.Testing
-open Fable.Core.JsInterop
-open Node
-open BodyParser
-open SuperTest
 
 module Tests =
 
@@ -18,9 +12,9 @@ module Tests =
 
                 it "test" (fun _ ->
 
-                    let x = npm.BodyParser.text()
+                    let x = npm.bodyParser.text()
 
-                    let y = npm.BodyParser.json()
+                    let y = npm.bodyParser.json()
 
 
                     ()

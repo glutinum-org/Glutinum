@@ -13,7 +13,7 @@
     </PropertyGroup>
     <ItemGroup>
         <Compile Include="BodyParser.Types.fs" />
-        <Compile Include="BodyParser.Api.fs" />
+        <Compile Include="BodyParser.Exports.fs" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Fable.Core" Version="3.1.2" />
