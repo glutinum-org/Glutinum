@@ -10,6 +10,7 @@
     <Compile Include="Qs/Qs.Tests.fs" />
     <Compile Include="RangeParser/RangeParser.Tests.fs" />
     <Compile Include="Connect/Connect.Tests.fs" />
+    <Compile Include="BodyParser/BodyParser.Tests.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>
   <ItemGroup>
@@ -21,5 +22,7 @@
     <ProjectReference Include="..\src\RangeParser\Fable.RangeParser.fsproj" />
     <ProjectReference Include="..\src\Connect\Fable.Connect.fsproj" />
     <ProjectReference Include="..\src\SuperTest\Fable.SuperTest.fsproj" />
+    <ProjectReference Include="..\src\BodyParser\Fable.BodyParser.fsproj" />
+    <ProjectReference Include="..\src\Npm\Fable.Npm.fsproj" />
   </ItemGroup>
 </Project>

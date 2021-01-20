@@ -1,5 +1,6 @@
 namespace Mime
 
+open Npm
 open Mocha
 open Mime
 open Fable.Core
@@ -16,7 +17,7 @@ module Tests =
                 typeMap.["text/a"] <- ResizeArray(["a"; "a1"])
                 typeMap.["text/b"] <- ResizeArray(["b"; "b1"])
 
-                let mime = Mime.Create(typeMap)
+                let mime = npm.mime.Mime(typeMap)
 
                 Assert.AreEqual(mime.getType("a"), Some "text/a")
             )
@@ -26,7 +27,7 @@ module Tests =
                 typeMap.["text/a"] <- ResizeArray(["a"; "a1"])
                 typeMap.["text/b"] <- ResizeArray(["b"; "b1"])
 
-                let mime = Mime.Create(typeMap)
+                let mime = npm.mime.Mime(typeMap)
 
                 let subTypeMap = createEmpty<Types.TypeMap>
                 subTypeMap.["text/c"] <- ResizeArray(["c"])
@@ -37,11 +38,11 @@ module Tests =
             )
 
             it "getType() works" (fun _ ->
-                Assert.AreEqual(mime.getType("txt"), Some "text/plain")
+                Assert.AreEqual(npm.mime.getType("txt"), Some "text/plain")
             )
 
             it "getExtension() works" (fun _ ->
-                Assert.AreEqual(mime.getExtension("text/html"), Some "html")
+                Assert.AreEqual(npm.mime.getExtension("text/html"), Some "html")
             )
 
         )

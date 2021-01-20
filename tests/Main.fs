@@ -7,4 +7,5 @@ describe "All" (fun _ ->
     Qs.Tests.all ()
     RangeParser.Tests.all ()
     Connect.Tests.all ()
+    BodyParser.Tests.all()
 )

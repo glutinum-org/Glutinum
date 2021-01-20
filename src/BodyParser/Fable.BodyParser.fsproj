@@ -12,11 +12,16 @@
         </Description>
     </PropertyGroup>
     <ItemGroup>
-        <!-- <Compile Include="Mime.Types.fs" />
-        <Compile Include="Mime.Api.fs" /> -->
+        <Compile Include="BodyParser.Types.fs" />
+        <Compile Include="BodyParser.Api.fs" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Fable.Core" Version="3.1.2" />
+        <PackageReference Include="Fable.Node" Version="1.2.0" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Connect\Fable.Connect.fsproj" />
+      <ProjectReference Include="..\Npm\Fable.Npm.fsproj" />
     </ItemGroup>
     <!-- This package doesn't contain actual code
         so we don't need to add the sources -->

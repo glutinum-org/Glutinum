@@ -7,7 +7,8 @@ open Fable.Core
 open Fable.Core.JS
 
 type [<AllowNullLiteral>] IExports =
-    abstract Mime: MimeStatic
+    [<Import("default", "mime/Mime");EmitConstructor>]
+    abstract Mime: mimes: TypeMap -> Mime
     abstract getType: path: string -> string option
     abstract getExtension: mime: string -> string option
     abstract define: mimes: TypeMap * ?force: bool -> unit
