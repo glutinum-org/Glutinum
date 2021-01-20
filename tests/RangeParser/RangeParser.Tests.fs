@@ -1,8 +1,6 @@
 namespace RangeParser
 
 open Mocha
-open RangeParser
-open Fable.Core
 open Fable.Core.Testing
 open Fable.Core.JsInterop
 open Npm
@@ -65,7 +63,7 @@ module Tests =
                     let range = npm.rangeParser(
                                     150,
                                     "bytes=0-4,90-99,5-75,100-199,101-102",
-                                    jsOptions<Types.Options>(fun o ->
+                                    jsOptions<Types.RangeParser.Options>(fun o ->
                                         o.combine <- true
                                     )
                                 )

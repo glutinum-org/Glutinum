@@ -1,7 +1,6 @@
 namespace Qs
 
 open Mocha
-open Qs
 open Fable.Core
 open Fable.Core.Testing
 open Fable.Core.JsInterop
@@ -28,8 +27,8 @@ module Tests =
                 let res =
                     npm.qs.parse(
                         "a[0]=b&a[1]=c",
-                        jsOptions<Types.IParseOptions>(fun o ->
-                            o.arrayFormat <- Types.IArrayFormat.Brackets
+                        jsOptions<Types.Qs.IParseOptions>(fun o ->
+                            o.arrayFormat <- Types.Qs.IArrayFormat.Brackets
                         )
                     )
 
@@ -54,7 +53,7 @@ module Tests =
                     // )
 
                     System.Func<_,_,_,_,_>(
-                        fun (str : string) (defaultDecoder : Types.defaultDecoder) (charset : string) (_: Types.IStringifyOptionsEncoder) ->
+                        fun (str : string) (defaultDecoder : Types.Qs.defaultDecoder) (charset : string) (_: Types.Qs.IStringifyOptionsEncoder) ->
                             if str = "KeY" then
                                 box "key"
 
@@ -68,7 +67,7 @@ module Tests =
                 let res =
                     npm.qs.parse(
                         "KeY=vAlUe",
-                        jsOptions<Types.IParseOptions>(fun o ->
+                        jsOptions<Types.Qs.IParseOptions>(fun o ->
                             o.decoder <- decoder
                         )
                     )
@@ -93,7 +92,7 @@ module Tests =
 
             it "stringifies using encoder" (fun _->
                 let encoder =
-                    System.Func<_,Types.defaultEncoder,_,_,_> (fun value defaultEncoder charset _ ->
+                    System.Func<_,Types.Qs.defaultEncoder,_,_,_> (fun value defaultEncoder charset _ ->
                         let result = defaultEncoder.Invoke(value, defaultEncoder, charset)
 
                         if jsTypeOf value = "bigint" then
@@ -107,7 +106,7 @@ module Tests =
                         createObj [
                             "a" ==> JsBigInt 2
                         ],
-                        jsOptions<Types.IStringifyOptions>(fun o ->
+                        jsOptions<Types.Qs.IStringifyOptions>(fun o ->
                             o.encoder <- encoder
                         )
                     )

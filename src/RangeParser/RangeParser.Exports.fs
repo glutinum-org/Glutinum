@@ -33,7 +33,7 @@ type Npm.Types.IExports with
     /// </code>
     /// </summary>
     [<Import("default", "range-parser");Emit("$0($1...)")>]
-    member __.rangeParser (size: int, str: string, ?options: RangeParser.Types.Options) : RangeParser.Types.ParseRangeResult = jsNative
+    member __.rangeParser (size: int, str: string, ?options: Types.RangeParser.Options) : Types.RangeParser.ParseRangeResult = jsNative
 
     /// <summary>
     /// Equivalent to
@@ -48,5 +48,5 @@ type Npm.Types.IExports with
     /// </code>
     /// </summary>
     [<Import("default", "range-parser");Emit("$0($1,$2, { combine : $3 })")>]
-    member __.rangeParser (size: int, str: string, combine : bool) : RangeParser.Types.ParseRangeResult = jsNative
+    member __.rangeParser (size: int, str: string, combine : bool) : Types.RangeParser.ParseRangeResult = jsNative
 

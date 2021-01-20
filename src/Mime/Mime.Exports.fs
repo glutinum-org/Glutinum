@@ -5,4 +5,4 @@ open Fable.Core
 
 type Npm.Types.IExports with
     [<Import("default", "mime")>]
-    member __.mime with get () : Mime.Types.IExports = jsNative
+    member __.mime with get () : Types.Mime.IExports = jsNative

@@ -1,4 +1,4 @@
-namespace RangeParser
+namespace Npm
 
 open Fable.Core
 
@@ -11,7 +11,7 @@ module Ext =
     [<RequireQualifiedAccess>]
     module ParseRangeResult =
 
-        let (|UnkownError|ResultInvalid|ResultUnsatisfiable|Range|) (result : Types.ParseRangeResult) : Choice<Types.Errored, unit, unit, Types.Ranges> =
+        let (|UnkownError|ResultInvalid|ResultUnsatisfiable|Range|) (result : Types.RangeParser.ParseRangeResult) : Choice<Types.RangeParser.Errored, unit, unit, Types.RangeParser.Ranges> =
             if jsTypeOf result = "number" then
                 let error = unbox<int> result
 

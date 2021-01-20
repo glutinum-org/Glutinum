@@ -1,4 +1,4 @@
-namespace Connect
+namespace Npm
 
 [<AutoOpen>]
 module Ext =
@@ -7,4 +7,4 @@ module Ext =
 
     type Node.Http.IExports with
         [<Emit("$0.createServer($1)")>]
-        member __.createServer(_ : Types.CreateServer.Server) : Node.Http.Server = jsNative
+        member __.createServer(_ : Types.Connect.CreateServer.Server) : Node.Http.Server = jsNative

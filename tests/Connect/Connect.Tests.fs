@@ -1,12 +1,8 @@
 namespace Connect
 
 open Mocha
-open Fable.Core
-open Fable.Core.Testing
 open Fable.Core.JsInterop
 open Node
-open Connect
-open SuperTest
 open Npm
 
 module Tests =
@@ -14,7 +10,7 @@ module Tests =
     let all () =
         describe "Connect" (fun _ ->
 
-            let mutable app : Types.CreateServer.Server = Unchecked.defaultof<_>
+            let mutable app : Types.Connect.CreateServer.Server = Unchecked.defaultof<_>
 
             beforeEach (fun _ ->
                 app <- npm.connect()
@@ -37,7 +33,7 @@ module Tests =
 
                 npm.supertest.supertest(box server)
                     .get("/")
-                    .expect(200, box "Hello, world!", unbox<Types.Supertest.CallbackHandler> ok)
+                    .expect(200, box "Hello, world!", unbox<Types.SuperTest.Supertest.CallbackHandler> ok)
                     |> ignore
             )
 
@@ -54,7 +50,7 @@ module Tests =
 
                     npm.supertest.supertest(box app)
                         .get("/")
-                        .expect(503, unbox<Types.Supertest.CallbackHandler> ok)
+                        .expect(503, unbox<Types.SuperTest.Supertest.CallbackHandler> ok)
                         |> ignore
                 )
 

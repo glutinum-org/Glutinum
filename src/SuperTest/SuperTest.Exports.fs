@@ -5,4 +5,4 @@ open Fable.Core
 
 type Npm.Types.IExports with
     [<Import("default", "supertest")>]
-    member __.supertest with get () : SuperTest.Types.IExports = jsNative
+    member __.supertest with get () : Types.SuperTest.IExports = jsNative

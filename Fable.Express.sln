@@ -5,25 +5,25 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{ECC83062-6256-4F7D-B518-FFBF391B1F8F}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Fable.BodyParser", "src\BodyParser\Fable.BodyParser.fsproj", "{8ACEAD56-DD5A-4BEA-8151-204ADD78BAA2}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Fable.BodyParser", "src\BodyParser\Fable.Npm.BodyParser.fsproj", "{8ACEAD56-DD5A-4BEA-8151-204ADD78BAA2}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Fable.Connect", "src\Connect\Fable.Connect.fsproj", "{8A9FCFD9-1AFA-4C83-A1D4-877C4A88C44E}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Fable.Connect", "src\Connect\Fable.Npm.Connect.fsproj", "{8A9FCFD9-1AFA-4C83-A1D4-877C4A88C44E}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Fable.CookieParser", "src\CookieParser\Fable.CookieParser.fsproj", "{F3836544-CC4F-430B-9D1A-9AAF05DEDFCD}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Fable.CookieParser", "src\CookieParser\Fable.Npm.CookieParser.fsproj", "{F3836544-CC4F-430B-9D1A-9AAF05DEDFCD}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Fable.Express", "src\Express\Fable.Express.fsproj", "{C1AEF260-5C94-46FE-9EDB-870061981750}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Fable.Express", "src\Express\Fable.Npm.Express.fsproj", "{C1AEF260-5C94-46FE-9EDB-870061981750}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Fable.ExpressServeStaticCore", "src\ExpressServeStaticCore\Fable.ExpressServeStaticCore.fsproj", "{278919FC-9B3F-46F6-A41B-815157E8D3CD}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Fable.ExpressServeStaticCore", "src\ExpressServeStaticCore\Fable.Npm.ExpressServeStaticCore.fsproj", "{278919FC-9B3F-46F6-A41B-815157E8D3CD}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Fable.Mime", "src\Mime\Fable.Mime.fsproj", "{0340D2A7-0FBA-472F-B49C-F5DB9E1BF1B7}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Fable.Mime", "src\Mime\Fable.Npm.Mime.fsproj", "{0340D2A7-0FBA-472F-B49C-F5DB9E1BF1B7}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Fable.Qs", "src\Qs\Fable.Qs.fsproj", "{A4789170-1B14-4041-82F9-4CDC181DB7F9}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Fable.Qs", "src\Qs\Fable.Npm.Qs.fsproj", "{A4789170-1B14-4041-82F9-4CDC181DB7F9}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Fable.RangeParser", "src\RangeParser\Fable.RangeParser.fsproj", "{E155D736-86B8-4980-AAB1-89DA2648C27B}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Fable.RangeParser", "src\RangeParser\Fable.Npm.RangeParser.fsproj", "{E155D736-86B8-4980-AAB1-89DA2648C27B}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Fable.SuperAgent", "src\SuperAgent\Fable.SuperAgent.fsproj", "{50F78008-1F2E-4FCC-AA6B-036D13721AEB}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Fable.SuperAgent", "src\SuperAgent\Fable.Npm.SuperAgent.fsproj", "{50F78008-1F2E-4FCC-AA6B-036D13721AEB}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Fable.SuperTest", "src\SuperTest\Fable.SuperTest.fsproj", "{AA76E307-67D0-408A-A110-53D11C236766}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Fable.SuperTest", "src\SuperTest\Fable.Npm.SuperTest.fsproj", "{AA76E307-67D0-408A-A110-53D11C236766}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Tests", "tests\Tests.fsproj", "{990EDE2C-11D2-45AF-A4F8-975A9CC01082}"
 EndProject

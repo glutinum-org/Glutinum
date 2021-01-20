@@ -17,12 +17,12 @@
     <PackageReference Include="Fable.Core" Version="3.1.2" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\src\Mime\Fable.Mime.fsproj" />
-    <ProjectReference Include="..\src\Qs\Fable.Qs.fsproj" />
-    <ProjectReference Include="..\src\RangeParser\Fable.RangeParser.fsproj" />
-    <ProjectReference Include="..\src\Connect\Fable.Connect.fsproj" />
-    <ProjectReference Include="..\src\SuperTest\Fable.SuperTest.fsproj" />
-    <ProjectReference Include="..\src\BodyParser\Fable.BodyParser.fsproj" />
+    <ProjectReference Include="..\src\Mime\Fable.Npm.Mime.fsproj" />
+    <ProjectReference Include="..\src\Qs\Fable.Npm.Qs.fsproj" />
+    <ProjectReference Include="..\src\RangeParser\Fable.Npm.RangeParser.fsproj" />
+    <ProjectReference Include="..\src\Connect\Fable.Npm.Connect.fsproj" />
+    <ProjectReference Include="..\src\SuperTest\Fable.Npm.SuperTest.fsproj" />
+    <ProjectReference Include="..\src\BodyParser\Fable.Npm.BodyParser.fsproj" />
     <ProjectReference Include="..\src\Npm\Fable.Npm.fsproj" />
   </ItemGroup>
 </Project>

@@ -2,8 +2,6 @@ namespace Mime
 
 open Npm
 open Mocha
-open Mime
-open BodyParser
 open Fable.Core
 open Fable.Core.Testing
 open Fable.Core.JsInterop
@@ -14,7 +12,7 @@ module Tests =
         describe "Mime" (fun _ ->
 
             it "Mime new constructor works" (fun _ ->
-                let typeMap = createEmpty<Types.TypeMap>
+                let typeMap = createEmpty<Types.Mime.TypeMap>
                 typeMap.["text/a"] <- ResizeArray(["a"; "a1"])
                 typeMap.["text/b"] <- ResizeArray(["b"; "b1"])
 
@@ -24,13 +22,13 @@ module Tests =
             )
 
             it "define works" (fun _ ->
-                let typeMap = createEmpty<Types.TypeMap>
+                let typeMap = createEmpty<Types.Mime.TypeMap>
                 typeMap.["text/a"] <- ResizeArray(["a"; "a1"])
                 typeMap.["text/b"] <- ResizeArray(["b"; "b1"])
 
                 let mime = npm.mime.Mime(typeMap)
 
-                let subTypeMap = createEmpty<Types.TypeMap>
+                let subTypeMap = createEmpty<Types.Mime.TypeMap>
                 subTypeMap.["text/c"] <- ResizeArray(["c"])
 
                 mime.define(subTypeMap)

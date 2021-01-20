@@ -12,4 +12,4 @@ type Npm.Types.IExports with
     /// If there is a bug please open an issue
     /// </summary>
     [<Import("default", "superagent")>]
-    member __.superagent (url : string) : SuperAgent.Types.Request.SuperAgentRequest = jsNative
+    member __.superagent (url : string) : Types.SuperAgent.Request.SuperAgentRequest = jsNative

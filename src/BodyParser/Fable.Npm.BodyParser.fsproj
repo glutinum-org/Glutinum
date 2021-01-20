@@ -20,7 +20,7 @@
         <PackageReference Include="Fable.Node" Version="1.2.0" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\Connect\Fable.Connect.fsproj" />
+      <ProjectReference Include="..\Connect\Fable.Npm.Connect.fsproj" />
       <ProjectReference Include="..\Npm\Fable.Npm.fsproj" />
     </ItemGroup>
     <!-- This package doesn't contain actual code
