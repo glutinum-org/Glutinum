@@ -6,6 +6,8 @@ open Fable.Core.Testing
 open Fable.Core.JsInterop
 open Npm
 
+// Code adapted from: https://github.com/ljharb/qs/tree/b04febd9cb1c94b466aa2bd81b6452b44712414e
+
 module Tests =
 
     [<Emit("typeof $0")>]
@@ -79,7 +81,7 @@ module Tests =
         )
 
     let private stringifyApi () =
-        describe "qs.stringifyApi()" (fun _ ->
+        describe "qs.stringify()" (fun _ ->
             it "stringifies a querystring object" (fun _ ->
                 let res =
                     npm.qs.stringify(createObj [

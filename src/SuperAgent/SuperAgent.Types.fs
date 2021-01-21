@@ -156,6 +156,8 @@ module SuperAgent =
             abstract responseType: ``type``: string -> Request
             abstract retry: ?count: float * ?callback: CallbackHandler -> Request
             abstract send: ?data: U2<string, obj> -> Request
+            abstract send: ?data: string -> Request
+            abstract send: ?data: obj -> Request
             abstract serialize: serializer: Serializer -> Request
             abstract set: field: obj -> Request
             abstract set: field: string * ``val``: string -> Request

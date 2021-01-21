@@ -36,8 +36,9 @@ module SuperTest =
         type [<AllowNullLiteral>] Request =
             inherit SuperAgent.Request.SuperAgentRequest
 
-        type [<AllowNullLiteral>] CallbackHandler =
-            [<Emit "$0($1...)">] abstract Invoke: err: obj option * res: Response -> unit
+        type CallbackHandler =
+            Action<obj option, Response>
+            // [<Emit "$0($1...)">] abstract Invoke: err: obj option * res: Response -> unit
 
         type [<AllowNullLiteral>] Test =
             inherit SuperAgent.Request.SuperAgentRequest

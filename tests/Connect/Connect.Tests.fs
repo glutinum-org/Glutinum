@@ -5,6 +5,8 @@ open Fable.Core.JsInterop
 open Node
 open Npm
 
+// Code adapted from: https://github.com/senchalabs/connect/blob/52cf21b211272519caeef3bb5064c3430f4feb43/test/server.js
+
 module Tests =
 
     let all () =
@@ -33,7 +35,7 @@ module Tests =
 
                 npm.supertest.supertest(box server)
                     .get("/")
-                    .expect(200, box "Hello, world!", unbox<Types.SuperTest.Supertest.CallbackHandler> ok)
+                    .expect(200, "Hello, world!", unbox<Types.SuperTest.Supertest.CallbackHandler> ok)
                     |> ignore
             )
 
@@ -42,7 +44,7 @@ module Tests =
                 itAsync "should use custom error code" (fun ok ->
                     let app = npm.connect()
 
-                    app.``use``(fun req res next ->
+                    app.``use``(fun req res (next : Types.Connect.CreateServer.NextFunction) ->
                         let err = new System.Exception("boom!")
                         err?status <- 503
                         raise err |> ignore

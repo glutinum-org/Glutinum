@@ -24,14 +24,19 @@ module Connect =
         type [<AllowNullLiteral>] IncomingMessageStatic =
             [<EmitConstructor>] abstract Create: unit -> IncomingMessage
 
-        type [<AllowNullLiteral>] NextFunction =
-            [<Emit "$0($1...)">] abstract Invoke: ?err: obj -> unit
+        // Try with private constructor ?
+        // type NextFunction private (?err : obj) =
+        //     class end
+
+        type NextFunction =
+            Func<obj, unit>
+            // [<Emit "$0($1...)">] abstract Invoke: ?err: obj -> unit
 
         type SimpleHandleFunction =
              IncomingMessage -> Http.ServerResponse -> unit
 
         type NextHandleFunction =
-            IncomingMessage -> Http.ServerResponse -> NextFunction -> unit
+            Func<IncomingMessage, Http.ServerResponse, NextFunction, unit>
 
         type ErrorHandleFunction =
             obj option -> IncomingMessage -> Http.ServerResponse -> NextFunction -> unit

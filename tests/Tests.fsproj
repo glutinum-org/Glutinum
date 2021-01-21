@@ -10,6 +10,8 @@
     <Compile Include="Qs/Qs.Tests.fs" />
     <Compile Include="RangeParser/RangeParser.Tests.fs" />
     <Compile Include="Connect/Connect.Tests.fs" />
+    <Compile Include="BodyParser/BodyParser.Tests.Json.fs" />
+    <Compile Include="BodyParser/BodyParser.Tests.Text.fs" />
     <Compile Include="BodyParser/BodyParser.Tests.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>

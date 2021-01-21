@@ -5,6 +5,8 @@ open Fable.Core.Testing
 open Fable.Core.JsInterop
 open Npm
 
+// Code adapted from: https://github.com/jshttp/range-parser/tree/5f48dfc7996b18242dfa1fbddcc03f39b42a4554
+
 module Tests =
 
     let all () =

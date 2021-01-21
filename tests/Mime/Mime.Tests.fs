@@ -6,6 +6,8 @@ open Fable.Core
 open Fable.Core.Testing
 open Fable.Core.JsInterop
 
+// Code adapted from: https://github.com/broofa/mime/blob/9847c9f9ee077a8d6e17d0b738b1b28c030a9a89/src/test.js
+
 module Tests =
 
     let all () =
