@@ -11,9 +11,6 @@ module Connect =
 
     module CreateServer =
 
-        // type [<AllowNullLiteral>] IExports =
-        //     abstract IncomingMessage: IncomingMessageStatic
-
         type ServerHandle =
             U2<HandleFunction, Http.Server>
 
@@ -30,16 +27,14 @@ module Connect =
 
         type NextFunction =
             Func<obj, unit>
-            // [<Emit "$0($1...)">] abstract Invoke: ?err: obj -> unit
-
         type SimpleHandleFunction =
-             IncomingMessage -> Http.ServerResponse -> unit
+            Func<IncomingMessage, Http.ServerResponse ,unit>
 
         type NextHandleFunction =
             Func<IncomingMessage, Http.ServerResponse, NextFunction, unit>
 
         type ErrorHandleFunction =
-            obj option -> IncomingMessage -> Http.ServerResponse -> NextFunction -> unit
+            Func<obj option, IncomingMessage, Http.ServerResponse, NextFunction, unit>
 
         type HandleFunction =
             U3<SimpleHandleFunction, NextHandleFunction, ErrorHandleFunction>
@@ -95,7 +90,7 @@ module Connect =
             ///
             ///       http.createServer(app).listen(80);
             ///       https.createServer(options, app).listen(443);
-            abstract listen: port: float * ?hostname: string * ?backlog: float * ?callback: Function -> Http.Server
-            abstract listen: port: float * ?hostname: string * ?callback: Function -> Http.Server
+            abstract listen: port: int * ?hostname: string * ?backlog: int * ?callback: Function -> Http.Server
+            abstract listen: port: int * ?hostname: string * ?callback: Function -> Http.Server
             abstract listen: path: string * ?callback: Function -> Http.Server
             abstract listen: handle: obj option * ?listeningListener: Function -> Http.Server
