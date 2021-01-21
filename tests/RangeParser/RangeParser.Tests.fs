@@ -9,7 +9,7 @@ open Npm
 
 module Tests =
 
-    let all () =
+    let tests () =
         describe "RangeParser" (fun _ ->
 
             describe "parseRange(len, str)" (fun _ ->

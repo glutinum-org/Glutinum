@@ -117,7 +117,7 @@ module Tests =
             )
         )
 
-    let all () =
+    let tests () =
         describe "Qs" (fun _ ->
             parseApi ()
             stringifyApi ()

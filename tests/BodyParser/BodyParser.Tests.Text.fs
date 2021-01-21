@@ -8,7 +8,7 @@ open Fable.Core.JsInterop
 
 // Code adapted from: https://github.com/expressjs/body-parser/blob/480b1cfe29af19c070f4ae96e0d598c099f42a12/test/text.js
 
-module Text =
+module TextTests =
 
     let private createServer (opts : Types.BodyParser.OptionsText) =
         let bodyParser = npm.bodyParser.text(opts)
@@ -36,7 +36,7 @@ module Text =
         )
 
 
-    let all () =
+    let tests () =
         describe "bodyParser.text()" (fun _ ->
 
             itAsync "should parse text/plain" (fun ok ->

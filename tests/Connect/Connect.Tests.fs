@@ -9,7 +9,7 @@ open Npm
 
 module Tests =
 
-    let all () =
+    let tests () =
         describe "Connect" (fun _ ->
 
             let mutable app : Types.Connect.CreateServer.Server = Unchecked.defaultof<_>

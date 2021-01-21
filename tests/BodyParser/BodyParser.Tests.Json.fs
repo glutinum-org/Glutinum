@@ -8,7 +8,7 @@ open Fable.Core.JsInterop
 
 // Code adapted from: https://github.com/expressjs/body-parser/blob/480b1cfe29af19c070f4ae96e0d598c099f42a12/test/json.js
 
-module Json =
+module JsonTests =
 
     let private createServer opts =
         let bodyParser = npm.bodyParser.json(opts)
@@ -36,7 +36,7 @@ module Json =
         )
 
 
-    let all () =
+    let tests () =
         describe "bodyParser.json()" (fun _ ->
 
             itAsync "should default to {}" (fun ok ->

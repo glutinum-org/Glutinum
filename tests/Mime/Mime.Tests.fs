@@ -10,7 +10,7 @@ open Fable.Core.JsInterop
 
 module Tests =
 
-    let all () =
+    let tests () =
         describe "Mime" (fun _ ->
 
             it "Mime new constructor works" (fun _ ->
