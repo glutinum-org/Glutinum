@@ -9,11 +9,6 @@ module BodyParser =
 
     type NextHandleFunction = Connect.CreateServer.NextHandleFunction
 
-    // let [<Import("*","module")>] bodyParser: BodyParser.IExports = jsNative
-
-    // type [<AllowNullLiteral>] IExports =
-    //     abstract bodyParser: ?options: obj -> NextHandleFunction
-
     type [<AllowNullLiteral>] IExports =
         /// Returns middleware that only parses json and only looks at requests
         /// where the Content-Type header matches the type option.

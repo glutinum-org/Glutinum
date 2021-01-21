@@ -90,7 +90,7 @@ module Connect =
             ///
             ///       http.createServer(app).listen(80);
             ///       https.createServer(options, app).listen(443);
-            abstract listen: port: int * ?hostname: string * ?backlog: int * ?callback: Function -> Http.Server
+            abstract listen: port: int * ?hostname: string * ?backlog: float * ?callback: Function -> Http.Server
             abstract listen: port: int * ?hostname: string * ?callback: Function -> Http.Server
             abstract listen: path: string * ?callback: Function -> Http.Server
             abstract listen: handle: obj option * ?listeningListener: Function -> Http.Server

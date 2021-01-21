@@ -49,4 +49,3 @@ type Npm.Types.IExports with
     /// </summary>
     [<Import("default", "range-parser");Emit("$0($1,$2, { combine : $3 })")>]
     member __.rangeParser (size: int, str: string, combine : bool) : Types.RangeParser.ParseRangeResult = jsNative
-
