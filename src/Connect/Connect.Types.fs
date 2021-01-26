@@ -36,6 +36,18 @@ module Connect =
         type ErrorHandleFunction =
             Func<obj option, IncomingMessage, Http.ServerResponse, NextFunction, unit>
 
+        // type [<AllowNullLiteral>] NextFunction =
+        //     [<Emit "$0($1...)">] abstract Invoke: ?err: obj -> unit
+
+        // type [<AllowNullLiteral>] SimpleHandleFunction =
+        //     [<Emit "$0($1...)">] abstract Invoke: req: IncomingMessage * res: Http.ServerResponse -> unit
+
+        // type [<AllowNullLiteral>] NextHandleFunction =
+        //     [<Emit "$0($1...)">] abstract Invoke: req: IncomingMessage * res: Http.ServerResponse * next: NextFunction -> unit
+
+        // type [<AllowNullLiteral>] ErrorHandleFunction =
+        //     [<Emit "$0($1...)">] abstract Invoke: err: obj option * req: IncomingMessage * res: Http.ServerResponse * next: NextFunction -> unit
+
         type HandleFunction =
             U3<SimpleHandleFunction, NextHandleFunction, ErrorHandleFunction>
 

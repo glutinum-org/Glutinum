@@ -14,6 +14,10 @@
     <Compile Include="BodyParser/BodyParser.Tests.Text.fs" />
     <Compile Include="BodyParser/BodyParser.Tests.fs" />
     <Compile Include="ServeStatic/ServeStatic.Tests.fs" />
+    <Compile Include="Express/Express.Tests.App.fs" />
+    <Compile Include="Express/Express.Tests.App.Listen.fs" />
+    <Compile Include="Express/Express.Tests.App.Del.fs" />
+    <Compile Include="Express/Express.Tests.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>
   <ItemGroup>
@@ -28,5 +32,7 @@
     <ProjectReference Include="..\src\BodyParser\Fable.Npm.BodyParser.fsproj" />
     <ProjectReference Include="..\src\Npm\Fable.Npm.fsproj" />
     <ProjectReference Include="..\src\ServeStatic\Fable.Npm.ServeStatic.fsproj" />
+    <ProjectReference Include="..\src\ExpressServeStaticCore\Fable.Npm.ExpressServeStaticCore.fsproj" />
+    <ProjectReference Include="..\src\Express\Fable.Npm.Express.fsproj" />
   </ItemGroup>
 </Project>

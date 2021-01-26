@@ -1,12 +1,15 @@
-module Tests
+namespace Tests
 
 open Mocha
 
-describe "All" (fun _ ->
-    Mime.Tests.tests ()
-    Qs.Tests.tests ()
-    RangeParser.Tests.tests ()
-    Connect.Tests.tests ()
-    BodyParser.Tests.All.tests ()
-    ServeStatic.Tests.tests()
-)
+module Main =
+
+    describe "All" (fun _ ->
+        Mime.tests ()
+        Qs.tests ()
+        RangeParser.tests ()
+        Connect.tests ()
+        BodyParser.All.tests ()
+        ServeStatic.tests ()
+        Express.All.tests ()
+    )

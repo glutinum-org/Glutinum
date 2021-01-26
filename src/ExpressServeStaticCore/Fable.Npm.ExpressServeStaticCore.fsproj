@@ -8,14 +8,19 @@
         <Authors>Maxime Mangel</Authors>
         <PublishRepositoryUrl>false</PublishRepositoryUrl>
         <Description>
-            Fable bindings for npm https://github.com/broofa/mime package
+            Fable bindings for npm https://github.com/expressjs/serve-static package
         </Description>
     </PropertyGroup>
     <ItemGroup>
-        <Compile Include="./ExpressServeStaticCore.Types.fs" />
+        <Compile Include="ExpressServeStaticCore.Types.fs" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Fable.Core" Version="3.1.2" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Npm\Fable.Npm.fsproj" />
+      <ProjectReference Include="..\Qs\Fable.Npm.Qs.fsproj" />
+      <ProjectReference Include="..\RangeParser\Fable.Npm.RangeParser.fsproj" />
     </ItemGroup>
     <!-- This package doesn't contain actual code
         so we don't need to add the sources -->
