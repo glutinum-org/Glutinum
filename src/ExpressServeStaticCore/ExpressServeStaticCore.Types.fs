@@ -151,17 +151,24 @@ type [<AllowNullLiteral>] IRouter =
     abstract param: callback: (string -> RegExp -> RequestParamHandler) -> IRouter
     /// Special-cased "all" method, applying the given route `path`,
     /// middleware, and callback to _every_ HTTP method.
-    abstract all: IRouterMatcher<IRouter, string> with get, set
-    abstract get: IRouterMatcher<IRouter, string> with get, set
-    abstract post: IRouterMatcher<IRouter, string> with get, set
-    abstract put: IRouterMatcher<IRouter, string> with get, set
+    // abstract all: IRouterMatcher<IRouter, string> with get, set
+    abstract all: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
+    // abstract get: IRouterMatcher<IRouter, string> with get, set
+    abstract get: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
+    // abstract post: IRouterMatcher<IRouter, string> with get, set
+    abstract post:path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
+    // abstract put: IRouterMatcher<IRouter, string> with get, set
+    abstract put: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
     // abstract delete: IRouterMatcher<IRouter, string> with get, set
     abstract delete: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
     abstract del: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
     // abstract delete: path: string * [<ParamArray>] handlers: (obj -> unit) array -> 'T
-    abstract patch: IRouterMatcher<IRouter, string> with get, set
-    abstract options: IRouterMatcher<IRouter, string> with get, set
-    abstract head: IRouterMatcher<IRouter, string> with get, set
+    // abstract patch: IRouterMatcher<IRouter, string> with get, set
+    abstract patch: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
+    // abstract options: IRouterMatcher<IRouter, string> with get, set
+    abstract options: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
+    // abstract head: IRouterMatcher<IRouter, string> with get, set
+    abstract head: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
     abstract checkout: IRouterMatcher<IRouter> with get, set
     abstract connect: IRouterMatcher<IRouter> with get, set
     abstract copy: IRouterMatcher<IRouter> with get, set
@@ -758,6 +765,8 @@ type [<AllowNullLiteral>] RequestParamHandler =
 type [<AllowNullLiteral>] ApplicationRequestHandler<'T> =
     interface end
 
+type EngineRenderFunc = Func<obj, string option, unit>
+
 type [<AllowNullLiteral>] Application =
     inherit EventEmitter
     inherit IRouter
@@ -799,7 +808,9 @@ type [<AllowNullLiteral>] Application =
     /// library was created to map all of node's popular template
     /// engines to follow this convention, thus allowing them to
     /// work seamlessly within Express.
-    abstract engine: ext: string * fn: (string -> obj -> (obj option -> string -> unit) -> unit) -> Application
+    // abstract engine: ext: string * fn: (string -> obj -> (obj option -> string -> unit) -> unit) -> Application
+
+    abstract engine: ext : string * fn: (string -> #obj -> EngineRenderFunc -> unit) -> Application
     /// Assign `setting` to `val`, or return `setting`'s value.
     ///
     ///     app.set('foo', 'bar');
@@ -810,8 +821,14 @@ type [<AllowNullLiteral>] Application =
     ///     // => ["bar", "baz"]
     ///
     /// Mounted servers inherit their parent server's settings.
-    abstract set: setting: string * ``val``: obj option -> Application
-    abstract get: obj with get, set
+    abstract set: setting: string * ``val``: obj -> Application
+    [<Emit("$0.get")>]
+    /// <summary>
+    /// This property map the <c>get</c> property in JavaScript
+    ///
+    /// <note>This is needed in order to have access to the <c>get</c> methods which maps the GET HTTP method</note>
+    /// </summary>
+    abstract Get: obj with get, set
     /// Map the given param placeholder `name`(s) to the given callback(s).
     ///
     /// Parameter mapping is used to provide pre-conditions to routes
@@ -880,8 +897,8 @@ type [<AllowNullLiteral>] Application =
     ///     app.render('email', { name: 'Tobi' }, function(err, html){
     ///       // ...
     ///     })
-    abstract render: name: string * ?options: obj * ?callback: (Error -> string -> unit) -> unit
-    abstract render: name: string * callback: (Error -> string -> unit) -> unit
+    abstract render: name: string * ?options: obj * ?callback: (Error option -> string -> unit) -> unit
+    abstract render: name: string * callback: (Error option -> string -> unit) -> unit
     /// Listen for connections.
     ///
     /// A node `http.Server` is returned, with this
@@ -907,7 +924,7 @@ type [<AllowNullLiteral>] Application =
     abstract settings: obj option with get, set
     abstract resource: obj option with get, set
     abstract map: obj option with get, set
-    abstract locals: Dictionary<obj option> with get, set
+    abstract locals: Dictionary<obj> with get, set
     /// The app.routes object houses all of the routes defined mapped by the
     /// associated HTTP verb. This object may be used for introspection
     /// capabilities, for example Express uses this internally not only for

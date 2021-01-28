@@ -10,6 +10,7 @@
     <Compile Include="Qs/Qs.Tests.fs" />
     <Compile Include="RangeParser/RangeParser.Tests.fs" />
     <Compile Include="Connect/Connect.Tests.fs" />
+    <Compile Include="Fable.Core.JsInterop.fs" />
     <Compile Include="BodyParser/BodyParser.Tests.Json.fs" />
     <Compile Include="BodyParser/BodyParser.Tests.Text.fs" />
     <Compile Include="BodyParser/BodyParser.Tests.fs" />
@@ -17,6 +18,9 @@
     <Compile Include="Express/Express.Tests.App.fs" />
     <Compile Include="Express/Express.Tests.App.Listen.fs" />
     <Compile Include="Express/Express.Tests.App.Del.fs" />
+    <Compile Include="Express/Express.Tests.App.All.fs" />
+    <Compile Include="Express/Express.Tests.App.Engine.fs" />
+    <Compile Include="Express/Express.Tests.App.Head.fs" />
     <Compile Include="Express/Express.Tests.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>
