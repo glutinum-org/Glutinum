@@ -153,15 +153,20 @@ type [<AllowNullLiteral>] IRouter =
     /// middleware, and callback to _every_ HTTP method.
     // abstract all: IRouterMatcher<IRouter, string> with get, set
     abstract all: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
+    abstract all: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
     // abstract get: IRouterMatcher<IRouter, string> with get, set
     abstract get: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
+    abstract get: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
     // abstract post: IRouterMatcher<IRouter, string> with get, set
     abstract post:path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
     // abstract put: IRouterMatcher<IRouter, string> with get, set
     abstract put: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
+    abstract put: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
     // abstract delete: IRouterMatcher<IRouter, string> with get, set
     abstract delete: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
+    abstract delete: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
     abstract del: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
+    abstract del: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
     // abstract delete: path: string * [<ParamArray>] handlers: (obj -> unit) array -> 'T
     // abstract patch: IRouterMatcher<IRouter, string> with get, set
     abstract patch: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
@@ -188,7 +193,7 @@ type [<AllowNullLiteral>] IRouter =
     abstract trace: IRouterMatcher<IRouter> with get, set
     abstract unlock: IRouterMatcher<IRouter> with get, set
     abstract unsubscribe: IRouterMatcher<IRouter> with get, set
-    abstract ``use``: obj with get, set
+    abstract member ``use``: #IRouter -> unit
     abstract route: prefix: PathParams -> IRoute
     /// Stack of configured routes
     abstract stack: ResizeArray<obj option> with get, set
@@ -934,7 +939,7 @@ type [<AllowNullLiteral>] Application =
     abstract routes: obj option with get, set
     /// Used to get all registered routes in Express Application
     abstract _router: obj option with get, set
-    abstract ``use``: ApplicationRequestHandler<Application> with get, set
+//    abstract ``use``: ApplicationRequestHandler<Application> with get, set
     /// The mount event is fired on a sub-app, when it is mounted on a parent app.
     /// The parent app is passed to the callback function.
     ///

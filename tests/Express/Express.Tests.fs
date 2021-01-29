@@ -11,4 +11,6 @@ let tests () =
         App.All.tests ()
         App.Engine.tests ()
         App.Head.tests ()
+        App.Locals.tests ()
+        App.Options.tests ()
     )

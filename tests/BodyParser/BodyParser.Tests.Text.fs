@@ -48,7 +48,7 @@ let tests () =
             test.expect(
                 200,
                 "\"user is tobi\"",
-                Types.SuperTest.Supertest.CallbackHandler (fun err _ -> ok err)
+                fun err _ -> ok err
             )
             |> ignore
         )

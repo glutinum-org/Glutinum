@@ -41,7 +41,7 @@ let tests () =
         itAsync "should default to {}" (fun ok ->
             npm.supertest.supertest(box (createServer null))
                 .post("/")
-                .expect(200, "{}", Types.SuperTest.Supertest.CallbackHandler (fun err _ -> ok err))
+                .expect(200, "{}", fun err _ -> ok err)
                 |> ignore
         )
 
@@ -56,9 +56,7 @@ let tests () =
             test.expect(
                 200,
                 """{"user":"tobi"}""",
-                Types.SuperTest.Supertest.CallbackHandler (fun err _ ->
-                    ok err
-                )
+                fun err _ -> ok err
             )
             |> ignore
         )

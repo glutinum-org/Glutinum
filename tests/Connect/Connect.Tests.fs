@@ -34,7 +34,7 @@ let tests () =
 
             npm.supertest.supertest(box server)
                 .get("/")
-                .expect(200, "Hello, world!", unbox<Types.SuperTest.Supertest.CallbackHandler> ok)
+                .expect(200, "Hello, world!", fun err _ -> ok err)
                 |> ignore
         )
 
@@ -51,10 +51,10 @@ let tests () =
 
                 npm.supertest.supertest(box app)
                     .get("/")
-                    .expect(503, unbox<Types.SuperTest.Supertest.CallbackHandler> ok)
+                    .expect(503, fun err _ -> ok)
                     |> ignore
             )
-
+ 
         )
 
     )

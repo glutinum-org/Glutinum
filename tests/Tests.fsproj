@@ -5,12 +5,14 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Node.Assert.fs" />
+    <Compile Include="Globals.fs" />
     <Compile Include="Mocha.fs" />
+    <Compile Include="Fable.Core.JsInterop.fs" />
     <Compile Include="Mime/Mime.Tests.fs" />
     <Compile Include="Qs/Qs.Tests.fs" />
     <Compile Include="RangeParser/RangeParser.Tests.fs" />
     <Compile Include="Connect/Connect.Tests.fs" />
-    <Compile Include="Fable.Core.JsInterop.fs" />
     <Compile Include="BodyParser/BodyParser.Tests.Json.fs" />
     <Compile Include="BodyParser/BodyParser.Tests.Text.fs" />
     <Compile Include="BodyParser/BodyParser.Tests.fs" />
@@ -21,6 +23,8 @@
     <Compile Include="Express/Express.Tests.App.All.fs" />
     <Compile Include="Express/Express.Tests.App.Engine.fs" />
     <Compile Include="Express/Express.Tests.App.Head.fs" />
+    <Compile Include="Express/Express.Tests.App.Locals.fs" />
+    <Compile Include="Express/Express.Tests.App.Options.fs" />
     <Compile Include="Express/Express.Tests.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>

@@ -18,7 +18,7 @@ let tests () =
                 .get("/")
                 .expect(
                     404,
-                    Types.SuperTest.Supertest.CallbackHandler (fun err _ -> d err)
+                    fun err _ -> d err
                 )
                 |> ignore
         )

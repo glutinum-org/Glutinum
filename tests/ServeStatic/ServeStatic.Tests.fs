@@ -47,7 +47,7 @@ let tests () =
                 .expect(
                     200,
                     "ferret\n",
-                    Types.SuperTest.Supertest.CallbackHandler (fun err _ -> d err)
+                    fun err _ -> d err
                 )
                 |> ignore
         )
@@ -58,7 +58,7 @@ let tests () =
                 .expect(
                     200,
                     "<p>tobi, loki, jane</p>\n",
-                    Types.SuperTest.Supertest.CallbackHandler (fun err _ -> d err)
+                    fun err _ -> d err
                 )
                 |> ignore
         )

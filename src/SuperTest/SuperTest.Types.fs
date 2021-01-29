@@ -45,8 +45,11 @@ module SuperTest =
             abstract app: obj option with get, set
             abstract url: string with get, set
             abstract serverAddress: app: obj option * path: string -> string
-            abstract expect: status: int * ?callback: CallbackHandler -> Test
-            abstract expect: status: int * body: obj * ?callback: CallbackHandler -> Test
+            abstract expect: status: int -> Test
+            abstract expect: status: int * callback: Func<obj option, Response, unit> -> Test
+//            abstract expect: status: int * body: obj * callback: CallbackHandler -> Test
+            abstract expect: status: int * body: obj -> Test
+            abstract expect: status: int * body: obj * callback: Func<obj option, Response, unit> -> Test
             abstract expect: checker: (Response -> obj option) * ?callback: CallbackHandler -> Test
             abstract expect: body: string * ?callback: CallbackHandler -> Test
             abstract expect: body: RegExp * ?callback: CallbackHandler -> Test
