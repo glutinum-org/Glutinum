@@ -334,7 +334,7 @@ let tests () =
                 let app = Express.e.express()
                 
                 app.param("id", fun req res next value ->
-                    process.nextTick(unbox next)
+                    ``process``.nextTick(unbox next)
                 )
                 
                 app.param("id", fun req res next id ->
@@ -440,7 +440,7 @@ let tests () =
                     let text = String.Join(" ", [string count; string called; err.Value.Message])
                     res.send(text)
                 )
-                
+                 
                 npm.supertest.supertest(app)
                     .get("/foo/bob")
                     .expect(

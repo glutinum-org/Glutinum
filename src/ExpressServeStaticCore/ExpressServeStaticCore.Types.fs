@@ -497,7 +497,8 @@ type [<AllowNullLiteral>] Response<'ResBody, 'Locals, 'StatusCode when 'Locals :
     inherit Http.ServerResponse
     inherit Express.Response
     /// Set status `code`.
-    abstract status: code: 'StatusCode -> Response<'ResBody, 'Locals, 'StatusCode>
+//    abstract status: code: 'StatusCode -> Response<'ResBody, 'Locals, 'StatusCode>
+    abstract status: code: 'StatusCode -> unit
     /// Set the response HTTP status code to `statusCode` and send its string representation as the response body.
     abstract sendStatus: code: 'StatusCode -> Response<'ResBody, 'Locals, 'StatusCode>
     /// Set Link header field with the given `links`.
@@ -832,7 +833,7 @@ type [<AllowNullLiteral>] Application =
     /// work seamlessly within Express.
     // abstract engine: ext: string * fn: (string -> obj -> (obj option -> string -> unit) -> unit) -> Application
 
-    abstract engine: ext : string * fn: (string -> #obj -> EngineRenderFunc -> unit) -> Application
+    abstract engine: ext : string * fn: (string -> #obj -> EngineRenderFunc -> unit) -> unit
     /// Assign `setting` to `val`, or return `setting`'s value.
     ///
     ///     app.set('foo', 'bar');
@@ -843,7 +844,7 @@ type [<AllowNullLiteral>] Application =
     ///     // => ["bar", "baz"]
     ///
     /// Mounted servers inherit their parent server's settings.
-    abstract set: setting: string * ``val``: obj -> Application
+    abstract set: setting: string * ``val``: obj -> unit
     [<Emit("$0.get")>]
     /// <summary>
     /// This property map the <c>get</c> property in JavaScript

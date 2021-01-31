@@ -14,4 +14,5 @@ let tests () =
         App.Locals.tests ()
         App.Options.tests ()
         App.Params.tests ()
+        App.Render.tests ()
     )

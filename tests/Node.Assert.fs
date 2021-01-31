@@ -14,7 +14,7 @@ type [<AllowNullLiteral>] IExports =
     abstract fail: ?message: string -> obj
     [<Obsolete("since v10.0.0 - use fail([message]) or other assert functions instead.")>]
     abstract fail: actual: obj * expected: obj option * ?message: U2<string, Error> * ?operator: string * ?stackStartFn: Function -> obj
-    abstract ok: value: obj option * ?message: U2<string, Error> -> bool
+    abstract ok: value: obj * ?message: U2<string, Error> -> unit
     [<Obsolete("since v9.9.0 - use strictEqual() instead.")>]
     abstract equal: actual: obj * expected: obj option * ?message: U2<string, Error> -> unit
     [<Obsolete("since v9.9.0 - use notStrictEqual() instead.")>]

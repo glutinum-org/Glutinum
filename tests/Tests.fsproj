@@ -26,11 +26,12 @@
     <Compile Include="Express/Express.Tests.App.Locals.fs" />
     <Compile Include="Express/Express.Tests.App.Options.fs" />
     <Compile Include="Express\Express.Tests.App.Params.fs" />
+    <Compile Include="Express\Express.Tests.App.Render.fs" />
     <Compile Include="Express/Express.Tests.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Fable.Core" Version="3.1.2" />
+    <PackageReference Include="Fable.Core" Version="3.2.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\Mime\Fable.Npm.Mime.fsproj" />
@@ -43,5 +44,8 @@
     <ProjectReference Include="..\src\ServeStatic\Fable.Npm.ServeStatic.fsproj" />
     <ProjectReference Include="..\src\ExpressServeStaticCore\Fable.Npm.ExpressServeStaticCore.fsproj" />
     <ProjectReference Include="..\src\Express\Fable.Npm.Express.fsproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Express\support\tmpl.js" />
   </ItemGroup>
 </Project>
