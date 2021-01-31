@@ -146,19 +146,26 @@ type [<AllowNullLiteral>] IRouter =
     ///           }
     ///         });
     ///       });
-    abstract param: name: string * handler: RequestParamHandler -> IRouter
+    abstract param: name: string * handler: Func<Request, Response, NextFunction, obj, string, unit> -> IRouter
+    abstract param: name: ResizeArray<string> * handler: Func<Request, Response, NextFunction, obj, string, unit> -> IRouter
+    abstract param: name: string * regexp : RegExp -> 'T
     /// Alternatively, you can pass only a callback, in which case you have the opportunity to alter the app.param()
     abstract param: callback: (string -> RegExp -> RequestParamHandler) -> IRouter
     /// Special-cased "all" method, applying the given route `path`,
     /// middleware, and callback to _every_ HTTP method.
     // abstract all: IRouterMatcher<IRouter, string> with get, set
     abstract all: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
+    abstract all: path: string * [<ParamArray>] handlers: (Func<Request, Response, NextFunction, unit>) array -> 'T
+    abstract all: path: string * [<ParamArray>] handlers: (Func<Request, Response, unit>) array -> 'T
     abstract all: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
     // abstract get: IRouterMatcher<IRouter, string> with get, set
     abstract get: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
-    abstract get: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
+    abstract get: path: string * [<ParamArray>] handlers: (Func<Request, Response, NextFunction, unit>) array -> 'T
+//    abstract get: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
+    abstract get: path: string * [<ParamArray>] handlers: (Func<Request, Response, unit>) array -> 'T
     // abstract post: IRouterMatcher<IRouter, string> with get, set
     abstract post:path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
+    abstract post: path: string * [<ParamArray>] handlers: (Func<Request, Response, NextFunction, unit>) array -> 'T
     // abstract put: IRouterMatcher<IRouter, string> with get, set
     abstract put: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
     abstract put: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
@@ -172,6 +179,7 @@ type [<AllowNullLiteral>] IRouter =
     abstract patch: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
     // abstract options: IRouterMatcher<IRouter, string> with get, set
     abstract options: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
+    abstract options: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
     // abstract head: IRouterMatcher<IRouter, string> with get, set
     abstract head: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
     abstract checkout: IRouterMatcher<IRouter> with get, set
@@ -194,6 +202,11 @@ type [<AllowNullLiteral>] IRouter =
     abstract unlock: IRouterMatcher<IRouter> with get, set
     abstract unsubscribe: IRouterMatcher<IRouter> with get, set
     abstract member ``use``: #IRouter -> unit
+    
+    abstract member ``use``: System.Func<Request<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>>, Response<obj option, Dictionary<obj option>>, unit> -> unit
+    abstract member ``use``: System.Func<Request<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>>, Response<obj option, Dictionary<obj option>>, NextFunction, unit> -> unit
+//    abstract member ``use``: System.Func<Error option, Request<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>>, Response<obj option, Dictionary<obj option>>, NextFunction, unit> -> unit
+    abstract member ``use``: System.Func<Error option, Request, Response, NextFunction, unit> -> unit
     abstract route: prefix: PathParams -> IRoute
     /// Stack of configured routes
     abstract stack: ResizeArray<obj option> with get, set
@@ -472,13 +485,13 @@ type [<AllowNullLiteral>] Send<'ResBody, 'T> =
     [<Emit "$0($1...)">] abstract Invoke: ?body: 'ResBody -> 'T
 
 type Response =
-    Response<obj option, Dictionary<obj option>, float>
+    Response<obj, Dictionary<obj option>, int>
 
 type Response<'ResBody> =
-    Response<'ResBody, Dictionary<obj option>, float>
+    Response<'ResBody, Dictionary<obj option>, int>
 
 type Response<'ResBody, 'Locals when 'Locals :> Dictionary<obj option>> =
-    Response<'ResBody, 'Locals, float>
+    Response<'ResBody, 'Locals, int>
 
 type [<AllowNullLiteral>] Response<'ResBody, 'Locals, 'StatusCode when 'Locals :> Dictionary<obj option>> =
     inherit Http.ServerResponse
@@ -504,7 +517,8 @@ type [<AllowNullLiteral>] Response<'ResBody, 'Locals, 'StatusCode when 'Locals :
     ///      res.send({ some: 'json' });
     ///      res.send('<p>some html</p>');
     ///      res.status(404).send('Sorry, cant find that');
-    abstract send: Send<'ResBody, Response<'ResBody, 'Locals, 'StatusCode>> with get, set
+    // abstract send: Send<'ResBody, Response<'ResBody, 'Locals, 'StatusCode>> with get, set
+    abstract send: ?body: 'ResBody -> unit
     /// Send JSON response.
     ///
     /// Examples:
@@ -666,6 +680,8 @@ type [<AllowNullLiteral>] Response<'ResBody, 'Locals, 'StatusCode when 'Locals :
     /// Aliased as `res.header()`.
     abstract set: field: obj option -> Response<'ResBody, 'Locals, 'StatusCode>
     abstract set: field: string * ?value: U2<string, ResizeArray<string>> -> Response<'ResBody, 'Locals, 'StatusCode>
+    abstract set: field: string * ?value: ResizeArray<string> -> Response<'ResBody, 'Locals, 'StatusCode>
+    abstract set: field: string * ?value: string-> Response<'ResBody, 'Locals, 'StatusCode>
     abstract header: field: obj option -> Response<'ResBody, 'Locals, 'StatusCode>
     abstract header: field: string * ?value: U2<string, ResizeArray<string>> -> Response<'ResBody, 'Locals, 'StatusCode>
     abstract headersSent: bool with get, set
@@ -764,8 +780,9 @@ type [<AllowNullLiteral>] Response<'ResBody, 'Locals, 'StatusCode when 'Locals :
 type Handler = RequestHandler
     // inherit RequestHandler
 
-type [<AllowNullLiteral>] RequestParamHandler =
-    [<Emit "$0($1...)">] abstract Invoke: req: Request * res: Response * next: NextFunction * value: obj option * name: string -> obj option
+type RequestParamHandler =
+    Func<Request, Response, NextFunction, obj, string, unit>
+//    [<Emit "$0($1...)">] abstract Invoke: req: Request * res: Response * next: NextFunction * value: obj option * name: string -> obj option
 
 type [<AllowNullLiteral>] ApplicationRequestHandler<'T> =
     interface end
@@ -859,9 +876,13 @@ type [<AllowNullLiteral>] Application =
     ///         });
     ///       });
     /// Alternatively, you can pass only a callback, in which case you have the opportunity to alter the app.param()
-    abstract param: name: U2<string, ResizeArray<string>> * handler: RequestParamHandler -> Application
+//    abstract param: name: U2<string, ResizeArray<string>> * handler: RequestParamHandler -> Application
+    abstract param: name: string * handler: Func<Request, Response, NextFunction, obj, string, unit> -> unit
+    abstract param: name: string * handler: Func<Request, Response, NextFunction, obj, unit> -> unit
+    abstract param: name: ResizeArray<string> * handler: Func<Request, Response, NextFunction, obj, string, unit> -> unit
+    abstract param: name: ResizeArray<string> * handler: Func<Request, Response, NextFunction, obj, unit> -> unit
     /// Alternatively, you can pass only a callback, in which case you have the opportunity to alter the app.param()
-    abstract param: callback: (string -> RegExp -> RequestParamHandler) -> Application
+    abstract param: callback: (string -> RegExp -> RequestParamHandler) -> unit
     /// Return the app's absolute pathname
     /// based on the parent(s) that have
     /// mounted it.

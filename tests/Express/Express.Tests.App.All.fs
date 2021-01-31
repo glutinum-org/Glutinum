@@ -41,7 +41,7 @@ let tests () =
             let app = Express.e.express ()
             let mutable n = 0
 
-            app.all("/*", fun req (res : Response) (next : NextFunction) ->
+            app.all("/*", fun (req : Request) (res : Response) (next : NextFunction) ->
                 if n > 0 then
                     d(System.Exception("DELETE called several times"))
                 n <- n + 1

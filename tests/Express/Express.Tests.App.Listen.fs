@@ -13,7 +13,7 @@ let tests () =
         itAsync "should wrap with an HTTP server" (fun d ->
             let app = Express.e.express ()
 
-            app.delete("/tobi", fun req (res : Response<_,_>) next ->
+            app.del("/tobi", fun req (res : Response<_,_>) next ->
                 res.``end``("deleted tobi")
             )
 

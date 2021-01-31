@@ -58,7 +58,7 @@ let tests () =
             app.del("/", fun _ _ -> ())
             app.get("/users", fun _ _ -> ())
             app.put("/users", fun _ _ -> ())
-            app.all("/users", fun _ (res : Response) (next : NextFunction) ->
+            app.all("/users", fun (req : Request) (res : Response) (next : NextFunction) ->
                 res.setHeader("x-hit", "1")
                 next.Invoke()
             )
@@ -106,8 +106,60 @@ let tests () =
                     "GET,HEAD",
                     fun err _ -> d err
                 )
-                |> ignore
+                |> ignore 
     
         )
-
+        
+        describe "when error occurs in response handler" (fun _ ->
+            
+            itAsync "should pass error to callback" (fun d ->
+                let app = Express.e.express ()
+                let router = Express.e.Router()
+                
+                router.get("/users", fun _ _ -> ())
+                
+                app.``use``(fun req res next ->
+                    res.writeHead(200)
+                    next.Invoke()
+                )
+                
+                app.``use``(router)
+                app.``use``(fun err req (res : Response) next ->
+                    res.``end``("true")
+                )
+                 
+                npm.supertest.supertest(app)
+                    .options("/users")
+                    .expect(200, "true", fun err _ -> d err)
+                    |> ignore
+            )
+                
+        )
     )
+    
+    describe "app.options()" (fun _ ->
+            
+        itAsync "should override the default behaviour" (fun d ->
+            let app = Express.e.express()
+            
+            app.options("/users", fun req (res : Response<_,_>) ->
+                res.set("Allow", "GET") |> ignore
+                res.send("GET") 
+            )
+            
+            app.get("/users", fun _ _ -> ())
+            app.put("/users", fun _ _ -> ())
+            
+            npm.supertest.supertest(app)
+                .options("/users")
+                .expect("GET")
+                .expect("Allow", "GET", fun err _ -> d err)
+                |> ignore
+            
+        )
+            
+    )
+    
+    
+    
+    

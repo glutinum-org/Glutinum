@@ -2,6 +2,8 @@ namespace Tests
 
 open Mocha
 open Fable.Core.JsInterop
+open Node
+
 module Main =
 
     // Import should package into the project

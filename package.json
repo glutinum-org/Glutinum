@@ -8,7 +8,7 @@
   "scripts": {
     "watch-test": "npx concurrently -n fable,nodemon \"npm run watch-test-fable\" \"npm run watch-test-nodemon\"",
     "watch-test-fable": "cd tests && dotnet fable Tests.fsproj --watch",
-    "watch-test-nodemon": "npx nodemon --watch tests --exec 'mocha -r esm tests/Main.fs.js'"
+    "watch-test-nodemon": "npx nodemon --inspect --watch tests --exec 'mocha -r esm tests/Main.fs.js'"
   },
   "dependencies": {
     "body-parser": "^1.19.0",

@@ -25,6 +25,7 @@
     <Compile Include="Express/Express.Tests.App.Head.fs" />
     <Compile Include="Express/Express.Tests.App.Locals.fs" />
     <Compile Include="Express/Express.Tests.App.Options.fs" />
+    <Compile Include="Express\Express.Tests.App.Params.fs" />
     <Compile Include="Express/Express.Tests.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>

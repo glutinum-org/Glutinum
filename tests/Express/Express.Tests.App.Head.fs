@@ -22,7 +22,7 @@ let tests () =
             let app = Express.e.express()
 
             app.get("/tobi", fun req (res : Response<_,_>) next ->
-                res.send.Invoke("tobi") |> ignore
+                res.send("tobi") |> ignore
             )
 
             npm.supertest.supertest(app)
@@ -40,7 +40,7 @@ let tests () =
             let app = Express.e.express()
 
             app.get("/tobi", fun req (res : Response<_,_>) next ->
-                res.send.Invoke("tobi") |> ignore
+                res.send("tobi") |> ignore
             )
 
             npm.supertest.supertest(app)
@@ -91,7 +91,7 @@ let tests () =
 
             app.get("/tobi", fun req (res : Response<_,_>) next ->
                 jsAssert$(0, "should not could GET")
-                res.send.Invoke("tobi") |> ignore
+                res.send("tobi") |> ignore
             )
 
             npm.supertest.supertest(app)

@@ -135,8 +135,8 @@ module E =
     type RequestHandler<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals when 'Locals :> Core.Dictionary<obj option>> =
         Core.RequestHandler<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>
 
-    type [<AllowNullLiteral>] RequestParamHandler =
-        inherit Core.RequestParamHandler
+    type RequestParamHandler =
+        Core.RequestParamHandler
 
     type Response =
         Response<obj option, Core.Dictionary<obj option>>

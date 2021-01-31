@@ -46,16 +46,19 @@ module SuperTest =
             abstract url: string with get, set
             abstract serverAddress: app: obj option * path: string -> string
             abstract expect: status: int -> Test
+            abstract expect: body : string -> Test
             abstract expect: status: int * callback: Func<obj option, Response, unit> -> Test
 //            abstract expect: status: int * body: obj * callback: CallbackHandler -> Test
             abstract expect: status: int * body: obj -> Test
             abstract expect: status: int * body: obj * callback: Func<obj option, Response, unit> -> Test
+            abstract expect: body: obj * callback: Func<obj option, Response, unit> -> Test
             abstract expect: checker: (Response -> obj option) * ?callback: CallbackHandler -> Test
             abstract expect: body: string * ?callback: CallbackHandler -> Test
             abstract expect: body: RegExp * ?callback: CallbackHandler -> Test
             abstract expect: body: Object * ?callback: CallbackHandler -> Test
-            abstract expect: field: string * ``val``: string * ?callback: CallbackHandler -> Test
-            abstract expect: field: string * ``val``: RegExp * ?callback: CallbackHandler -> Test
+            abstract expect: field: string * ``val``: string -> Test
+            abstract expect: field: string * ``val``: string * callback: Func<obj option, Response, unit> -> Test
+            abstract expect: field: string * ``val``: RegExp * ?callback: Func<obj option, Response, unit> -> Test
             abstract ``end``: ?callback: CallbackHandler -> Test
 
         type [<AllowNullLiteral>] AgentOptions =
