@@ -82,7 +82,7 @@ let tests () =
             )
             
             itAsync "should handle render error throws" (fun d ->
-                let app_force_unit_name_so_fable_doesn_t_suffix_it = Express.e.express()
+                let app = Express.e.express()
                 
                 emitJsStatement () """
 function View(name, options){
@@ -95,11 +95,11 @@ View.prototype.render = function(options, fn){
 };
 """
                 
-                emitJsStatement app_force_unit_name_so_fable_doesn_t_suffix_it """
+                emitJsStatement app """
 $0.set('view', View);
 """
                 
-                app_force_unit_name_so_fable_doesn_t_suffix_it.render("something", fun err str ->
+                app.render("something", fun err str ->
                     Assert.ok(box err.IsSome)
                     Assert.strictEqual(err.Value.Message, "err!")
                     d()
@@ -250,18 +250,17 @@ $0.set('view', View);
                     let app = Express.e.express()
                     let mutable count = 0
                     
-                    // Abuse emit helpers to mimic the JavaScript code as Fable emit flat arrows functions
-                    // which don't have a prototype and neither is a constructor
+
                     emitJsStatement () """
 function View(name, options){ 
-          this.name = name;
-          this.path = 'fake';
-          count++;
-        }
+    this.name = name;
+    this.path = 'fake';
+    count++;
+}
         
 View.prototype.render = function(options, fn){
-          fn(null, 'abstract engine');
-        };
+    fn(null, 'abstract engine');
+};
 """
 
                     app.set("view cache", false)
@@ -286,20 +285,18 @@ View.prototype.render = function(options, fn){
                 
                 itAsync "should cache with 'view cache' setting" (fun d ->
                     let app = Express.e.express()
-                    let mutable count_1 = 0 // Force a "unique" name because we emit raw JavaScript
+                    let mutable count = 0 // Force a "unique" name because we emit raw JavaScript
                     
-                    // Abuse emit helpers to mimic the JavaScript code as Fable emit flat arrows functions
-                    // which don't have a prototype and neither is a constructor
-                    emitJsStatement () """
+                    emitJsStatement count """
 function View(name, options){ 
-          this.name = name;
-          this.path = 'fake';
-          count_1++;
-        }
+    this.name = name;
+    this.path = 'fake';
+    $0++;
+}
         
 View.prototype.render = function(options, fn){
-          fn(null, 'abstract engine');
-        };
+    fn(null, 'abstract engine');
+};
 """
 
                     app.set("view cache", true)
@@ -309,13 +306,13 @@ View.prototype.render = function(options, fn){
                         if err.IsSome then
                             d err
                         else
-                            Assert.strictEqual(count_1, 1)
+                            Assert.strictEqual(count, 1)
                             Assert.strictEqual(str, "abstract engine")
                             app.render("something", fun err str ->
                                 if err.IsSome then
                                     d err
                                 else
-                                    Assert.strictEqual(count_1, 1)
+                                    Assert.strictEqual(count, 1)
                                     Assert.strictEqual(str, "abstract engine")
                                     d ()
                             )
@@ -373,20 +370,20 @@ View.prototype.render = function(options, fn){
                 describe "caching" (fun _ ->
                     itAsync "should cache with cache option" (fun d ->
                         let app = Express.e.express()
-                        let mutable count_2 = 0 // Force a "unique" name because we emit raw JavaScript
+                        let mutable count = 0 // Force a "unique" name because we emit raw JavaScript
                     
                         // Abuse emit helpers to mimic the JavaScript code as Fable emit flat arrows functions
                         // which don't have a prototype and neither is a constructor
-                        emitJsStatement () """
+                        emitJsStatement count """
 function View(name, options){ 
-          this.name = name;
-          this.path = 'fake';
-          count_2++;
-        }
+    this.name = name;
+    this.path = 'fake';
+    $0++;
+}
         
 View.prototype.render = function(options, fn){
-          fn(null, 'abstract engine');
-        };
+    fn(null, 'abstract engine');
+};
 """
 
                         app.set("view cache", true)
@@ -396,13 +393,13 @@ View.prototype.render = function(options, fn){
                             if err.IsSome then
                                 d err
                             else
-                                Assert.strictEqual(count_2, 1)
+                                Assert.strictEqual(count, 1)
                                 Assert.strictEqual(str, "abstract engine")
                                 app.render("something", fun err str ->
                                     if err.IsSome then
                                         d err
                                     else
-                                        Assert.strictEqual(count_2, 1)
+                                        Assert.strictEqual(count, 1)
                                         Assert.strictEqual(str, "abstract engine")
                                         d ()
                                 )
