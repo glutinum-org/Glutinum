@@ -2,6 +2,8 @@
 module rec ExpressServeStaticCore
 
 open System
+open ExpressServeStaticCore
+open ExpressServeStaticCore
 open Fable.Core
 open Fable.Core.JS
 open Node
@@ -64,8 +66,16 @@ type RequestHandler<'P, 'ResBody, 'ReqBody> =
 type RequestHandler<'P, 'ResBody, 'ReqBody, 'ReqQuery> =
     RequestHandler<'P, 'ResBody, 'ReqBody, 'ReqQuery, Dictionary<obj option>>
 
-type RequestHandler<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals when 'Locals :> Dictionary<obj option>> =
-    System.Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>
+type [<AllowNullLiteral>] RequestHandler<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals when 'Locals :> Dictionary<obj option>> =
+    [<Emit "$0($1...)">] abstract Invoke: req: Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals> * res: Response<'ResBody, 'Locals> * next: NextFunction -> unit
+    //System.Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>
+
+type Adapter =
+    static member inline RequestHandler (f : System.Func<Request, Response, NextFunction, unit>) : RequestHandler =
+        unbox f
+        
+    static member inline RequestHandler (f : System.Func<Request, Response, unit>) : RequestHandler =
+        unbox f
 
 type ErrorRequestHandler =
     ErrorRequestHandler<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>>
@@ -83,7 +93,7 @@ type ErrorRequestHandler<'P, 'ResBody, 'ReqBody, 'ReqQuery> =
     ErrorRequestHandler<'P, 'ResBody, 'ReqBody, 'ReqQuery, Dictionary<obj option>>
 
 type ErrorRequestHandler<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals when 'Locals :> Dictionary<obj option>> =
-        System.Func<obj option, Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>
+    System.Func<obj option, Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>
 
 type PathParams =
     U3<string, RegExp, Array<U2<string, RegExp>>>
@@ -121,7 +131,7 @@ type [<AllowNullLiteral>] IRouterHandler<'T> =
     [<Emit "$0($1...)">] abstract Invoke: [<ParamArray>] handlers: Array<RequestHandlerParams> -> 'T
 
 type [<AllowNullLiteral>] IRouter =
-    // inherit RequestHandler --> Mimic inheritance by adding the an Invoke method with Emit attributes ?
+    inherit RequestHandler
     /// Map the given param placeholder `name`(s) to the given callback(s).
     ///
     /// Parameter mapping is used to provide pre-conditions to routes
@@ -161,8 +171,11 @@ type [<AllowNullLiteral>] IRouter =
     // abstract get: IRouterMatcher<IRouter, string> with get, set
     abstract get: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
     abstract get: path: string * [<ParamArray>] handlers: (Func<Request, Response, NextFunction, unit>) array -> 'T
+    [<Emit("$0.get($1...)")>]
+    abstract get_: path: string * [<ParamArray>] handlers: #RequestHandler array -> 'T
 //    abstract get: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
     abstract get: path: string * [<ParamArray>] handlers: (Func<Request, Response, unit>) array -> 'T
+    
     // abstract post: IRouterMatcher<IRouter, string> with get, set
     abstract post:path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
     abstract post: path: string * [<ParamArray>] handlers: (Func<Request, Response, NextFunction, unit>) array -> 'T
@@ -174,6 +187,8 @@ type [<AllowNullLiteral>] IRouter =
     abstract delete: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
     abstract del: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
     abstract del: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
+    abstract del: path: string * [<ParamArray>] handlers: (Func<Request, Response, unit>) array -> 'T
+
     // abstract delete: path: string * [<ParamArray>] handlers: (obj -> unit) array -> 'T
     // abstract patch: IRouterMatcher<IRouter, string> with get, set
     abstract patch: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
@@ -207,19 +222,29 @@ type [<AllowNullLiteral>] IRouter =
     abstract member ``use``: System.Func<Request<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>>, Response<obj option, Dictionary<obj option>>, NextFunction, unit> -> unit
 //    abstract member ``use``: System.Func<Error option, Request<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>>, Response<obj option, Dictionary<obj option>>, NextFunction, unit> -> unit
     abstract member ``use``: System.Func<Error option, Request, Response, NextFunction, unit> -> unit
-    abstract route: prefix: PathParams -> IRoute
+//    abstract route: prefix: PathParams -> IRoute
+    abstract route: prefix: string -> IRoute
+    abstract route: prefix: RegExp -> IRoute
+    abstract route: prefix: string array -> IRoute
+    abstract route: prefix: RegExp array -> IRoute
     /// Stack of configured routes
     abstract stack: ResizeArray<obj option> with get, set
     // Mimic `inherit RequestHandler` by adding the Invoke method
-    [<Emit("$0($1...)")>]
-    abstract Invoke : Func<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>, unit>
+    // [<Emit("$0($1...)")>]
+    // abstract Invoke : Func<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>, unit>
 
 type [<AllowNullLiteral>] IRoute =
     abstract path: string with get, set
     abstract stack: obj option with get, set
-    abstract all: IRouterHandler<IRoute> with get, set
-    abstract get: IRouterHandler<IRoute> with get, set
-    abstract post: IRouterHandler<IRoute> with get, set
+//    abstract all: IRouterHandler<IRoute> with get, set
+    abstract all: Func<Request, Response, unit> -> IRoute
+    abstract all: Func<Request, Response, NextFunction, unit> -> IRoute
+    //abstract get: IRouterHandler<IRoute> with get, set
+    abstract get: Func<Request, Response, unit> -> IRoute
+    abstract get: Func<Request, Response, NextFunction, unit> -> IRoute
+//    abstract post: IRouterHandler<IRoute> with get, set
+    abstract post: Func<Request, Response, unit> -> IRoute
+    abstract post: Func<Request, Response, NextFunction, unit> -> IRoute
     abstract put: IRouterHandler<IRoute> with get, set
     abstract delete: IRouterHandler<IRoute> with get, set
     abstract patch: IRouterHandler<IRoute> with get, set

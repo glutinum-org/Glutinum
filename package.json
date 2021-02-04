@@ -11,6 +11,7 @@
     "watch-test-nodemon": "npx nodemon --inspect --watch tests --exec 'mocha -r esm tests/Main.fs.js'"
   },
   "dependencies": {
+    "after": "^0.8.2",
     "body-parser": "^1.19.0",
     "connect": "^3.7.0",
     "cookie-parser": "^1.4.5",

@@ -17,7 +17,7 @@ let tests () =
         itAsync "should default to the routes defined" (fun d ->
             let app = Express.e.express ()
 
-            app.del("/", fun _ _ -> ())
+            app.del("/", fun (_ : Request) (_ : Response) -> ())
             app.get("/users", fun _ _ -> ())
             app.put("/users", fun _ _ -> ())
 
@@ -35,7 +35,7 @@ let tests () =
         itAsync "should only include each method once" (fun d ->
             let app = Express.e.express ()
 
-            app.del("/", fun _ _ -> ())
+            app.del("/", fun (_ : Request) (_ : Response) -> ())
             app.get("/users", fun _ _ -> ())
             app.put("/users", fun _ _ -> ())
             app.get("/users", fun _ _ -> ())
@@ -55,7 +55,7 @@ let tests () =
         itAsync "should not be affected by app.all" (fun d ->
             let app = Express.e.express ()
 
-            app.del("/", fun _ _ -> ())
+            app.del("/", fun (_ : Request) (_ : Response) -> ())
             app.get("/users", fun _ _ -> ())
             app.put("/users", fun _ _ -> ())
             app.all("/users", fun (req : Request) (res : Response) (next : NextFunction) ->

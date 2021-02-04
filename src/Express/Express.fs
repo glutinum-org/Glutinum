@@ -8,17 +8,8 @@ module BodyParser = Npm.Types.BodyParser
 module ServeStatic = ServeStatic.Types.ServeStatic
 module Core = ExpressServeStaticCore
 
-/// Creates an Express application. The express() function is a top-level function exported by the express module.
 let [<Import("default","express")>] e : E.IExports = jsNative
 
-type SimpleHandleFunction =
-    delegate of obj * unit -> unit
-
-// type [<AllowNullLiteral>] IExports =
-//     /// Creates an Express application. The express() function is a top-level function exported by the express module.
-//     abstract e: unit -> Core.Express
-
-/// Creates an Express application. The express() function is a top-level function exported by the express module.
 module E =
 
     type [<AllowNullLiteral>] IExports =
@@ -33,6 +24,9 @@ module E =
         /// This is a built-in middleware function in Express. It parses incoming request query parameters.
         abstract query: options: U2<Npm.Types.Qs.IParseOptions, obj> -> Handler
         abstract Router: ?options: RouterOptions -> Core.Router
+        /// <summary>
+        /// Creates an Express application. The express() function is a top-level function exported by the express module.
+        /// </summary>
         [<Emit("$0()")>]
         abstract express : unit -> Express
 

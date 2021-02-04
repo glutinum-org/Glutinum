@@ -11,3 +11,6 @@ type Node.Http.ServerResponse with
     member __.setHeader(name: string, value: string) : unit = jsNative
     [<Emit("$0.setHeader($1...)")>]
     member __.setHeader(name: string, value: ResizeArray<string>) : unit = jsNative
+
+[<Emit("undefined")>]
+let inline jsUndefined<'T> : 'T = jsNative

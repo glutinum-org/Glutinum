@@ -15,4 +15,8 @@ let tests () =
         App.Options.tests ()
         App.Params.tests ()
         App.Render.tests ()
+        App.Request.tests ()
+        App.Response.tests ()
+        App.Route.tests ()
+        App.Router.tests ()
     )

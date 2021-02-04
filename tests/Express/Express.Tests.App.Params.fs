@@ -28,7 +28,7 @@ let tests () =
                 let app = Express.e.express()
                 
                 app.param(fun name regexp ->
-                    if Object?prototype?toString?call(regexp) = "[object RegExp]" then
+                    if Constructors.Object?prototype?toString?call(regexp) = "[object RegExp]" then
                         RequestParamHandler(fun req res next value _ ->
                             let captures = regexp.Match(string value)
                             
@@ -75,7 +75,7 @@ let tests () =
                 let app = Express.e.express()
                 
                 app.param(ResizeArray(["id"; "uid"]), fun (req : Request) res next id ->
-                    let id = Number.Create(id)
+                    let id = Constructors.Number.Create(id)
                        
                     if isNaN(id) then
                         next.Invoke("route")
@@ -127,7 +127,7 @@ let tests () =
                 let app = Express.e.express()
                 
                 app.param("id", fun req res next id ->
-                    let id = Number.Create(id)
+                    let id = Constructors.Number.Create(id)
                     
                     if isNaN(id) then
                         next.Invoke("route")

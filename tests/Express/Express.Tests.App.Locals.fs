@@ -6,6 +6,7 @@ open Npm
 open Mocha
 open ExpressServeStaticCore
 // open Fable.Core.Testing
+open Fable.Core.JS
 
 type CallbackHandler = Types.SuperTest.Supertest.CallbackHandler
 
@@ -19,11 +20,11 @@ let tests () =
             it "should merge locals" (fun _ ->
                 let app = Express.e.express()
 
-                Assert.deepStrictEqual(Object.keys(app.locals), ResizeArray ["settings"])
+                Assert.deepStrictEqual(Constructors.Object.keys(app.locals), ResizeArray ["settings"])
                 app.locals.["user"] <- "tobi"
                 app.locals.["age"] <- 2
 
-                Assert.deepStrictEqual(Object.keys(app.locals), ResizeArray ["settings"; "user"; "age"])
+                Assert.deepStrictEqual(Constructors.Object.keys(app.locals), ResizeArray ["settings"; "user"; "age"])
                 Assert.strictEqual(app.locals.["user"], box "tobi")
                 Assert.strictEqual(app.locals.["age"], box 2)
             )
