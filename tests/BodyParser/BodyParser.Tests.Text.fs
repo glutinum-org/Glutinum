@@ -39,7 +39,7 @@ let tests () =
 
         itAsync "should parse text/plain" (fun ok ->
             let test =
-                npm.supertest.supertest(box (createServer null))
+                request(box (createServer null))
                     .post("/")
                     .set("Content-Type", "text/plain")
                     .send("user is tobi")
@@ -64,7 +64,7 @@ let tests () =
                     ))
 
                 let test =
-                    npm.supertest.supertest(box server)
+                    request(box server)
                         .post("/")
                         .set("Content-Type", "text/plain")
                         .set("Content-Length", "1028")

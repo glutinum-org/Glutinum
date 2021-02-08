@@ -50,8 +50,12 @@ module SuperTest =
             abstract expect: status: int * callback: Func<obj option, Response, unit> -> Test
 //            abstract expect: status: int * body: obj * callback: CallbackHandler -> Test
             abstract expect: status: int * body: obj -> Test
+            abstract expect: status : int * callback: Func<obj option, unit> -> Test
             abstract expect: status: int * body: obj * callback: Func<obj option, Response, unit> -> Test
+            abstract expect: status: int * body: obj * callback: Func<obj option, unit> -> Test
             abstract expect: body: obj * callback: Func<obj option, Response, unit> -> Test
+            abstract expect: body: obj * callback: Func<obj option, unit> -> Test
+            
             abstract expect: checker: (Response -> obj option) * ?callback: CallbackHandler -> Test
             abstract expect: body: string * ?callback: CallbackHandler -> Test
             abstract expect: body: RegExp * ?callback: CallbackHandler -> Test

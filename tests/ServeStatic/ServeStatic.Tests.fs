@@ -42,7 +42,7 @@ let tests () =
     describe "ServeStatic" (fun _ ->
 
         itAsync "should support nesting" (fun d ->
-            npm.supertest.supertest(box (createServer null))
+            request(box (createServer null))
                 .get("/users/tobi.txt")
                 .expect(
                     200,
@@ -53,7 +53,7 @@ let tests () =
         )
 
         itAsync "should support index.html" (fun d ->
-            npm.supertest.supertest(box (createServer null))
+            request(box (createServer null))
                 .get("/users/")
                 .expect(
                     200,

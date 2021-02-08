@@ -39,7 +39,7 @@ let tests () =
     describe "bodyParser.json()" (fun _ ->
 
         itAsync "should default to {}" (fun ok ->
-            npm.supertest.supertest(box (createServer null))
+            request(box (createServer null))
                 .post("/")
                 .expect(200, "{}", fun err _ -> ok err)
                 |> ignore
@@ -47,7 +47,7 @@ let tests () =
 
         itAsync "should parse JSON" (fun ok ->
             let test =
-                npm.supertest.supertest(box (createServer null))
+                request(box (createServer null))
                     .post("/")
                     .set("Content-Type", "application/json")
                     .send("""{"user":"tobi"}""")
@@ -72,7 +72,7 @@ let tests () =
                     ))
 
                 let test =
-                    npm.supertest.supertest(box server)
+                    request(box server)
                         .post("/")
                         .set("Content-Type", "application/json")
                         .set("Content-Length", "1034")

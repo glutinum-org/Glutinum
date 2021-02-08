@@ -19,7 +19,7 @@ let tests () =
                 res.``end``("deleted tobi")
             )
 
-            npm.supertest.supertest(app)
+            request(app)
                 .del("/tobi")
                 .expect(
                     "deleted tobi",
@@ -37,7 +37,7 @@ let tests () =
                 res.``end``("deleted tobi")
             )
 
-            npm.supertest.supertest(app)
+            request(app)
                 .del("/tobi")
                 .expect(
                     "deleted tobi",

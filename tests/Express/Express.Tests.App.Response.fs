@@ -11,18 +11,18 @@ let tests () =
         describe ".response" (fun _ ->
             itAsync "should extend the response prototype" (fun d ->
                 let app = Express.e.express()
-                
+
                 emitJsStatement app """
 $0.response.shout = function(str){
     this.send(str.toUpperCase());
 };
 """
-                
+
                 app.``use``(fun req res ->
                     res?shout("hey")
                 )
-                
-                npm.supertest.supertest(app)
+
+                request(app)
                     .get("/")
                     .expect(
                         "HEY",
@@ -30,11 +30,11 @@ $0.response.shout = function(str){
                     )
                     |> ignore
             )
-            
+
             itAsync "should not be influenced by other app protos" (fun d ->
                 let app = Express.e.express()
                 let app2 = Express.e.express()
-        
+
                 emitJsStatement app """
 $0.response.shout = function(str){
     this.send(str.toUpperCase());
@@ -50,8 +50,8 @@ $0.response.shout = function(str){
                 app.``use``(fun req res ->
                     res?shout("hey")
                 )
-      
-                npm.supertest.supertest(app)
+
+                request(app)
                     .get("/")
                     .expect(
                         "HEY",
@@ -61,4 +61,3 @@ $0.response.shout = function(str){
             )
         )
     )
-   

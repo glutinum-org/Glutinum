@@ -43,6 +43,7 @@ type [<AllowNullLiteral>] Dictionary<'T> =
 
 type [<AllowNullLiteral>] ParamsDictionary =
     [<EmitIndexer>] abstract Item: key: string -> string with get, set
+    [<EmitIndexer>] abstract Item: key: int -> string with get, set
 
 type ParamsArray =
     ResizeArray<string>
@@ -170,11 +171,15 @@ type [<AllowNullLiteral>] IRouter =
     abstract all: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
     // abstract get: IRouterMatcher<IRouter, string> with get, set
     abstract get: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
+    abstract get: path: RegExp * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
     abstract get: path: string * [<ParamArray>] handlers: (Func<Request, Response, NextFunction, unit>) array -> 'T
+    abstract get: path: RegExp * [<ParamArray>] handlers: (Func<Request, Response, NextFunction, unit>) array -> 'T
+    abstract get: path: string * [<ParamArray>] handlers: #RequestHandler array -> 'T
     [<Emit("$0.get($1...)")>]
     abstract get_: path: string * [<ParamArray>] handlers: #RequestHandler array -> 'T
 //    abstract get: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
     abstract get: path: string * [<ParamArray>] handlers: (Func<Request, Response, unit>) array -> 'T
+    abstract get: path: RegExp * [<ParamArray>] handlers: (Func<Request, Response, unit>) array -> 'T
     
     // abstract post: IRouterMatcher<IRouter, string> with get, set
     abstract post:path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
@@ -222,6 +227,7 @@ type [<AllowNullLiteral>] IRouter =
     abstract member ``use``: System.Func<Request<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>>, Response<obj option, Dictionary<obj option>>, NextFunction, unit> -> unit
 //    abstract member ``use``: System.Func<Error option, Request<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>>, Response<obj option, Dictionary<obj option>>, NextFunction, unit> -> unit
     abstract member ``use``: System.Func<Error option, Request, Response, NextFunction, unit> -> unit
+    abstract member ``use``: System.Func<Request, Response, NextFunction, unit> -> unit
 //    abstract route: prefix: PathParams -> IRoute
     abstract route: prefix: string -> IRoute
     abstract route: prefix: RegExp -> IRoute
@@ -553,7 +559,8 @@ type [<AllowNullLiteral>] Response<'ResBody, 'Locals, 'StatusCode when 'Locals :
     ///      res.json({ user: 'tj' });
     ///      res.status(500).json('oh noes!');
     ///      res.status(404).json('I dont have that');
-    abstract json: Send<'ResBody, Response<'ResBody, 'Locals, 'StatusCode>> with get, set
+//    abstract json: Send<'ResBody, Response<'ResBody, 'Locals, 'StatusCode>> with get, set
+    abstract json: ?body: 'ResBody -> 'T
     /// Send JSON response with JSONP callback support.
     ///
     /// Examples:

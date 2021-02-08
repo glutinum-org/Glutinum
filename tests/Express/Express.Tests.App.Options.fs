@@ -7,8 +7,6 @@ open Mocha
 open ExpressServeStaticCore
 // open Fable.Core.Testing
 
-type CallbackHandler = Types.SuperTest.Supertest.CallbackHandler
-
 #nowarn "40"
 
 let tests () =
@@ -21,17 +19,13 @@ let tests () =
             app.get("/users", fun _ _ -> ())
             app.put("/users", fun _ _ -> ())
 
-            npm.supertest.supertest(app)
+            request(app)
                 .options("/users")
                 .expect("Allow", "GET,HEAD,PUT")
-                .expect(
-                    200,
-                    "GET,HEAD,PUT",
-                    fun err _ -> d err
-                )
+                .expect(200, "GET,HEAD,PUT", d)
                 |> ignore
         )
- 
+
         itAsync "should only include each method once" (fun d ->
             let app = Express.e.express ()
 
@@ -40,7 +34,7 @@ let tests () =
             app.put("/users", fun _ _ -> ())
             app.get("/users", fun _ _ -> ())
 
-            npm.supertest.supertest(app)
+            request(app)
                 .options("/users")
                 .expect("Allow", "GET,HEAD,PUT")
                 .expect(
@@ -63,7 +57,7 @@ let tests () =
                 next.Invoke()
             )
 
-            npm.supertest.supertest(app)
+            request(app)
                 .options("/users")
                 .expect("x-hit", "1")
                 .expect("Allow", "GET,HEAD,PUT")
@@ -81,7 +75,7 @@ let tests () =
 
             app.get("/users", fun _ _ -> ())
 
-            npm.supertest.supertest(app)
+            request(app)
                 .options("/other")
                 .expect(
                     404,
@@ -93,12 +87,12 @@ let tests () =
         itAsync "should forward requests down the middleware chain" (fun d ->
             let app = Express.e.express()
             let router = Express.e.Router()
-            
+
             router.get("/users", fun _ _ -> ())
             app.``use``(router)
             app.get("/other", fun _ _ -> ())
-            
-            npm.supertest.supertest(app)
+
+            request(app)
                 .options("/other")
                 .expect("Allow", "GET,HEAD")
                 .expect(
@@ -106,60 +100,59 @@ let tests () =
                     "GET,HEAD",
                     fun err _ -> d err
                 )
-                |> ignore 
-    
+                |> ignore
+
         )
-        
+
         describe "when error occurs in response handler" (fun _ ->
-            
+
             itAsync "should pass error to callback" (fun d ->
                 let app = Express.e.express ()
                 let router = Express.e.Router()
-                
+
                 router.get("/users", fun _ _ -> ())
-                
-                app.``use``(fun req res next ->
+
+                app.``use``(fun (req : Request) (res : Response) (next : NextFunction) ->
                     res.writeHead(200)
                     next.Invoke()
                 )
-                
+
                 app.``use``(router)
                 app.``use``(fun err req (res : Response) next ->
                     res.``end``("true")
                 )
-                 
-                npm.supertest.supertest(app)
+
+                request(app)
                     .options("/users")
                     .expect(200, "true", fun err _ -> d err)
                     |> ignore
             )
-                
+
         )
     )
-    
+
     describe "app.options()" (fun _ ->
-            
+
         itAsync "should override the default behaviour" (fun d ->
             let app = Express.e.express()
-            
+
             app.options("/users", fun req (res : Response<_,_>) ->
                 res.set("Allow", "GET") |> ignore
-                res.send("GET") 
+                res.send("GET")
             )
-            
+
             app.get("/users", fun _ _ -> ())
             app.put("/users", fun _ _ -> ())
-            
-            npm.supertest.supertest(app)
+
+            request(app)
                 .options("/users")
                 .expect("GET")
                 .expect("Allow", "GET", fun err _ -> d err)
                 |> ignore
-            
+
         )
-            
+
     )
-    
-    
-    
-    
+
+
+

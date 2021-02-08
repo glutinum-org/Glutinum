@@ -11,18 +11,18 @@ let tests () =
         describe ".request" (fun _ ->
             itAsync "should extend the request prototype" (fun d ->
                 let app = Express.e.express()
-                
+
                 emitJsStatement app """
 $0.request.querystring = function(){
     return require('url').parse(this.url).query;
 };
 """
-                
+
                 app.``use``(fun req res ->
                     res.``end``(req?querystring())
                 )
-                
-                npm.supertest.supertest(app)
+
+                request(app)
                     .get("/foo?name=tobi")
                     .expect(
                         "name=tobi",
@@ -32,4 +32,3 @@ $0.request.querystring = function(){
             )
         )
     )
-   

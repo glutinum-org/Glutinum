@@ -14,7 +14,7 @@ let tests () =
         )
 
         itAsync "should be callable" (fun d ->
-            npm.supertest.supertest(Express.e.express())
+            request(Express.e.express())
                 .get("/")
                 .expect(
                     404,

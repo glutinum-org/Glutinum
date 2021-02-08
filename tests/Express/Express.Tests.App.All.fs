@@ -18,12 +18,12 @@ let tests () =
                 res.``end``(req.``method``)
             )
 
-            npm.supertest.supertest(app)
+            request(app)
                 .put("/tobi")
                 .expect(
                     "PUT",
                     CallbackHandler (fun _ _ ->
-                        npm.supertest.supertest(app)
+                        request(app)
                             .get("/tobi")
                             .expect(
                                 "GET",
@@ -48,7 +48,7 @@ let tests () =
                 next.Invoke()
             )
 
-            npm.supertest.supertest(app)
+            request(app)
                 .del("/tobi")
                 .expect(
                     404,

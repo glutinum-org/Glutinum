@@ -29,10 +29,10 @@ let tests () =
             app.``use``(fun req res ->
                 res.``end``("Hello, world!")
             ) |> ignore
- 
+
             let server = http.createServer(app)
 
-            npm.supertest.supertest(box server)
+            request(box server)
                 .get("/")
                 .expect(200, "Hello, world!", fun err _ -> ok err)
                 |> ignore
@@ -48,13 +48,13 @@ let tests () =
                     err?status <- 503
                     raise err |> ignore
                 ) |> ignore
- 
-                npm.supertest.supertest(box app)
-                    .get("/") 
+
+                request(box app)
+                    .get("/")
                     .expect(503, fun err _ -> ok err)
                     |> ignore
             )
- 
+
         )
 
     )

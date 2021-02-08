@@ -25,7 +25,7 @@ let tests () =
                 res.send("tobi") |> ignore
             )
 
-            npm.supertest.supertest(app)
+            request(app)
                 .head("/tobi")
                 .expect(
                     200,
@@ -43,21 +43,21 @@ let tests () =
                 res.send("tobi") |> ignore
             )
 
-            npm.supertest.supertest(app)
+            request(app)
                 .get("/tobi")
                 .expect(
                     200,
-                    CallbackHandler(fun err res ->
+                   (fun err res ->
                         if err.IsSome then
                             d err
 
                         let headers = res.headers
 
-                        npm.supertest.supertest(app)
+                        request(app)
                             .get("/tobi")
                             .expect(
                                 200,
-                                CallbackHandler (fun err res ->
+                                (fun err res ->
                                     if err.IsSome then
                                         d err
 
@@ -94,7 +94,7 @@ let tests () =
                 res.send("tobi") |> ignore
             )
 
-            npm.supertest.supertest(app)
+            request(app)
                 .head("/tobi")
                 .expect(
                     200,
