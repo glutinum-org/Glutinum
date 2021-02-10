@@ -1,22 +1,23 @@
 module Tests.BodyParser.Json
 
-open Npm
 open Mocha
 open Node
 open Fable.Core
 open Fable.Core.JsInterop
+open BodyParser
+open Connect
+open SuperTest
 
 // Code adapted from: https://github.com/expressjs/body-parser/blob/480b1cfe29af19c070f4ae96e0d598c099f42a12/test/json.js
 
-
 let private createServer opts =
-    let bodyParser = npm.bodyParser.json(opts)
+    let bodyParser = bodyParser.json(opts)
 
     http.createServer(fun req res ->
-        let req = req :?> Types.Connect.CreateServer.IncomingMessage
+        let req = req :?> Connect.CreateServer.IncomingMessage
 
         let next =
-            Types.Connect.CreateServer.NextFunction(fun error ->
+            Connect.CreateServer.NextFunction(fun error ->
                     res.statusCode <-
                         if isNull error then
                             200
@@ -38,10 +39,10 @@ let private createServer opts =
 let tests () =
     describe "bodyParser.json()" (fun _ ->
 
-        itAsync "should default to {}" (fun ok ->
+        itAsync "should default to {}" (fun d ->
             request(box (createServer null))
                 .post("/")
-                .expect(200, "{}", fun err _ -> ok err)
+                .expect(200, "{}", d)
                 |> ignore
         )
 
@@ -51,13 +52,9 @@ let tests () =
                     .post("/")
                     .set("Content-Type", "application/json")
                     .send("""{"user":"tobi"}""")
-                    :?> Types.SuperTest.Supertest.Test
+                    :?> SuperTest.Test
 
-            test.expect(
-                200,
-                """{"user":"tobi"}""",
-                fun err _ -> ok err
-            )
+            test.expect(200, """{"user":"tobi"}""", ok)
             |> ignore
         )
 
@@ -67,7 +64,7 @@ let tests () =
                 let buf = buffer.Buffer.alloc(1024, ".")
 
                 let server =
-                    createServer(jsOptions<Types.BodyParser.OptionsJson>(fun o ->
+                    createServer(jsOptions<BodyParser.OptionsJson>(fun o ->
                         o.limit <- !^ "1kb"
                     ))
 
@@ -82,12 +79,9 @@ let tests () =
                                 ]
                             )
                         )
-                        :?> Types.SuperTest.Supertest.Test
+                        :?> SuperTest.Test
 
-                test.expect(
-                    413,
-                    Types.SuperTest.Supertest.CallbackHandler (fun err _ -> d err)
-                )
+                test.expect(413, d)
                 |> ignore
             )
         )

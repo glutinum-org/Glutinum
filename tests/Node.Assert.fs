@@ -10,10 +10,10 @@ type RegExp = System.Text.RegularExpressions.Regex
 
 type [<AllowNullLiteral>] IExports =
     abstract AssertionError: AssertionErrorStatic
-    abstract fail: ?message: Error -> obj
-    abstract fail: ?message: string -> obj
+    abstract fail: ?message: Error -> unit
+    abstract fail: ?message: string -> unit
     [<Obsolete("since v10.0.0 - use fail([message]) or other assert functions instead.")>]
-    abstract fail: actual: obj * expected: obj option * ?message: U2<string, Error> * ?operator: string * ?stackStartFn: Function -> obj
+    abstract fail: actual: obj * expected: obj option * ?message: U2<string, Error> * ?operator: string * ?stackStartFn: Function -> unit
     abstract ok: value: obj * ?message: U2<string, Error> -> unit
     [<Obsolete("since v9.9.0 - use strictEqual() instead.")>]
     abstract equal: actual: obj * expected: obj option * ?message: U2<string, Error> -> unit

@@ -1,12 +1,7 @@
 module Tests.Express.App.All
 
-open Npm
 open Mocha
 open ExpressServeStaticCore
-
-type CallbackHandler = Types.SuperTest.Supertest.CallbackHandler
-
-#nowarn "40"
 
 let tests () =
     describe "app.all()" (fun _ ->
@@ -22,17 +17,11 @@ let tests () =
                 .put("/tobi")
                 .expect(
                     "PUT",
-                    CallbackHandler (fun _ _ ->
+                    fun _ ->
                         request(app)
                             .get("/tobi")
-                            .expect(
-                                "GET",
-                                CallbackHandler (fun err _ ->
-                                    d err
-                                )
-                            )
+                            .expect("GET", d)
                             |> ignore
-                    )
                 )
                 |> ignore
         )
@@ -50,12 +39,7 @@ let tests () =
 
             request(app)
                 .del("/tobi")
-                .expect(
-                    404,
-                    CallbackHandler (fun err _ ->
-                        d err
-                    )
-                )
+                .expect(404, d)
                 |> ignore
         )
 

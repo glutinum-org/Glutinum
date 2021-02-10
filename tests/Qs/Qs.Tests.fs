@@ -4,7 +4,7 @@ open Mocha
 open Fable.Core
 open Fable.Core.Testing
 open Fable.Core.JsInterop
-open Npm
+open Qs
 
 // Code adapted from: https://github.com/ljharb/qs/tree/b04febd9cb1c94b466aa2bd81b6452b44712414e
 
@@ -19,17 +19,17 @@ let private parseApi () =
     describe "qs.parse()" (fun _ ->
 
         it "parses a simple string" (fun _ ->
-            let res = npm.qs.parse("0=foo")
+            let res = qs.parse("0=foo")
 
             Assert.AreEqual(res.["0"], Some (!^ "foo"))
         )
 
         it "arrayFormat: brackets allows only explicit arrays" (fun _ ->
             let res =
-                npm.qs.parse(
+                qs.parse(
                     "a[0]=b&a[1]=c",
-                    jsOptions<Types.Qs.IParseOptions>(fun o ->
-                        o.arrayFormat <- Types.Qs.IArrayFormat.Brackets
+                    jsOptions<Qs.IParseOptions>(fun o ->
+                        o.arrayFormat <- Qs.IArrayFormat.Brackets
                     )
                 )
 
@@ -54,7 +54,7 @@ let private parseApi () =
                 // )
 
                 System.Func<_,_,_,_,_>(
-                    fun (str : string) (defaultDecoder : Types.Qs.defaultDecoder) (charset : string) (_: Types.Qs.IStringifyOptionsEncoder) ->
+                    fun (str : string) (defaultDecoder : Qs.defaultDecoder) (charset : string) (_: Qs.IStringifyOptionsEncoder) ->
                         if str = "KeY" then
                             box "key"
 
@@ -66,9 +66,9 @@ let private parseApi () =
                 )
 
             let res =
-                npm.qs.parse(
+                qs.parse(
                     "KeY=vAlUe",
-                    jsOptions<Types.Qs.IParseOptions>(fun o ->
+                    jsOptions<Qs.IParseOptions>(fun o ->
                         o.decoder <- decoder
                     )
                 )
@@ -83,7 +83,7 @@ let private stringifyApi () =
     describe "qs.stringify()" (fun _ ->
         it "stringifies a querystring object" (fun _ ->
             let res =
-                npm.qs.stringify(createObj [
+                qs.stringify(createObj [
                     "a" ==> "b"
                 ])
 
@@ -93,7 +93,7 @@ let private stringifyApi () =
 
         it "stringifies using encoder" (fun _->
             let encoder =
-                System.Func<_,Types.Qs.defaultEncoder,_,_,_> (fun value defaultEncoder charset _ ->
+                System.Func<_,Qs.defaultEncoder,_,_,_> (fun value defaultEncoder charset _ ->
                     let result = defaultEncoder.Invoke(value, defaultEncoder, charset)
 
                     if jsTypeOf value = "bigint" then
@@ -103,11 +103,11 @@ let private stringifyApi () =
                 )
 
             let res =
-                npm.qs.stringify(
+                qs.stringify(
                     createObj [
                         "a" ==> JsBigInt 2
                     ],
-                    jsOptions<Types.Qs.IStringifyOptions>(fun o ->
+                    jsOptions<Qs.IStringifyOptions>(fun o ->
                         o.encoder <- encoder
                     )
                 )

@@ -1,6 +1,5 @@
 module Tests.Express.App.Core
 
-open Npm
 open Mocha
 
 let tests () =
@@ -16,10 +15,7 @@ let tests () =
         itAsync "should be callable" (fun d ->
             request(Express.e.express())
                 .get("/")
-                .expect(
-                    404,
-                    fun err _ -> d err
-                )
+                .expect(404, d)
                 |> ignore
         )
 

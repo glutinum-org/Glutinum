@@ -3,7 +3,7 @@ module Tests.RangeParser
 open Mocha
 open Fable.Core.Testing
 open Fable.Core.JsInterop
-open Npm
+open RangeParser
 
 // Code adapted from: https://github.com/jshttp/range-parser/tree/5f48dfc7996b18242dfa1fbddcc03f39b42a4554
 
@@ -13,7 +13,7 @@ let tests () =
         describe "parseRange(len, str)" (fun _ ->
 
             itAsync "should return -2 (aka ResultInvalid) for invalid str" (fun ok ->
-                let range = npm.rangeParser(200, "malformed")
+                let range = rangeParser.rangeParser(200, "malformed")
 
                 match range with
                 | ParseRangeResult.ResultInvalid ->
@@ -26,7 +26,7 @@ let tests () =
             )
 
             itAsync "should return -1 if all specified ranges are invalid" (fun ok ->
-                let range = npm.rangeParser(200, "bytes=500-20")
+                let range = rangeParser.rangeParser(200, "bytes=500-20")
 
                 match range with
                 | ParseRangeResult.ResultUnsatisfiable ->
@@ -39,7 +39,7 @@ let tests () =
             )
 
             it "should parse str" (fun _ ->
-                let range = npm.rangeParser(1000, "bytes=0-499")
+                let range = rangeParser.rangeParser(1000, "bytes=0-499")
 
                 match range with
                 | ParseRangeResult.UnkownError _
@@ -60,10 +60,10 @@ let tests () =
         describe "when combine: true" (fun _ ->
 
             it "should combine overlapping ranges" (fun _ ->
-                let range = npm.rangeParser(
+                let range = rangeParser.rangeParser(
                                 150,
                                 "bytes=0-4,90-99,5-75,100-199,101-102",
-                                jsOptions<Types.RangeParser.Options>(fun o ->
+                                jsOptions<RangeParser.Options>(fun o ->
                                     o.combine <- true
                                 )
                             )
@@ -86,7 +86,7 @@ let tests () =
 
             it "overload npm.rangeParser with direct combine argument works" (fun _ ->
                 let range =
-                    npm.rangeParser(
+                    rangeParser.rangeParser(
                         150,
                         "bytes=0-4,90-99,5-75,100-199,101-102",
                         true

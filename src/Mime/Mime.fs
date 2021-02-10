@@ -1,10 +1,11 @@
-namespace rec Npm.Types
+module rec Mime
 
 // Exported from: https://github.com/DefinitelyTyped/DefinitelyTyped/blob/0893371fea43bfdf1777b6d835424961ba0d1dbb/types/mime/index.d.ts
 
-open System
 open Fable.Core
-open Fable.Core.JS
+
+[<Import("default", "mime")>]
+let mime : Mime.IExports = jsNative
 
 module Mime =
 

@@ -1,10 +1,8 @@
-namespace Npm
-
 [<AutoOpen>]
-module Ext =
+module Connect.Ext
 
-    open Fable.Core
+open Fable.Core
 
-    type Node.Http.IExports with
-        [<Emit("$0.createServer($1)")>]
-        member __.createServer(_ : Types.Connect.CreateServer.Server) : Node.Http.Server = jsNative
+type Node.Http.IExports with
+    [<Emit("$0.createServer($1)")>]
+    member __.createServer(_ : Connect.CreateServer.Server) : Node.Http.Server = jsNative

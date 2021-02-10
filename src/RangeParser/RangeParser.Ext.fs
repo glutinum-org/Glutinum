@@ -1,25 +1,24 @@
-namespace Npm
+namespace RangeParser
 
 open Fable.Core
 
-[<AutoOpen>]
-module Ext =
+module Interop =
 
     [<Emit("typeof $0")>]
-    let jsTypeOf _ : string = jsNative
+    let internal jsTypeOf _ : string = jsNative
 
-    [<RequireQualifiedAccess>]
-    module ParseRangeResult =
+[<RequireQualifiedAccess>]
+module ParseRangeResult =
 
-        let (|UnkownError|ResultInvalid|ResultUnsatisfiable|Range|) (result : Types.RangeParser.ParseRangeResult) : Choice<Types.RangeParser.Errored, unit, unit, Types.RangeParser.Ranges> =
-            if jsTypeOf result = "number" then
-                let error = unbox<int> result
+    let (|UnkownError|ResultInvalid|ResultUnsatisfiable|Range|) (result : RangeParser.ParseRangeResult) : Choice<RangeParser.Errored, unit, unit, RangeParser.Ranges> =
+        if Interop.jsTypeOf result = "number" then
+            let error = unbox<int> result
 
-                if error = -1 then
-                    ResultUnsatisfiable
-                else if error = -2 then
-                    ResultInvalid
-                else
-                    UnkownError (unbox result)
+            if error = -1 then
+                ResultUnsatisfiable
+            else if error = -2 then
+                ResultInvalid
             else
-                Range (unbox result)
+                UnkownError (unbox result)
+        else
+            Range (unbox result)

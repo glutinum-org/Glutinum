@@ -44,7 +44,6 @@
     <ProjectReference Include="..\src\Connect\Fable.Npm.Connect.fsproj" />
     <ProjectReference Include="..\src\SuperTest\Fable.Npm.SuperTest.fsproj" />
     <ProjectReference Include="..\src\BodyParser\Fable.Npm.BodyParser.fsproj" />
-    <ProjectReference Include="..\src\Npm\Fable.Npm.fsproj" />
     <ProjectReference Include="..\src\ServeStatic\Fable.Npm.ServeStatic.fsproj" />
     <ProjectReference Include="..\src\ExpressServeStaticCore\Fable.Npm.ExpressServeStaticCore.fsproj" />
     <ProjectReference Include="..\src\Express\Fable.Npm.Express.fsproj" />

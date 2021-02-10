@@ -2,7 +2,6 @@ module Tests.Express.App.Request
 
 open ExpressServeStaticCore
 open Fable.Core.JsInterop
-open Npm
 open Mocha
 open Node
 
@@ -24,10 +23,7 @@ $0.request.querystring = function(){
 
                 request(app)
                     .get("/foo?name=tobi")
-                    .expect(
-                        "name=tobi",
-                        fun err _ -> d err
-                    )
+                    .expect("name=tobi", d)
                     |> ignore
             )
         )

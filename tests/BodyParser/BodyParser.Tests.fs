@@ -1,19 +1,20 @@
 module Tests.BodyParser.All
 
-open Npm
 open Mocha
 open Node
 open Fable.Core
 open Fable.Core.JsInterop
+open BodyParser
+open Connect
 
 let private createServer opts =
-    let bodyParser = npm.bodyParser.json(opts)
+    let bodyParser = bodyParser.json(opts)
 
     http.createServer(fun req res ->
-        let req = req :?> Types.Connect.CreateServer.IncomingMessage
+        let req = req :?> Connect.CreateServer.IncomingMessage
 
         let next =
-            Types.Connect.CreateServer.NextFunction(fun error ->
+            Connect.CreateServer.NextFunction(fun error ->
                     res.statusCode <-
                         if isNull error then
                             200

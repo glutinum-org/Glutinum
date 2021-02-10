@@ -1,14 +1,18 @@
-namespace rec Npm.Types
+namespace rec Connect
 
 open System
 open Fable.Core
 open Fable.Core.JS
 open Node
 
+[<AutoOpen>]
+module Api =
+    [<Import("default", "connect"); Emit("$0()")>]
+    let connect () : Connect.CreateServer.Server = jsNative
+
 type Function = System.Action
 
 module Connect =
-
     module CreateServer =
 
         type ServerHandle =

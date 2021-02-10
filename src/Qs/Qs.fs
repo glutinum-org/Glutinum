@@ -1,8 +1,11 @@
-namespace rec Npm.Types
+module rec Qs
 
 open System
 open Fable.Core
 open Fable.Core.JS
+
+[<Import("default", "qs")>]
+let qs : Qs.IExports = jsNative
 
 module Qs =
 

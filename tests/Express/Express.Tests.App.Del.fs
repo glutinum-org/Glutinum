@@ -1,13 +1,7 @@
 module Tests.Express.App.Del
 
-open Node
-open Npm
 open Mocha
 open ExpressServeStaticCore
-
-type CallbackHandler = Types.SuperTest.Supertest.CallbackHandler
-
-#nowarn "40"
 
 let tests () =
     describe "app.delete()" (fun _ ->
@@ -21,12 +15,7 @@ let tests () =
 
             request(app)
                 .del("/tobi")
-                .expect(
-                    "deleted tobi",
-                    CallbackHandler (fun err _ ->
-                        d err
-                    )
-                )
+                .expect("deleted tobi", d)
                 |> ignore
         )
 
@@ -39,12 +28,7 @@ let tests () =
 
             request(app)
                 .del("/tobi")
-                .expect(
-                    "deleted tobi",
-                    CallbackHandler (fun err _ ->
-                        d err
-                    )
-                )
+                .expect("deleted tobi", d)
                 |> ignore
         )
 

@@ -2,7 +2,6 @@ module Tests.Express.App.Response
 
 open ExpressServeStaticCore
 open Fable.Core.JsInterop
-open Npm
 open Mocha
 open Node
 
@@ -24,10 +23,7 @@ $0.response.shout = function(str){
 
                 request(app)
                     .get("/")
-                    .expect(
-                        "HEY",
-                        fun err _ -> d err
-                    )
+                    .expect("HEY", d)
                     |> ignore
             )
 
@@ -53,10 +49,7 @@ $0.response.shout = function(str){
 
                 request(app)
                     .get("/")
-                    .expect(
-                        "HEY",
-                        fun err _ -> d err
-                    )
+                    .expect("HEY", d)
                     |> ignore
             )
         )

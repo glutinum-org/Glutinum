@@ -2,7 +2,6 @@ module Tests.Express.App.Route
 
 open ExpressServeStaticCore
 open Fable.Core.JsInterop
-open Npm
 open Mocha
 open Node
 
@@ -22,10 +21,7 @@ let tests () =
 
             request(app)
                 .post("/foo")
-                .expect(
-                    "post",
-                    fun err _ -> d err
-                )
+                .expect("post", d)
                 |> ignore
         )
 
@@ -46,10 +42,7 @@ let tests () =
 
             request(app)
                 .post("/foo")
-                .expect(
-                    "post",
-                    fun err _ -> d err
-                )
+                .expect("post", d)
                 |> ignore
         )
 
@@ -64,10 +57,7 @@ let tests () =
 
             request(app)
                 .get("/test")
-                .expect(
-                    "test",
-                    fun err _ -> d err
-                )
+                .expect("test", d)
                 |> ignore
         )
 
@@ -78,10 +68,7 @@ let tests () =
 
             request(app)
                 .get("/test")
-                .expect(
-                    404,
-                    fun err _ -> d err
-                )
+                .expect(404, d)
                 |> ignore
         )
 

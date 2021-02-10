@@ -1,10 +1,9 @@
 // ts2fable 0.8.0
 module rec Express
-open System
-open Fable.Core
-open Fable.Core.JS
 
-module BodyParser = Npm.Types.BodyParser
+open Fable.Core
+open Qs
+
 module ServeStatic = ServeStatic.Types.ServeStatic
 module Core = ExpressServeStaticCore
 
@@ -22,7 +21,7 @@ module E =
         abstract ``static``: ServeStatic.Types.ServeStatic.RequestHandlerConstructor<Response>
         abstract urlencoded: obj
         /// This is a built-in middleware function in Express. It parses incoming request query parameters.
-        abstract query: options: U2<Npm.Types.Qs.IParseOptions, obj> -> Handler
+        abstract query: options: U2<Qs.IParseOptions, obj> -> Handler
         abstract Router: ?options: RouterOptions -> Core.Router
         /// <summary>
         /// Creates an Express application. The express() function is a top-level function exported by the express module.

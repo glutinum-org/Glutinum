@@ -1,21 +1,23 @@
 module Tests.BodyParser.Text
 
-open Npm
 open Mocha
 open Node
 open Fable.Core
 open Fable.Core.JsInterop
+open BodyParser
+open Connect
+open SuperTest
 
 // Code adapted from: https://github.com/expressjs/body-parser/blob/480b1cfe29af19c070f4ae96e0d598c099f42a12/test/text.js
 
-let private createServer (opts : Types.BodyParser.OptionsText) =
-    let bodyParser = npm.bodyParser.text(opts)
+let private createServer (opts : BodyParser.OptionsText) =
+    let bodyParser = bodyParser.text(opts)
 
     http.createServer(fun req res ->
-        let req = req :?> Types.Connect.CreateServer.IncomingMessage
+        let req = req :?> Connect.CreateServer.IncomingMessage
 
         let next =
-            Types.Connect.CreateServer.NextFunction(fun error ->
+            Connect.CreateServer.NextFunction(fun error ->
                     res.statusCode <-
                         if isNull error then
                             200
@@ -37,19 +39,15 @@ let private createServer (opts : Types.BodyParser.OptionsText) =
 let tests () =
     describe "bodyParser.text()" (fun _ ->
 
-        itAsync "should parse text/plain" (fun ok ->
+        itAsync "should parse text/plain" (fun d ->
             let test =
                 request(box (createServer null))
                     .post("/")
                     .set("Content-Type", "text/plain")
                     .send("user is tobi")
-                    :?> Types.SuperTest.Supertest.Test
+                    :?> SuperTest.Test
 
-            test.expect(
-                200,
-                "\"user is tobi\"",
-                fun err _ -> ok err
-            )
+            test.expect(200, "\"user is tobi\"", d)
             |> ignore
         )
 
@@ -59,7 +57,7 @@ let tests () =
                 let buf = buffer.Buffer.alloc(1028, ".")
 
                 let server =
-                    createServer(jsOptions<Types.BodyParser.OptionsText>(fun o ->
+                    createServer(jsOptions<BodyParser.OptionsText>(fun o ->
                         o.limit <- !^ "1kb"
                     ))
 
@@ -69,12 +67,9 @@ let tests () =
                         .set("Content-Type", "text/plain")
                         .set("Content-Length", "1028")
                         .send(buf.toString())
-                        :?> Types.SuperTest.Supertest.Test
+                        :?> SuperTest.Test
 
-                test.expect(
-                    413,
-                    Types.SuperTest.Supertest.CallbackHandler (fun err _ -> d err)
-                )
+                test.expect(413, d)
                 |> ignore
             )
         )

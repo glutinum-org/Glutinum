@@ -1,7 +1,6 @@
 module Tests.Express.App.Listen
 
 open Node
-open Npm
 open Mocha
 open ExpressServeStaticCore
 

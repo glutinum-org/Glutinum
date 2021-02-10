@@ -3,21 +3,20 @@ module rec ExpressServeStaticCore
 
 open System
 open ExpressServeStaticCore
-open ExpressServeStaticCore
 open Fable.Core
-open Fable.Core.JS
 open Node
-open Npm
+open Qs
+open RangeParser
 
 type Array<'T> = System.Collections.Generic.IList<'T>
 type Error = System.Exception
 type RegExp = System.Text.RegularExpressions.Regex
 
 type EventEmitter = Events.EventEmitter
-type RangeParserOptions = Types.RangeParser.Options
-type RangeParserResult = Types.RangeParser.ParseRangeResult
-type RangeParserRanges = Types.RangeParser.Ranges
-type ParsedQs = Types.Qs.ParsedQs
+type RangeParserOptions = RangeParser.Options
+type RangeParserResult = RangeParser.ParseRangeResult
+type RangeParserRanges = RangeParser.Ranges
+type ParsedQs = Qs.ParsedQs
 
 module Express =
 
@@ -74,7 +73,7 @@ type [<AllowNullLiteral>] RequestHandler<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Loc
 type Adapter =
     static member inline RequestHandler (f : System.Func<Request, Response, NextFunction, unit>) : RequestHandler =
         unbox f
-        
+
     static member inline RequestHandler (f : System.Func<Request, Response, unit>) : RequestHandler =
         unbox f
 
@@ -180,7 +179,7 @@ type [<AllowNullLiteral>] IRouter =
 //    abstract get: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
     abstract get: path: string * [<ParamArray>] handlers: (Func<Request, Response, unit>) array -> 'T
     abstract get: path: RegExp * [<ParamArray>] handlers: (Func<Request, Response, unit>) array -> 'T
-    
+
     // abstract post: IRouterMatcher<IRouter, string> with get, set
     abstract post:path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
     abstract post: path: string * [<ParamArray>] handlers: (Func<Request, Response, NextFunction, unit>) array -> 'T
@@ -222,7 +221,7 @@ type [<AllowNullLiteral>] IRouter =
     abstract unlock: IRouterMatcher<IRouter> with get, set
     abstract unsubscribe: IRouterMatcher<IRouter> with get, set
     abstract member ``use``: #IRouter -> unit
-    
+
     abstract member ``use``: System.Func<Request<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>>, Response<obj option, Dictionary<obj option>>, unit> -> unit
     abstract member ``use``: System.Func<Request<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>>, Response<obj option, Dictionary<obj option>>, NextFunction, unit> -> unit
 //    abstract member ``use``: System.Func<Error option, Request<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>>, Response<obj option, Dictionary<obj option>>, NextFunction, unit> -> unit

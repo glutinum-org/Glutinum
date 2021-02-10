@@ -2,15 +2,10 @@ module Tests.Express.App.Locals
 
 open Fable.Core.JS
 open Fable.Core.JsInterop
-open Npm
 open Mocha
 open ExpressServeStaticCore
 // open Fable.Core.Testing
 open Fable.Core.JS
-
-type CallbackHandler = Types.SuperTest.Supertest.CallbackHandler
-
-#nowarn "40"
 
 let tests () =
     describe "app" (fun _ ->

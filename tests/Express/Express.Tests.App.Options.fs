@@ -2,12 +2,8 @@ module Tests.Express.App.Options
 
 open Fable.Core.JS
 open Fable.Core.JsInterop
-open Npm
 open Mocha
 open ExpressServeStaticCore
-// open Fable.Core.Testing
-
-#nowarn "40"
 
 let tests () =
     describe "OPTIONS" (fun _ ->
@@ -37,11 +33,7 @@ let tests () =
             request(app)
                 .options("/users")
                 .expect("Allow", "GET,HEAD,PUT")
-                .expect(
-                    200,
-                    "GET,HEAD,PUT",
-                    fun err _ -> d err
-                )
+                .expect(200, "GET,HEAD,PUT", d)
                 |> ignore
 
         )
@@ -61,11 +53,7 @@ let tests () =
                 .options("/users")
                 .expect("x-hit", "1")
                 .expect("Allow", "GET,HEAD,PUT")
-                .expect(
-                    200,
-                    "GET,HEAD,PUT",
-                    fun err _ -> d err
-                )
+                .expect(200, "GET,HEAD,PUT", d)
                 |> ignore
 
         )
@@ -77,10 +65,7 @@ let tests () =
 
             request(app)
                 .options("/other")
-                .expect(
-                    404,
-                    fun err _ -> d err
-                )
+                .expect(404, d)
                 |> ignore
         )
 
@@ -95,11 +80,7 @@ let tests () =
             request(app)
                 .options("/other")
                 .expect("Allow", "GET,HEAD")
-                .expect(
-                    200,
-                    "GET,HEAD",
-                    fun err _ -> d err
-                )
+                .expect(200, "GET,HEAD", d)
                 |> ignore
 
         )
@@ -124,7 +105,7 @@ let tests () =
 
                 request(app)
                     .options("/users")
-                    .expect(200, "true", fun err _ -> d err)
+                    .expect(200, "true", d)
                     |> ignore
             )
 
@@ -147,7 +128,7 @@ let tests () =
             request(app)
                 .options("/users")
                 .expect("GET")
-                .expect("Allow", "GET", fun err _ -> d err)
+                .expect("Allow", "GET", d)
                 |> ignore
 
         )

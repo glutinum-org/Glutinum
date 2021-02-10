@@ -3,8 +3,8 @@ module Tests.Express.App.Router
 open System.Text.RegularExpressions
 open ExpressServeStaticCore
 open Fable.Core.JsInterop
-open Npm
 open Mocha
+open SuperTest
 
 let tests () =
     describe "app.router" (fun _ ->
@@ -62,7 +62,7 @@ let tests () =
                             res.send(method)
                         )
 
-                        emitJsStatement (app, npm.supertest.supertest, method, d) """
+                        emitJsStatement (app, request, method, d) """
 $1($0)
     [$2]('/foo')
     .expect(200, $3)
@@ -80,7 +80,7 @@ $1($0)
 
             itAsync "should re-route when method is altered" (fun d ->
                 let app = Express.e.express()
-                let cb : System.Func<obj option,Types.SuperTest.Supertest.Response,unit> = After.e.after(3, d)
+                let cb : System.Func<obj option, SuperTest.Response,unit> = After.e.after(3, d)
 
                 app.``use``(fun (req : Request) (res : Response) (next : NextFunction) ->
                     if req.method <> "POST" then

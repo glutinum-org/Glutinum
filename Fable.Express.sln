@@ -27,8 +27,6 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Fable.SuperTest", "src\Supe
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Tests", "tests\Tests.fsproj", "{990EDE2C-11D2-45AF-A4F8-975A9CC01082}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Fable.Npm", "src\Npm\Fable.Npm.fsproj", "{63DAD516-D01A-4E0C-A658-40CAA68613A0}"
-EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Fable.Npm.ServeStatic", "src\ServeStatic\Fable.Npm.ServeStatic.fsproj", "{A38D4E00-B0F7-4A56-83F1-AAA68E8A8F8F}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Fable.Npm.Methods", "src\Methods\Fable.Npm.Methods.fsproj", "{5013D9AA-5E8D-4E7B-9021-991826ABFB83}"

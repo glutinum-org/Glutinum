@@ -2,10 +2,10 @@ namespace rec ServeStatic.Types
 
 // Exported from: https://github.com/DefinitelyTyped/DefinitelyTyped/blob/0893371fea43bfdf1777b6d835424961ba0d1dbb/types/mime/index.d.ts
 
-open System
 open Fable.Core
-open Fable.Core.JS
 open Node
+open Mime
+open Connect
 
 type [<AllowNullLiteral>] IExports =
     /// Create a new middleware function to serve files from within a given root directory.
@@ -14,7 +14,7 @@ type [<AllowNullLiteral>] IExports =
     [<Emit("$0($1...)")>]
     abstract serveStatic: root: string * ?options: ServeStatic.ServeStaticOptions<'R> -> ServeStatic.RequestHandler<'R> when 'R :> Http.ServerResponse
 
-    abstract mime : Npm.Types.Mime.IExports
+    abstract mime : Mime.IExports
 
 
 module ServeStatic =
@@ -63,7 +63,7 @@ module ServeStatic =
         abstract setHeaders: ('R -> string -> obj option -> obj option) with get, set
 
     type [<AllowNullLiteral>] RequestHandler<'R when 'R :> Http.ServerResponse> =
-        [<Emit "$0($1...)">] abstract Invoke: request: Http.IncomingMessage * response: 'R * next: Npm.Types.Connect.CreateServer.NextFunction -> obj option
+        [<Emit "$0($1...)">] abstract Invoke: request: Http.IncomingMessage * response: 'R * next: Connect.CreateServer.NextFunction -> obj option
 
     type [<AllowNullLiteral>] RequestHandlerConstructor<'R when 'R :> Http.ServerResponse> =
         [<Emit "$0($1...)">] abstract Invoke: root: string * ?options: ServeStaticOptions<'R> -> RequestHandler<'R>

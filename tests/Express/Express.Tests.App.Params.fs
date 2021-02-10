@@ -1,24 +1,11 @@
 module Tests.Express.App.Params
 
 open System
-open Fable.Core
 open Fable.Core.JS
 open Fable.Core.JsInterop
-open Npm
 open Mocha
 open ExpressServeStaticCore
 open Node
-
-type CallbackHandler = Types.SuperTest.Supertest.CallbackHandler
-
-#nowarn "40"
-
-[<Emit("void 0")>]
-let inline returnNothingHack<'T> : 'T = jsNative
-
-type NumberConstructor with
-    [<Emit("$0($1...)")>]
-    member __.Create(v : obj) = jsNative
 
 let tests () =
     describe "app" (fun _ ->
@@ -63,7 +50,7 @@ let tests () =
                             else
                                 request(app)
                                     .get("/user/123")
-                                    .expect(404, fun err _ -> d err)
+                                    .expect(404, d)
                                     |> ignore
                     )
                     |> ignore
@@ -112,10 +99,7 @@ let tests () =
                                 request(app)
                                     .get("/post/123")
                                     .expect(
-                                        200,
-                                        "123",
-                                        fun err _ -> d err
-                                    )
+                                        200,"123", d)
                                     |> ignore
                     )
                     |> ignore
@@ -147,10 +131,7 @@ let tests () =
 
                 request(app)
                     .get("/user/123")
-                    .expect(
-                        "123",
-                        fun err _ -> d err
-                    )
+                    .expect("123", d)
                     |> ignore
             )
 
@@ -182,10 +163,7 @@ let tests () =
 
                 request(app)
                     .get("/foo/bob")
-                    .expect(
-                        "2 1 bob",
-                        fun err _ -> d err
-                    )
+                    .expect("2 1 bob", d)
                     |> ignore
             )
 
@@ -224,10 +202,7 @@ let tests () =
 
                 request(app)
                     .get("/foo/bob")
-                    .expect(
-                        "2 2 foo,bob",
-                        fun err _ -> d err
-                    )
+                    .expect("2 2 foo,bob", d)
                     |> ignore
             )
 
@@ -249,11 +224,7 @@ let tests () =
 
                 request(app)
                     .get("/bob")
-                    .expect(
-                        "loki",
-                        fun err _ ->
-                            d err
-                    )
+                    .expect("loki", d)
                     |> ignore
             )
 
@@ -279,11 +250,7 @@ let tests () =
 
                 request(app)
                     .get("/bob")
-                    .expect(
-                        200,
-                        "bob",
-                        fun err _ -> d err
-                    )
+                    .expect(200, "bob", d)
                     |> ignore
             )
 
@@ -302,10 +269,7 @@ let tests () =
 
                 request(app)
                     .get("/user/foo%25bar")
-                    .expect(
-                        "foo%bar",
-                        fun err _ -> d err
-                    )
+                    .expect("foo%bar", d)
                     |> ignore
             )
 
@@ -323,10 +287,7 @@ let tests () =
 
                 request(app)
                     .get("/user/123")
-                    .expect(
-                        500,
-                        fun err _ -> d err
-                    )
+                    .expect(500, d)
                     |> ignore
             )
 
@@ -348,10 +309,7 @@ let tests () =
 
                 request(app)
                     .get("/user/123")
-                    .expect(
-                        500,
-                        fun err _ -> d err
-                    )
+                    .expect(500, d)
                     |> ignore
             )
 
@@ -373,10 +331,7 @@ let tests () =
 
                 request(app)
                     .get("/user/123")
-                    .expect(
-                        "name",
-                        fun err _ -> d err
-                    )
+                    .expect("name", d)
                     |> ignore
             )
 
@@ -404,10 +359,7 @@ let tests () =
 
                 request(app)
                     .get("/user/new")
-                    .expect(
-                        "get.new",
-                        fun err _ -> d err
-                    )
+                    .expect("get.new", d)
                     |> ignore
             )
 
@@ -443,11 +395,7 @@ let tests () =
 
                 request(app)
                     .get("/foo/bob")
-                    .expect(
-                        500,
-                        "0 1 err!",
-                        fun err _ -> d err
-                    )
+                    .expect(500, "0 1 err!", d)
                     |> ignore
             )
 
@@ -481,10 +429,7 @@ let tests () =
 
                 request(app)
                     .get("/foo/bob")
-                    .expect(
-                        "1 2 bob",
-                        fun err _ -> d err
-                    )
+                    .expect("1 2 bob", d)
                     |> ignore
             )
 

@@ -6,7 +6,6 @@ open ExpressServeStaticCore
 open Fable.Core
 open Fable.Core.JS
 open Fable.Core.JsInterop
-open Npm
 open Mocha
 open ExpressServeStaticCore
 open Node

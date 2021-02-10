@@ -1,14 +1,9 @@
 module Tests.Express.App.Engine
 
-open Npm
 open Mocha
 open ExpressServeStaticCore
 open Node
 open Fable.Core.JsInterop
-
-type CallbackHandler = Types.SuperTest.Supertest.CallbackHandler
-
-#nowarn "40"
 
 type RenderOption =
     {
