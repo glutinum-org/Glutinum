@@ -17,7 +17,7 @@ let createApp() =
   app.engine(".tmpl", tmpl);
   app
 
-let tests () =
+let tests =
     describe "app" (fun _ ->
         describe ".render(name, fn)" (fun _ ->
 

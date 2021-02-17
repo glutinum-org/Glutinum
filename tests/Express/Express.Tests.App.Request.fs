@@ -5,7 +5,7 @@ open Fable.Core.JsInterop
 open Mocha
 open Node
 
-let tests () =
+let tests =
     describe "app" (fun _ ->
         describe ".request" (fun _ ->
             itAsync "should extend the request prototype" (fun d ->

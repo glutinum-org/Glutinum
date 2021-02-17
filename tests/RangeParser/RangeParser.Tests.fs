@@ -7,7 +7,7 @@ open RangeParser
 
 // Code adapted from: https://github.com/jshttp/range-parser/tree/5f48dfc7996b18242dfa1fbddcc03f39b42a4554
 
-let tests () =
+let tests =
     describe "RangeParser" (fun _ ->
 
         describe "parseRange(len, str)" (fun _ ->

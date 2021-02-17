@@ -8,7 +8,7 @@ open Connect
 // Code adapted from: https://github.com/senchalabs/connect/blob/52cf21b211272519caeef3bb5064c3430f4feb43/test/server.js
 
 
-let tests () =
+let tests =
     describe "Connect" (fun _ ->
 
         let mutable app : Connect.CreateServer.Server = Unchecked.defaultof<_>

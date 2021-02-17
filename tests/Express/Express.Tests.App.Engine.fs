@@ -22,7 +22,7 @@ let render path (options : RenderOption) (fn : EngineRenderFunc) =
             fn.Invoke(null, Some str)
     )
 
-let tests () =
+let tests =
     describe "app.engine(ext, fn)" (fun _ ->
 
         itAsync "should map a template engine" (fun d ->
@@ -39,20 +39,19 @@ let tests () =
                 if err.IsSome then
                     d err
                 else
-                    // TODO: should binding
-                    str?should?equal("<p>tobi</p>")
+                    Assert.strictEqual(str, "<p>tobi</p>")
                     d()
             )
         )
 
         it "should throw when the callback is missing" (fun _ ->
             let app = Express.e.express ()
-            let x = unbox null
 
-            // TODO: should binding
-            (fun () -> app.engine(".html", unbox null))
-                ?should
-                ?throw("callback function required")
+            Assert.throws(
+                (fun () ->
+                    app.engine(".html", unbox null)
+                )
+            )
         )
 
         itAsync """should work without leading "." """ (fun d ->
@@ -69,8 +68,7 @@ let tests () =
                 if err.IsSome then
                     d err
                 else
-                    // TODO: should binding
-                    str?should?equal("<p>tobi</p>")
+                    Assert.strictEqual(str, "<p>tobi</p>")
                     d()
             )
 
@@ -91,8 +89,7 @@ let tests () =
                 if err.IsSome then
                     d err
                 else
-                    // TODO: should binding
-                    str?should?equal("<p>tobi</p>")
+                    Assert.strictEqual(str, "<p>tobi</p>")
                     d()
             )
         )
@@ -112,11 +109,11 @@ let tests () =
                 if err.IsSome then
                     d err
                 else
-                    // TODO: should binding
-                    str?should?equal("<p>tobi</p>")
+                    Assert.strictEqual(str, "<p>tobi</p>")
                     d()
             )
 
         )
 
     )
+

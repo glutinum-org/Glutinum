@@ -3,7 +3,7 @@ module Tests.Express.App.All
 open Mocha
 open ExpressServeStaticCore
 
-let tests () =
+let tests =
     describe "app.all()" (fun _ ->
 
         itAsync "should add a router per method" (fun d ->

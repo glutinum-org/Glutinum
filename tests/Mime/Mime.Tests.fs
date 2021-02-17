@@ -8,7 +8,7 @@ open Mime
 
 // Code adapted from: https://github.com/broofa/mime/blob/9847c9f9ee077a8d6e17d0b738b1b28c030a9a89/src/test.js
 
-let tests () =
+let tests =
     describe "Mime" (fun _ ->
 
         it "Mime new constructor works" (fun _ ->

@@ -7,7 +7,7 @@ open Mocha
 open ExpressServeStaticCore
 open Node
 
-let tests () =
+let tests =
     describe "app" (fun _ ->
 
         describe ".param(fn)" (fun _ ->

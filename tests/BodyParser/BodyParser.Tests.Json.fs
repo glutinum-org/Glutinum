@@ -36,7 +36,7 @@ let private createServer opts =
     )
 
 
-let tests () =
+let tests =
     describe "bodyParser.json()" (fun _ ->
 
         itAsync "should default to {}" (fun d ->

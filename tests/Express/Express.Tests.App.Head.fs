@@ -4,7 +4,7 @@ open Mocha
 open ExpressServeStaticCore
 open Fable.Core.JsInterop
 
-let tests () =
+let tests =
     describe "HEAD" (fun _ ->
 
         itAsync "should default to GET" (fun d ->

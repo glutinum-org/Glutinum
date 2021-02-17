@@ -36,7 +36,7 @@ let private createServer (opts : BodyParser.OptionsText) =
     )
 
 
-let tests () =
+let tests =
     describe "bodyParser.text()" (fun _ ->
 
         itAsync "should parse text/plain" (fun d ->

@@ -5,7 +5,7 @@ open Fable.Core.JsInterop
 open Mocha
 open ExpressServeStaticCore
 
-let tests () =
+let tests =
     describe "OPTIONS" (fun _ ->
 
         itAsync "should default to the routes defined" (fun d ->

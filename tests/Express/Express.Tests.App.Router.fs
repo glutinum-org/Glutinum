@@ -5,8 +5,9 @@ open ExpressServeStaticCore
 open Fable.Core.JsInterop
 open Mocha
 open SuperTest
+open Fable.Core
 
-let tests () =
+let tests =
     describe "app.router" (fun _ ->
         itAsync "should restore req.params after leaving router" (fun d ->
             let app = Express.e.express()
@@ -72,9 +73,8 @@ $1($0)
                     it ("should reject numbers for app." + (string method)) (fun _ ->
                         let app = Express.e.express()
 
-                        Assert.throws(app?(method)?bind$(app, "/", 3)
+                        Assert.throws(app?(method)?bind$(app, "/", 3))
                     )
-                )
             )
 
 
@@ -236,5 +236,472 @@ $1($0)
                     |> ignore
             )
         )
+
+        describe "case sensitivity" (fun _ ->
+            itAsync "should be disabled by default" (fun d ->
+                let app = Express.e.express()
+
+                app.get("/user", fun (req : Request) (res : Response) ->
+                    res.``end``("tj")
+                )
+
+                request(app)
+                    .get("/USER")
+                    .expect("tj", d)
+                    |> ignore
+            )
+
+            describe "when \"case sensitive routing\" is enabled" (fun _ ->
+                itAsync "should match identical casing" (fun d ->
+                    let app = Express.e.express()
+
+                    app.enable("case sensitive routing") |> ignore
+
+                    app.get("/uSer", fun (req : Request) (res : Response) ->
+                        res.``end``("tj")
+                    )
+
+                    request(app)
+                        .get("/uSer")
+                        .expect("tj", d)
+                        |> ignore
+                )
+
+                itAsync "should not match otherwise" (fun d ->
+                    let app = Express.e.express()
+
+                    app.enable("case sensitive routing") |> ignore
+
+                    app.get("/uSer", fun (req : Request) (res : Response) ->
+                        res.``end``("tj")
+                    )
+
+                    request(app)
+                        .get("/user")
+                        .expect(404, d)
+                        |> ignore
+                )
+            )
+        )
+
+        describe "params" (fun _ ->
+            itAsync "should overwrite existing req.params by default" (fun d ->
+                let app = Express.e.express()
+                let router = Express.e.Router()
+
+                router.get("/:action", fun (req : Request) (res : Response) ->
+                    res.send(req.``params``)
+                )
+
+                app.``use``("/user/:user", router)
+
+                request(app)
+                    .get("/user/1/get")
+                    .expect(200, """{"action":"get"}""", d)
+                    |> ignore
+            )
+
+            itAsync "should allow merging existing req.params" (fun d ->
+                let app = Express.e.express()
+                let router =
+                    Express.e.Router(jsOptions<Express.E.RouterOptions> (fun o ->
+                        o.mergeParams <- true
+                    ))
+
+                router.get("/:action", fun (req : Request) (res : Response) ->
+                    let keys = JS.Constructors.Object.keys(req.``params``)
+
+                    let result =
+                        keys.ToArray()
+                        |> Array.sort
+                        |> Array.map(fun key ->
+                            box key, box req.``params``.[key]
+                        )
+
+                    res.send(result)
+                )
+
+                app.``use``("/user/:user", router)
+
+                request(app)
+                    .get("/user/tj/get")
+                    .expect(
+                        200,
+                        """[["action","get"],["user","tj"]]""",
+                        d
+                    )
+                    |> ignore
+            )
+
+            itAsync "should use params from router" (fun d ->
+                let app = Express.e.express()
+                let router = Express.e.Router()
+
+                router.get("/:thing", fun (req : Request) (res : Response) ->
+                    let keys = JS.Constructors.Object.keys(req.``params``)
+
+                    let result =
+                        keys.ToArray()
+                        |> Array.sort
+                        |> Array.map(fun key ->
+                            box key, box req.``params``.[key]
+                        )
+
+                    res.send(result)
+                )
+
+                app.``use``("/user/:thing", router)
+
+                request(app)
+                    .get("/user/tj/get")
+                    .expect(
+                        200,
+                        """[["thing","get"]]""",
+                        d
+                    )
+                    |> ignore
+            )
+
+            itAsync "should merge numeric indices req.params" (fun d ->
+                let app = Express.e.express()
+                let router =
+                    Express.e.Router(jsOptions<Express.E.RouterOptions> (fun o ->
+                        o.mergeParams <- true
+                    ))
+
+                router.get("/*.*", fun (req : Request) (res : Response) ->
+                    let keys = JS.Constructors.Object.keys(req.``params``)
+
+                    let result =
+                        keys.ToArray()
+                        |> Array.sort
+                        |> Array.map(fun key ->
+                            box key, box req.``params``.[key]
+                        )
+
+                    res.send(result)
+                )
+
+                app.``use``("/user/id:(\\d+)", router)
+
+                request(app)
+                    .get("/user/id:10/profile.json")
+                    .expect(
+                        200,
+                        """[["0","10"],["1","profile"],["2","json"]]""",
+                        d
+                    )
+                    |> ignore
+            )
+
+            itAsync "should merge numeric indices req.params when more in parent" (fun d ->
+                let app = Express.e.express()
+                let router =
+                    Express.e.Router(jsOptions<Express.E.RouterOptions> (fun o ->
+                        o.mergeParams <- true
+                    ))
+
+                router.get("/*", fun (req : Request) (res : Response) ->
+                    let keys = JS.Constructors.Object.keys(req.``params``)
+
+                    let result =
+                        keys.ToArray()
+                        |> Array.sort
+                        |> Array.map(fun key ->
+                            box key, box req.``params``.[key]
+                        )
+
+                    res.send(result)
+                )
+
+                app.``use``("/user/id:(\\d+)/name:(\\w+)", router)
+
+                request(app)
+                    .get("/user/id:10/name:tj/profile")
+                    .expect(
+                        200,
+                        """[["0","10"],["1","tj"],["2","profile"]]""",
+                        d
+                    )
+                    |> ignore
+            )
+
+            itAsync "should merge numeric indices req.params when parent has same number" (fun d ->
+                let app = Express.e.express()
+                let router =
+                    Express.e.Router(jsOptions<Express.E.RouterOptions> (fun o ->
+                        o.mergeParams <- true
+                    ))
+
+                router.get("/name:(\\w+)", fun (req : Request) (res : Response) ->
+                    let keys = JS.Constructors.Object.keys(req.``params``)
+
+                    let result =
+                        keys.ToArray()
+                        |> Array.sort
+                        |> Array.map(fun key ->
+                            box key, box req.``params``.[key]
+                        )
+
+                    res.send(result)
+                )
+
+                app.``use``("/user/id:(\\d+)", router)
+
+                request(app)
+                    .get("/user/id:10/name:tj")
+                    .expect(
+                        200,
+                        """[["0","10"],["1","tj"]]""",
+                        d
+                    )
+                    |> ignore
+            )
+
+            itAsync "should ignore invalid incoming req.params" (fun d ->
+                let app = Express.e.express()
+                let router =
+                    Express.e.Router(jsOptions<Express.E.RouterOptions> (fun o ->
+                        o.mergeParams <- true
+                    ))
+
+                router.get("/:name", fun (req : Request) (res : Response) ->
+                    let keys = JS.Constructors.Object.keys(req.``params``)
+
+                    let result =
+                        keys.ToArray()
+                        |> Array.sort
+                        |> Array.map(fun key ->
+                            box key, box req.``params``.[key]
+                        )
+
+                    res.send(result)
+                )
+
+                app.``use``("/user/", fun (req : Request) (res : Response) (next : NextFunction) ->
+                    req.``params`` <- unbox 3 // wat?
+                    router.Invoke(req, res, next)
+                )
+
+                request(app)
+                    .get("/user/tj")
+                    .expect(
+                        200,
+                        """[["name","tj"]]""",
+                        d
+                    )
+                    |> ignore
+            )
+
+            itAsync "should restore req.params" (fun d ->
+                let app = Express.e.express()
+                let router =
+                    Express.e.Router(jsOptions<Express.E.RouterOptions> (fun o ->
+                        o.mergeParams <- true
+                    ))
+
+                router.get("/user:(\\w+)/*", fun (req : Request) (res : Response) (next : NextFunction) ->
+                    next.Invoke()
+                )
+
+                app.``use``("/user/id:(\\d+)", fun (req : Request) (res : Response) (next : NextFunction) ->
+                    router.Invoke(req, res, Adapter.NextFunction(fun err ->
+                            let keys = JS.Constructors.Object.keys(req.``params``)
+
+                            let result =
+                                keys.ToArray()
+                                |> Array.sort
+                                |> Array.map(fun key ->
+                                    box key, box req.``params``.[key]
+                                )
+
+                            res.send(result)
+                        )
+                    )
+                )
+
+                request(app)
+                    .get("/user/id:42/user:tj/profile")
+                    .expect(
+                        200,
+                        """[["0","42"]]""",
+                        d
+                    )
+                    |> ignore
+            )
+        )
+
+        describe "trailing slashes" (fun _ ->
+
+            itAsync "should be optional by default" (fun d ->
+                let app = Express.e.express()
+
+                app.get("/user", fun (req : Request) (res : Response) ->
+                    res.``end``("tj")
+                )
+
+                request(app)
+                    .get("/user/")
+                    .expect("tj", d)
+                    |> ignore
+            )
+
+            describe "when \"strict routing\" is enabled" (fun _ ->
+
+                itAsync "should match trailing slashes" (fun d ->
+                    let app = Express.e.express()
+
+                    app.enable("strict routing") |> ignore
+
+                    app.get("/user/", fun (req : Request) (res : Response) ->
+                        res.``end``("tj")
+                    )
+
+                    request(app)
+                        .get("/user/")
+                        .expect("tj", d)
+                        |> ignore
+                )
+
+
+                itAsync "should pass-though middleware" (fun d ->
+                    let app = Express.e.express()
+
+                    app.enable("strict routing") |> ignore
+
+                    app.``use``(fun (req : Request) (res : Response) (next : NextFunction) ->
+                        res.setHeader("x-middleware", !^ "true")
+                        next.Invoke()
+                    )
+
+                    app.get("/user/", fun (req : Request) (res : Response) ->
+                        res.``end``("tj")
+                    )
+
+                    request(app)
+                        .get("/user/")
+                        .expect("x-middleware", "true")
+                        .expect(200, "tj", d)
+                        |> ignore
+                )
+
+                itAsync "should pass-though mounted middleware" (fun d ->
+                    let app = Express.e.express()
+
+                    app.enable("strict routing") |> ignore
+
+                    app.``use``("/user", fun (req : Request) (res : Response) (next : NextFunction) ->
+                        res.setHeader("x-middleware", !^ "true")
+                        next.Invoke()
+                    )
+
+                    app.get("/user/", fun (req : Request) (res : Response) ->
+                        res.``end``("tj")
+                    )
+
+                    request(app)
+                        .get("/user/")
+                        .expect("x-middleware", "true")
+                        .expect(200, "tj", d)
+                        |> ignore
+                )
+
+                itAsync "should match no slashes" (fun d ->
+                    let app = Express.e.express()
+
+                    app.enable("strict routing") |> ignore
+
+                    app.get("/user", fun (req : Request) (res : Response) ->
+                        res.``end``("tj")
+                    )
+
+                    request(app)
+                        .get("/user")
+                        .expect("tj", d)
+                        |> ignore
+                )
+
+                itAsync "should match middleware when omitting the trailing slash" (fun d ->
+                    let app = Express.e.express()
+
+                    app.enable("strict routing") |> ignore
+
+                    app.``use``("/user/", fun (req : Request) (res : Response) ->
+                        res.``end``("tj")
+                    )
+
+                    request(app)
+                        .get("/user")
+                        .expect(200, "tj", d)
+                        |> ignore
+                )
+
+
+                itAsync "should match middleware" (fun d ->
+                    let app = Express.e.express()
+
+                    app.enable("strict routing") |> ignore
+
+                    app.``use``("/user", fun (req : Request) (res : Response) ->
+                        res.``end``("tj")
+                    )
+
+                    request(app)
+                        .get("/user")
+                        .expect(200, "tj", d)
+                        |> ignore
+                )
+
+                itAsync "should match middleware when adding the trailing slash" (fun d ->
+                    let app = Express.e.express()
+
+                    app.enable("strict routing") |> ignore
+
+                    app.``use``("/user", fun (req : Request) (res : Response) ->
+                        res.``end``("tj")
+                    )
+
+                    request(app)
+                        .get("/user/")
+                        .expect(200, "tj", d)
+                        |> ignore
+                )
+
+                itAsync "should fail when omitting the trailing slash" (fun d ->
+                    let app = Express.e.express()
+
+                    app.enable("strict routing") |> ignore
+
+                    app.get("/user/", fun (req : Request) (res : Response) ->
+                        res.``end``("tj")
+                    )
+
+                    request(app)
+                        .get("/user")
+                        .expect(404, d)
+                        |> ignore
+                )
+
+                itAsync "should fail when adding the trailing slash" (fun d ->
+                    let app = Express.e.express()
+
+                    app.enable("strict routing") |> ignore
+
+                    app.get("/user", fun (req : Request) (res : Response) ->
+                        res.``end``("tj")
+                    )
+
+                    request(app)
+                        .get("/user/")
+                        .expect(404, d)
+                        |> ignore
+                )
+            )
+        )
+
+
+
+
+
 
     )

@@ -116,7 +116,7 @@ let private stringifyApi () =
         )
     )
 
-let tests () =
+let tests =
     describe "Qs" (fun _ ->
         parseApi ()
         stringifyApi ()

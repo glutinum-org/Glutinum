@@ -7,7 +7,7 @@ open ExpressServeStaticCore
 // open Fable.Core.Testing
 open Fable.Core.JS
 
-let tests () =
+let tests =
     describe "app" (fun _ ->
 
         describe ".locals(obj" (fun _ ->
@@ -32,7 +32,7 @@ let tests () =
                 app.set("title", "House of Manny") |> ignore
 
                 let o = app.locals.["settings"]
-                Assert.strictEqual(o?env, "development")
+                Assert.strictEqual(o?env, "test")
                 Assert.strictEqual(o?title, "House of Manny")
             )
         )

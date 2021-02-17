@@ -6,7 +6,7 @@ open ExpressServeStaticCore
 
 #nowarn "40"
 
-let tests () =
+let tests =
     describe "app.listen()" (fun _ ->
 
         itAsync "should wrap with an HTTP server" (fun d ->

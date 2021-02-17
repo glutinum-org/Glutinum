@@ -27,7 +27,9 @@ type [<AllowNullLiteral>] IExports =
     abstract notStrictEqual: actual: obj * expected: obj option * ?message: U2<string, Error> -> unit
     abstract deepStrictEqual: actual: obj * expected: 'T * ?message: U2<string, Error> -> unit
     abstract notDeepStrictEqual: actual: obj * expected: obj option * ?message: U2<string, Error> -> unit
-    abstract throws: block: (unit -> obj option) * ?message: U2<string, Error> -> unit
+    abstract throws: block: (unit -> 'T) * ?message: string -> unit
+    abstract throws: block: (unit -> obj) * ?message: Error -> unit
+    abstract throws: block: (unit -> obj) -> unit
     abstract throws: block: (unit -> obj option) * error: AssertPredicate * ?message: U2<string, Error> -> unit
     abstract doesNotThrow: block: (unit -> obj option) * ?message: U2<string, Error> -> unit
     abstract doesNotThrow: block: (unit -> obj option) * error: U2<RegExp, Function> * ?message: U2<string, Error> -> unit

@@ -5,7 +5,7 @@ open Fable.Core.JsInterop
 open Mocha
 open Node
 
-let tests () =
+let tests =
     describe "app.route" (fun _ ->
         itAsync "should return a new route" (fun d ->
             let app = Express.e.express()

@@ -3,7 +3,7 @@ module Tests.Express.App.Del
 open Mocha
 open ExpressServeStaticCore
 
-let tests () =
+let tests =
     describe "app.delete()" (fun _ ->
 
         itAsync "app.delete() works" (fun d ->

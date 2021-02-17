@@ -38,7 +38,7 @@ let private createServer opts =
 
     )
 
-let tests () =
+let tests =
     describe "ServeStatic" (fun _ ->
 
         itAsync "should support nesting" (fun d ->

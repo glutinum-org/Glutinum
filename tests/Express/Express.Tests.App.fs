@@ -2,7 +2,7 @@ module Tests.Express.App.Core
 
 open Mocha
 
-let tests () =
+let tests =
     describe "app" (fun _ ->
 
         itAsync "should inherit from event emitter" (fun d ->

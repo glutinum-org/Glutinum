@@ -31,15 +31,15 @@ module E =
 
     type [<AllowNullLiteral>] RouterOptions =
         /// Enable case sensitivity.
-        abstract caseSensitive: bool option with get, set
+        abstract caseSensitive: bool with get, set
         /// <summary>
         /// Preserve the req.params values from the parent router.
         /// If the parent and the child have conflicting param names, the child’s value take precedence.
         /// </summary>
         /// <default>false</default>
-        abstract mergeParams: bool option with get, set
+        abstract mergeParams: bool with get, set
         /// Enable strict routing.
-        abstract strict: bool option with get, set
+        abstract strict: bool with get, set
 
     type [<AllowNullLiteral>] Application =
         inherit Core.Application
