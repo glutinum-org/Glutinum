@@ -22,98 +22,98 @@ let render path (options : RenderOption) (fn : EngineRenderFunc) =
             fn.Invoke(null, Some str)
     )
 
-let tests =
-    describe "app.engine(ext, fn)" (fun _ ->
 
-        itAsync "should map a template engine" (fun d ->
-            let app = Express.e.express ()
+describe "app.engine(ext, fn)" (fun _ ->
 
-            app.set("views", path.join(__dirname, "fixtures")) |> ignore
-            app.engine(".html", render) |> ignore
-            app.locals.["user"] <-
-                {|
-                    name = "tobi"
-                |}
+    itAsync "should map a template engine" (fun d ->
+        let app = Express.e.express ()
 
-            app.render("user.html", fun err str ->
-                if err.IsSome then
-                    d err
-                else
-                    Assert.strictEqual(str, "<p>tobi</p>")
-                    d()
+        app.set("views", path.join(__dirname, "fixtures")) |> ignore
+        app.engine(".html", render) |> ignore
+        app.locals.["user"] <-
+            {|
+                name = "tobi"
+            |}
+
+        app.render("user.html", fun err str ->
+            if err.IsSome then
+                d err
+            else
+                Assert.strictEqual(str, "<p>tobi</p>")
+                d()
+        )
+    )
+
+    it "should throw when the callback is missing" (fun _ ->
+        let app = Express.e.express ()
+
+        Assert.throws(
+            (fun () ->
+                app.engine(".html", unbox null)
             )
         )
+    )
 
-        it "should throw when the callback is missing" (fun _ ->
-            let app = Express.e.express ()
+    itAsync """should work without leading "." """ (fun d ->
+        let app = Express.e.express ()
 
-            Assert.throws(
-                (fun () ->
-                    app.engine(".html", unbox null)
-                )
-            )
-        )
+        app.set("views", path.join(__dirname, "fixtures")) |> ignore
+        app.engine("html", render) |> ignore
+        app.locals.["user"] <-
+            {|
+                name = "tobi"
+            |}
 
-        itAsync """should work without leading "." """ (fun d ->
-            let app = Express.e.express ()
-
-            app.set("views", path.join(__dirname, "fixtures")) |> ignore
-            app.engine("html", render) |> ignore
-            app.locals.["user"] <-
-                {|
-                    name = "tobi"
-                |}
-
-            app.render("user.html", fun err str ->
-                if err.IsSome then
-                    d err
-                else
-                    Assert.strictEqual(str, "<p>tobi</p>")
-                    d()
-            )
-
-        )
-
-        itAsync """should work "view engine" setting""" (fun d ->
-            let app = Express.e.express ()
-
-            app.set("views", path.join(__dirname, "fixtures")) |> ignore
-            app.engine("html", render) |> ignore
-            app.set("view engine","html") |> ignore
-            app.locals.["user"] <-
-                {|
-                    name = "tobi"
-                |}
-
-            app.render("user.html", fun err str ->
-                if err.IsSome then
-                    d err
-                else
-                    Assert.strictEqual(str, "<p>tobi</p>")
-                    d()
-            )
-        )
-
-        itAsync """should work "view engine" with leading "." """ (fun d ->
-            let app = Express.e.express ()
-
-            app.set("views", path.join(__dirname, "fixtures")) |> ignore
-            app.engine(".html", render) |> ignore
-            app.set("view engine",".html") |> ignore
-            app.locals.["user"] <-
-                {|
-                    name = "tobi"
-                |}
-
-            app.render("user.html", fun err str ->
-                if err.IsSome then
-                    d err
-                else
-                    Assert.strictEqual(str, "<p>tobi</p>")
-                    d()
-            )
-
+        app.render("user.html", fun err str ->
+            if err.IsSome then
+                d err
+            else
+                Assert.strictEqual(str, "<p>tobi</p>")
+                d()
         )
 
     )
+
+    itAsync """should work "view engine" setting""" (fun d ->
+        let app = Express.e.express ()
+
+        app.set("views", path.join(__dirname, "fixtures")) |> ignore
+        app.engine("html", render) |> ignore
+        app.set("view engine","html") |> ignore
+        app.locals.["user"] <-
+            {|
+                name = "tobi"
+            |}
+
+        app.render("user.html", fun err str ->
+            if err.IsSome then
+                d err
+            else
+                Assert.strictEqual(str, "<p>tobi</p>")
+                d()
+        )
+    )
+
+    itAsync """should work "view engine" with leading "." """ (fun d ->
+        let app = Express.e.express ()
+
+        app.set("views", path.join(__dirname, "fixtures")) |> ignore
+        app.engine(".html", render) |> ignore
+        app.set("view engine",".html") |> ignore
+        app.locals.["user"] <-
+            {|
+                name = "tobi"
+            |}
+
+        app.render("user.html", fun err str ->
+            if err.IsSome then
+                d err
+            else
+                Assert.strictEqual(str, "<p>tobi</p>")
+                d()
+        )
+
+    )
+
+)
 

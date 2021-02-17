@@ -36,42 +36,42 @@ let private createServer (opts : BodyParser.OptionsText) =
     )
 
 
-let tests =
-    describe "bodyParser.text()" (fun _ ->
 
-        itAsync "should parse text/plain" (fun d ->
+describe "bodyParser.text()" (fun _ ->
+
+    itAsync "should parse text/plain" (fun d ->
+        let test =
+            request(box (createServer null))
+                .post("/")
+                .set("Content-Type", "text/plain")
+                .send("user is tobi")
+                :?> SuperTest.Test
+
+        test.expect(200, "\"user is tobi\"", d)
+        |> ignore
+    )
+
+    describe "with limit option" (fun _ ->
+
+        itAsync "should 413 when over limit with Content-Length" (fun d ->
+            let buf = buffer.Buffer.alloc(1028, ".")
+
+            let server =
+                createServer(jsOptions<BodyParser.OptionsText>(fun o ->
+                    o.limit <- !^ "1kb"
+                ))
+
             let test =
-                request(box (createServer null))
+                request(box server)
                     .post("/")
                     .set("Content-Type", "text/plain")
-                    .send("user is tobi")
+                    .set("Content-Length", "1028")
+                    .send(buf.toString())
                     :?> SuperTest.Test
 
-            test.expect(200, "\"user is tobi\"", d)
+            test.expect(413, d)
             |> ignore
         )
-
-        describe "with limit option" (fun _ ->
-
-            itAsync "should 413 when over limit with Content-Length" (fun d ->
-                let buf = buffer.Buffer.alloc(1028, ".")
-
-                let server =
-                    createServer(jsOptions<BodyParser.OptionsText>(fun o ->
-                        o.limit <- !^ "1kb"
-                    ))
-
-                let test =
-                    request(box server)
-                        .post("/")
-                        .set("Content-Type", "text/plain")
-                        .set("Content-Length", "1028")
-                        .send(buf.toString())
-                        :?> SuperTest.Test
-
-                test.expect(413, d)
-                |> ignore
-            )
-        )
     )
+)
 

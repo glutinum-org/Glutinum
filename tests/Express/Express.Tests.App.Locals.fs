@@ -7,34 +7,34 @@ open ExpressServeStaticCore
 // open Fable.Core.Testing
 open Fable.Core.JS
 
-let tests =
-    describe "app" (fun _ ->
 
-        describe ".locals(obj" (fun _ ->
+describe "app" (fun _ ->
 
-            it "should merge locals" (fun _ ->
-                let app = Express.e.express()
+    describe ".locals(obj" (fun _ ->
 
-                Assert.deepStrictEqual(Constructors.Object.keys(app.locals), ResizeArray ["settings"])
-                app.locals.["user"] <- "tobi"
-                app.locals.["age"] <- 2
+        it "should merge locals" (fun _ ->
+            let app = Express.e.express()
 
-                Assert.deepStrictEqual(Constructors.Object.keys(app.locals), ResizeArray ["settings"; "user"; "age"])
-                Assert.strictEqual(app.locals.["user"], box "tobi")
-                Assert.strictEqual(app.locals.["age"], box 2)
-            )
+            Assert.deepStrictEqual(Constructors.Object.keys(app.locals), ResizeArray ["settings"])
+            app.locals.["user"] <- "tobi"
+            app.locals.["age"] <- 2
 
-        )
-
-        describe ".locals.settings" (fun _ ->
-            it "should expose app settings" (fun _ ->
-                let app = Express.e.express()
-                app.set("title", "House of Manny") |> ignore
-
-                let o = app.locals.["settings"]
-                Assert.strictEqual(o?env, "test")
-                Assert.strictEqual(o?title, "House of Manny")
-            )
+            Assert.deepStrictEqual(Constructors.Object.keys(app.locals), ResizeArray ["settings"; "user"; "age"])
+            Assert.strictEqual(app.locals.["user"], box "tobi")
+            Assert.strictEqual(app.locals.["age"], box 2)
         )
 
     )
+
+    describe ".locals.settings" (fun _ ->
+        it "should expose app settings" (fun _ ->
+            let app = Express.e.express()
+            app.set("title", "House of Manny") |> ignore
+
+            let o = app.locals.["settings"]
+            Assert.strictEqual(o?env, "test")
+            Assert.strictEqual(o?title, "House of Manny")
+        )
+    )
+
+)

@@ -3,44 +3,44 @@ module Tests.Express.App.All
 open Mocha
 open ExpressServeStaticCore
 
-let tests =
-    describe "app.all()" (fun _ ->
 
-        itAsync "should add a router per method" (fun d ->
-            let app = Express.e.express ()
+describe "app.all()" (fun _ ->
 
-            app.all("/tobi", fun (req : Request) (res : Response) next ->
-                res.``end``(req.``method``)
-            )
+    itAsync "should add a router per method" (fun d ->
+        let app = Express.e.express ()
 
-            request(app)
-                .put("/tobi")
-                .expect(
-                    "PUT",
-                    fun _ ->
-                        request(app)
-                            .get("/tobi")
-                            .expect("GET", d)
-                            |> ignore
-                )
-                |> ignore
+        app.all("/tobi", fun (req : Request) (res : Response) next ->
+            res.``end``(req.``method``)
         )
 
-        itAsync "should run the callback for a method just once" (fun d ->
-            let app = Express.e.express ()
-            let mutable n = 0
-
-            app.all("/*", fun (req : Request) (res : Response) (next : NextFunction) ->
-                if n > 0 then
-                    d(System.Exception("DELETE called several times"))
-                n <- n + 1
-                next.Invoke()
+        request(app)
+            .put("/tobi")
+            .expect(
+                "PUT",
+                fun _ ->
+                    request(app)
+                        .get("/tobi")
+                        .expect("GET", d)
+                        |> ignore
             )
-
-            request(app)
-                .del("/tobi")
-                .expect(404, d)
-                |> ignore
-        )
-
+            |> ignore
     )
+
+    itAsync "should run the callback for a method just once" (fun d ->
+        let app = Express.e.express ()
+        let mutable n = 0
+
+        app.all("/*", fun (req : Request) (res : Response) (next : NextFunction) ->
+            if n > 0 then
+                d(System.Exception("DELETE called several times"))
+            n <- n + 1
+            next.Invoke()
+        )
+
+        request(app)
+            .del("/tobi")
+            .expect(404, d)
+            |> ignore
+    )
+
+)

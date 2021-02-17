@@ -36,53 +36,53 @@ let private createServer opts =
     )
 
 
-let tests =
-    describe "bodyParser.json()" (fun _ ->
 
-        itAsync "should default to {}" (fun d ->
+describe "bodyParser.json()" (fun _ ->
+
+    itAsync "should default to {}" (fun d ->
+        request(box (createServer null))
+            .post("/")
+            .expect(200, "{}", d)
+            |> ignore
+    )
+
+    itAsync "should parse JSON" (fun ok ->
+        let test =
             request(box (createServer null))
                 .post("/")
-                .expect(200, "{}", d)
-                |> ignore
-        )
+                .set("Content-Type", "application/json")
+                .send("""{"user":"tobi"}""")
+                :?> SuperTest.Test
 
-        itAsync "should parse JSON" (fun ok ->
+        test.expect(200, """{"user":"tobi"}""", ok)
+        |> ignore
+    )
+
+    describe "with limit option" (fun _ ->
+
+        itAsync "should 413 when over limit with Content-Length" (fun d ->
+            let buf = buffer.Buffer.alloc(1024, ".")
+
+            let server =
+                createServer(jsOptions<BodyParser.OptionsJson>(fun o ->
+                    o.limit <- !^ "1kb"
+                ))
+
             let test =
-                request(box (createServer null))
+                request(box server)
                     .post("/")
                     .set("Content-Type", "application/json")
-                    .send("""{"user":"tobi"}""")
+                    .set("Content-Length", "1034")
+                    .send(JS.JSON.stringify(
+                            createObj [
+                                "str" ==> buf.toString()
+                            ]
+                        )
+                    )
                     :?> SuperTest.Test
 
-            test.expect(200, """{"user":"tobi"}""", ok)
+            test.expect(413, d)
             |> ignore
         )
-
-        describe "with limit option" (fun _ ->
-
-            itAsync "should 413 when over limit with Content-Length" (fun d ->
-                let buf = buffer.Buffer.alloc(1024, ".")
-
-                let server =
-                    createServer(jsOptions<BodyParser.OptionsJson>(fun o ->
-                        o.limit <- !^ "1kb"
-                    ))
-
-                let test =
-                    request(box server)
-                        .post("/")
-                        .set("Content-Type", "application/json")
-                        .set("Content-Length", "1034")
-                        .send(JS.JSON.stringify(
-                                createObj [
-                                    "str" ==> buf.toString()
-                                ]
-                            )
-                        )
-                        :?> SuperTest.Test
-
-                test.expect(413, d)
-                |> ignore
-            )
-        )
     )
+)

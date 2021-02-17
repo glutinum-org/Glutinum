@@ -6,23 +6,23 @@ open ExpressServeStaticCore
 
 #nowarn "40"
 
-let tests =
-    describe "app.listen()" (fun _ ->
 
-        itAsync "should wrap with an HTTP server" (fun d ->
-            let app = Express.e.express ()
+describe "app.listen()" (fun _ ->
 
-            app.del("/tobi", fun req (res : Response<_,_>) next ->
-                res.``end``("deleted tobi")
-            )
+    itAsync "should wrap with an HTTP server" (fun d ->
+        let app = Express.e.express ()
 
-            let rec server : Http.Server  =
-                app.listen(9999, fun _ ->
-                    server.close() |> ignore
-                    d()
-                )
-
-            ()
+        app.del("/tobi", fun req (res : Response<_,_>) next ->
+            res.``end``("deleted tobi")
         )
 
+        let rec server : Http.Server  =
+            app.listen(9999, fun _ ->
+                server.close() |> ignore
+                d()
+            )
+
+        ()
     )
+
+)

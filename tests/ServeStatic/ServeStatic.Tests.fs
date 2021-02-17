@@ -38,21 +38,21 @@ let private createServer opts =
 
     )
 
-let tests =
-    describe "ServeStatic" (fun _ ->
 
-        itAsync "should support nesting" (fun d ->
-            request(box (createServer null))
-                .get("/users/tobi.txt")
-                .expect(200, "ferret", d)
-                |> ignore
-        )
+describe "ServeStatic" (fun _ ->
 
-        itAsync "should support index.html" (fun d ->
-            request(box (createServer null))
-                .get("/users/")
-                .expect(200, "<p>tobi, loki, jane</p>", d)
-                |> ignore
-        )
-
+    itAsync "should support nesting" (fun d ->
+        request(box (createServer null))
+            .get("/users/tobi.txt")
+            .expect(200, "ferret", d)
+            |> ignore
     )
+
+    itAsync "should support index.html" (fun d ->
+        request(box (createServer null))
+            .get("/users/")
+            .expect(200, "<p>tobi, loki, jane</p>", d)
+            |> ignore
+    )
+
+)
