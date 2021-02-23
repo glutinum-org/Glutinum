@@ -34,7 +34,8 @@ type Query =
 
 type [<AllowNullLiteral>] NextFunction =
     [<Emit "$0($1...)">] abstract Invoke: ?err: obj -> unit
-    /// "Break-out" of a router by calling {next('router')};
+    /// "Break-out" of a router by calling {next('route')};
+    [<Emit "$0('route')">] abstract Invoke_route: unit -> unit
     [<Emit "$0('router')">] abstract Invoke_router: unit -> unit
 
 type [<AllowNullLiteral>] Dictionary<'T> =
@@ -74,8 +75,12 @@ type [<AllowNullLiteral>] RequestHandler<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Loc
 /// <summary>
 /// Adapters are used to make F# type system "happy" with the code you write in certain cases
 /// </summary>
+[<Erase>]
 type Adapter =
     static member inline RequestHandler (f : System.Func<Request, Response, NextFunction, unit>) : RequestHandler =
+        unbox f
+
+    static member inline RequestHandler (f : System.Func<Error option, Request, Response, NextFunction, unit>) : RequestHandler =
         unbox f
 
     static member inline RequestHandler (f : System.Func<Request, Response, unit>) : RequestHandler =
@@ -190,6 +195,7 @@ type [<AllowNullLiteral>] IRouter =
 //    abstract get: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
     abstract get: path: string * [<ParamArray>] handlers: (Func<Request, Response, unit>) array -> 'T
     abstract get: path: RegExp * [<ParamArray>] handlers: (Func<Request, Response, unit>) array -> 'T
+    abstract get: paths: ResizeArray<string> * [<ParamArray>] handlers: (Func<Request, Response, unit>) array -> 'T
 
     // abstract post: IRouterMatcher<IRouter, string> with get, set
     abstract post:path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
