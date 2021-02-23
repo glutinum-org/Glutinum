@@ -30,6 +30,7 @@
     <Compile Include="Express\Express.Tests.App.Response.fs" />
     <Compile Include="Express\Express.Tests.App.Route.fs" />
     <Compile Include="Express\Express.Tests.App.Router.fs" />
+    <Compile Include="Express\Express.App.Routes.Error.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fable.Core" Version="3.2.3" />
