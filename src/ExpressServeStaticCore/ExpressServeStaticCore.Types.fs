@@ -70,26 +70,26 @@ type RequestHandler<'P, 'ResBody, 'ReqBody, 'ReqQuery> =
 type [<AllowNullLiteral>] RequestHandler<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals when 'Locals :> Dictionary<obj option>> =
     [<Emit "$0($1...)">] abstract Invoke: req: Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals> * res: Response<'ResBody, 'Locals> * next: NextFunction -> unit
     [<Emit "$0($1...)">] abstract Invoke: req: Request * res: Response * next: NextFunction -> unit
-    //System.Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>
+    //Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>
 
 /// <summary>
 /// Adapters are used to make F# type system "happy" with the code you write in certain cases
 /// </summary>
 [<Erase>]
 type Adapter =
-    static member inline RequestHandler (f : System.Func<Request, Response, NextFunction, unit>) : RequestHandler =
+    static member inline RequestHandler (f : Func<Request, Response, NextFunction, unit>) : RequestHandler =
         unbox f
 
-    static member inline RequestHandler (f : System.Func<Error option, Request, Response, NextFunction, unit>) : RequestHandler =
+    static member inline RequestHandler (f : Func<Error option, Request, Response, NextFunction, unit>) : RequestHandler =
         unbox f
 
-    static member inline RequestHandler (f : System.Func<Request, Response, unit>) : RequestHandler =
+    static member inline RequestHandler (f : Func<Request, Response, unit>) : RequestHandler =
         unbox f
 
     /// <summary>
     /// Adapter used to create a NextFunction compatible function
     /// </summary>
-    static member inline NextFunction (f : System.Func<obj option, unit>) : NextFunction =
+    static member inline NextFunction (f : Func<obj option, unit>) : NextFunction =
         unbox f
 
 
@@ -109,7 +109,7 @@ type ErrorRequestHandler<'P, 'ResBody, 'ReqBody, 'ReqQuery> =
     ErrorRequestHandler<'P, 'ResBody, 'ReqBody, 'ReqQuery, Dictionary<obj option>>
 
 type ErrorRequestHandler<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals when 'Locals :> Dictionary<obj option>> =
-    System.Func<obj option, Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>
+    Func<obj option, Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>
 
 type PathParams =
     U3<string, RegExp, Array<U2<string, RegExp>>>
@@ -240,15 +240,15 @@ type [<AllowNullLiteral>] IRouter =
     abstract member ``use``: #IRouter -> unit
     abstract member ``use``: path : string * router : #IRouter -> unit
 
-    abstract member ``use``: System.Func<Request<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>>, Response<obj option, Dictionary<obj option>>, unit> -> unit
-    abstract member ``use``: path : string * System.Func<Request<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>>, Response<obj option, Dictionary<obj option>>, unit> -> unit
-    abstract member ``use``: System.Func<Request<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>>, Response<obj option, Dictionary<obj option>>, NextFunction, unit> -> unit
-//    abstract member ``use``: System.Func<Error option, Request<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>>, Response<obj option, Dictionary<obj option>>, NextFunction, unit> -> unit
-    abstract member ``use``: System.Func<Error option, Request, Response, NextFunction, unit> -> unit
-    abstract member ``use``: path : string * System.Func<Error option, Request, Response, NextFunction, unit> -> unit
-    abstract member ``use``: System.Func<Request, Response, NextFunction, unit> -> unit
-    abstract member ``use``: path : string * System.Func<Request, Response, NextFunction, unit> -> unit
-    abstract member ``use``: path : string * System.Func<Request, Response, unit> -> unit
+    abstract member ``use``: Func<Request<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>>, Response<obj option, Dictionary<obj option>>, unit> -> unit
+    abstract member ``use``: path : string * Func<Request<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>>, Response<obj option, Dictionary<obj option>>, unit> -> unit
+    abstract member ``use``: Func<Request<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>>, Response<obj option, Dictionary<obj option>>, NextFunction, unit> -> unit
+//    abstract member ``use``: Func<Error option, Request<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>>, Response<obj option, Dictionary<obj option>>, NextFunction, unit> -> unit
+    abstract member ``use``: Func<Error option, Request, Response, NextFunction, unit> -> unit
+    abstract member ``use``: path : string * Func<Error option, Request, Response, NextFunction, unit> -> unit
+    abstract member ``use``: Func<Request, Response, NextFunction, unit> -> unit
+    abstract member ``use``: path : string * Func<Request, Response, NextFunction, unit> -> unit
+    abstract member ``use``: path : string * Func<Request, Response, unit> -> unit
 //    abstract route: prefix: PathParams -> IRoute
     abstract route: prefix: string -> IRoute
     abstract route: prefix: RegExp -> IRoute
