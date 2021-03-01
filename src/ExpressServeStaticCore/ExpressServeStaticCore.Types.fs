@@ -185,17 +185,45 @@ type [<AllowNullLiteral>] IRouter =
     abstract all: path: string * [<ParamArray>] handlers: (Func<Request, Response, unit>) array -> 'T
     abstract all: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
     // abstract get: IRouterMatcher<IRouter, string> with get, set
-    abstract get: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
-    abstract get: path: RegExp * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
-    abstract get: path: string * [<ParamArray>] handlers: (Func<Request, Response, NextFunction, unit>) array -> 'T
-    abstract get: path: RegExp * [<ParamArray>] handlers: (Func<Request, Response, NextFunction, unit>) array -> 'T
-    abstract get: path: string * [<ParamArray>] handlers: #RequestHandler array -> 'T
-    [<Emit("$0.get($1...)")>]
-    abstract get_: path: string * [<ParamArray>] handlers: #RequestHandler array -> 'T
-//    abstract get: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
-    abstract get: path: string * [<ParamArray>] handlers: (Func<Request, Response, unit>) array -> 'T
-    abstract get: path: RegExp * [<ParamArray>] handlers: (Func<Request, Response, unit>) array -> 'T
-    abstract get: paths: ResizeArray<string> * [<ParamArray>] handlers: (Func<Request, Response, unit>) array -> 'T
+//     abstract get: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
+//     abstract get: path: RegExp * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
+//     abstract get: path: string * [<ParamArray>] handlers: (Func<Request, Response, NextFunction, unit>) array -> 'T
+//     abstract get: path: RegExp * [<ParamArray>] handlers: (Func<Request, Response, NextFunction, unit>) array -> 'T
+//     abstract get: path: string * [<ParamArray>] handlers: #RequestHandler array -> 'T
+//     [<Emit("$0.get($1...)")>]
+//     abstract get_: path: string * [<ParamArray>] handlers: #RequestHandler array -> 'T
+// //    abstract get: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
+//     abstract get: path: string * [<ParamArray>] handlers: (Func<Request, Response, unit>) array -> 'T
+//     abstract get: path: RegExp * [<ParamArray>] handlers: (Func<Request, Response, unit>) array -> 'T
+//     abstract get: paths: ResizeArray<string> * [<ParamArray>] handlers: (Func<Request, Response, unit>) array -> 'T
+
+    abstract get : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> 'T
+    abstract get : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> 'T
+    abstract get : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> 'T
+    abstract get : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> 'T
+    abstract get : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> 'T
+    abstract get : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> 'T
+
+    abstract get : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> 'T
+    abstract get : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> 'T
+    abstract get : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> 'T
+    abstract get : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> 'T
+    abstract get : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> 'T
+    abstract get : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> 'T
+
+    abstract get : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array -> 'T
+    abstract get : path : string * [<ParamArray>] handlers: #RequestHandler array -> 'T
+    abstract get : path : RegExp * [<ParamArray>] handlers: #RequestHandler array -> 'T
+    abstract get : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array -> 'T
+    abstract get : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array -> 'T
+    abstract get : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array -> 'T
+
+    abstract get : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> 'T
+    abstract get : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> 'T
+    abstract get : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> 'T
+    abstract get : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> 'T
+    abstract get : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> 'T
+    abstract get : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> 'T
 
     // abstract post: IRouterMatcher<IRouter, string> with get, set
     abstract post:path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
@@ -211,7 +239,7 @@ type [<AllowNullLiteral>] IRouter =
     abstract del: path: string * [<ParamArray>] handlers: (Func<Request, Response, unit>) array -> 'T
 
     // abstract delete: path: string * [<ParamArray>] handlers: (obj -> unit) array -> 'T
-    // abstract patch: IRouterMatcher<IRouter, string> with get, set
+//    abstract patch: IRouterMatcher<IRouter, string> with get, set
     abstract patch: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
     // abstract options: IRouterMatcher<IRouter, string> with get, set
     abstract options: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T

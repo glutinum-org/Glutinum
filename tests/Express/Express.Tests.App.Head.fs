@@ -10,7 +10,7 @@ describe "HEAD" (fun _ ->
     itAsync "should default to GET" (fun d ->
         let app = Express.e.express()
 
-        app.get("/tobi", fun req (res : Response<_,_>) next ->
+        app.get("/tobi", fun (req : Request) (res : Response) (next : NextFunction) ->
             res.send("tobi")
         )
 
@@ -23,7 +23,7 @@ describe "HEAD" (fun _ ->
     itAsync "should output the same headers as GET requests" (fun d ->
         let app = Express.e.express()
 
-        app.get("/tobi", fun req (res : Response<_,_>) next ->
+        app.get("/tobi", fun req (res : Response) next ->
             res.send("tobi")
         )
 
@@ -72,7 +72,7 @@ describe "app.head()" (fun _ ->
             res.``end``()
         )
 
-        app.get("/tobi", fun req (res : Response<_,_>) next ->
+        app.get("/tobi", fun req (res : Response) next ->
             Assert.fail("should not call GET")
             res.send("tobi")
         )
