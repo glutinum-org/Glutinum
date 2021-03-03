@@ -62,8 +62,8 @@ module BodyParser =
         /// </summary>
         abstract reviver: key: string * value: obj option -> obj option
         /// <summary>
-        /// When set to `true`, will only accept arrays and objects;
-        /// when `false` will accept anything JSON.parse accepts. Defaults to `true`.
+        /// When set to <c>true</c>, will only accept arrays and objects;
+        /// when `false` will accept anything JSON.parse accepts. Defaults to <c>true</c>.
         /// </summary>
         abstract strict: bool with get, set
 
@@ -72,7 +72,7 @@ module BodyParser =
         /// <summary>
         /// Specify the default character set for the text content if the charset
         /// is not specified in the Content-Type header of the request.
-        /// Defaults to `utf-8`.
+        /// Defaults to <c>utf-8</c>.
         /// </summary>
         abstract defaultCharset: string with get, set
 
@@ -80,7 +80,7 @@ module BodyParser =
         inherit Options
         /// <summary>
         /// The extended option allows to choose between parsing the URL-encoded data
-        /// with the querystring library (when `false`) or the qs library (when `true`).
+        /// with the querystring library (when `false`) or the qs library (when <c>true</c>).
         /// </summary>
         abstract extended: bool with get, set
         /// <summary>

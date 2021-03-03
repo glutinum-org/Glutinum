@@ -1,13 +1,8 @@
-module Tests.Express.App.Render
+module Tests.Express.Port.App.Render
 
-open System
 open ExpressServeStaticCore
-open ExpressServeStaticCore
-open Fable.Core
-open Fable.Core.JS
 open Fable.Core.JsInterop
 open Mocha
-open ExpressServeStaticCore
 open Node
 
 let tmpl (_ : string) (_ : obj) _ = import "default" "./support/tmpl.js"

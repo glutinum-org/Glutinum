@@ -1,10 +1,7 @@
-module Tests.Express.App.Options
+module Tests.Express.Port.App.Options
 
-open Fable.Core.JS
-open Fable.Core.JsInterop
 open Mocha
 open ExpressServeStaticCore
-
 
 describe "OPTIONS" (fun _ ->
 
@@ -117,7 +114,7 @@ describe "app.options()" (fun _ ->
     itAsync "should override the default behaviour" (fun d ->
         let app = Express.e.express()
 
-        app.options("/users", fun req (res : Response<_,_>) ->
+        app.options("/users", fun (req : Request) (res : Response) ->
             res.set("Allow", "GET") |> ignore
             res.send("GET")
         )

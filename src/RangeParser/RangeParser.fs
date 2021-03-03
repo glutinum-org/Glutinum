@@ -31,10 +31,10 @@ type IExports =
     ///
     /// | ParseRangeResult.Range range ->
     ///     // Here you can access your successful result
-    ///     Expect.equal range.``type`` "bytes" ""
+    ///     Expect.equal range.``type<c></c> "bytes" ""
     ///     Expect.equal range.Count 1 ""
     ///     Expect.equal range.[0].start 0 ""
-    ///     Expect.equal range.[0].``end`` 499 ""
+    ///     Expect.equal range.[0].``end<c></c> 499 ""
     /// </code>
     /// </summary>
     [<Import("default", "range-parser");Emit("$0($1...)")>]
@@ -68,7 +68,7 @@ module RangeParser =
         abstract ``end``: int with get, set
 
     type [<AllowNullLiteral>] Options =
-        /// The "combine" option can be set to `true` and overlapping & adjacent ranges
+        /// The "combine" option can be set to <c>true</c> and overlapping & adjacent ranges
         /// will be combined into a single range.
         abstract combine: bool with get, set
 

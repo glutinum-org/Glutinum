@@ -143,5 +143,5 @@ module E =
     type [<AllowNullLiteral>] Router =
         inherit Core.Router
 
-    type [<AllowNullLiteral>] Send =
-        inherit Core.Send
+//    type [<AllowNullLiteral>] Send =
+//        inherit Core.Send

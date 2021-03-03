@@ -7,6 +7,7 @@
   "license": "MIT",
   "scripts": {
     "postinstall": "dotnet tool restore",
+    "prewatch-test": "echo \"maxime\"",
     "watch-test": "npx concurrently -n fable,nodemon \"npm:watch-test-fable\" \"npm:watch-test-nodemon\"",
     "watch-test-fable": "cd tests && dotnet fable Tests.fsproj --watch",
     "watch-test-nodemon": "npx nodemon --inspect --watch tests --exec \"mocha -r esm -r tests/env.js --recursive tests/\""
@@ -26,6 +27,7 @@
   "devDependencies": {
     "assert": "^2.0.0",
     "concurrently": "^5.3.0",
+    "del-cli": "^3.0.1",
     "esm": "^3.2.25",
     "mocha": "^8.2.1",
     "nodemon": "^2.0.7",

@@ -1,4 +1,4 @@
-module Tests.Express.App.Core
+module Tests.Express.Port.Express.App.App
 
 open Mocha
 

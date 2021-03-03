@@ -64,7 +64,7 @@ module Connect =
             [<Emit "$0($1...)">] abstract Invoke: req: Http.IncomingMessage * res: Http.ServerResponse * ?next: Function -> unit
             abstract route: string with get, set
             abstract stack: ResizeArray<ServerStackItem> with get, set
-            /// Utilize the given middleware `handle` to the given `route`,
+            /// Utilize the given middleware `handle` to the given <c>route</c>,
             /// defaulting to _/_. This "route" is the mount-point for the
             /// middleware, when given a value other than _/_ the middleware
             /// is only effective when that segment is present in the request's
@@ -89,14 +89,14 @@ module Connect =
             /// Listen for connections.
             ///
             /// This method takes the same arguments
-            /// as node's `http.Server#listen()`.
+            /// as node's <c>http.Server#listen()</c>.
             ///
             /// HTTP and HTTPS:
             ///
             /// If you run your application both as HTTP
             /// and HTTPS you may wrap them individually,
             /// since your Connect "server" is really just
-            /// a JavaScript `Function`.
+            /// a JavaScript <c>Function</c>.
             ///
             ///       var connect = require('connect')
             ///         , http = require('http')

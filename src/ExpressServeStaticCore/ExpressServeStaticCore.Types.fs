@@ -34,8 +34,13 @@ type Query =
 
 type [<AllowNullLiteral>] NextFunction =
     [<Emit "$0($1...)">] abstract Invoke: ?err: obj -> unit
+    /// <summary>
     /// "Break-out" of a router by calling {next('route')};
+    /// </summary>
     [<Emit "$0('route')">] abstract Invoke_route: unit -> unit
+    /// <summary>
+    /// "Break-out" of a router by calling {next('router')};
+    /// </summary>
     [<Emit "$0('router')">] abstract Invoke_router: unit -> unit
 
 type [<AllowNullLiteral>] Dictionary<'T> =
@@ -77,12 +82,21 @@ type [<AllowNullLiteral>] RequestHandler<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Loc
 /// </summary>
 [<Erase>]
 type Adapter =
+    /// <summary>
+    /// Adapter used to create a RequestHandler compatible function
+    /// </summary>
     static member inline RequestHandler (f : Func<Request, Response, NextFunction, unit>) : RequestHandler =
         unbox f
 
+    /// <summary>
+    /// Adapter used to create a RequestHandler compatible function
+    /// </summary>
     static member inline RequestHandler (f : Func<Error option, Request, Response, NextFunction, unit>) : RequestHandler =
         unbox f
 
+    /// <summary>
+    /// Adapter used to create a RequestHandler compatible function
+    /// </summary>
     static member inline RequestHandler (f : Func<Request, Response, unit>) : RequestHandler =
         unbox f
 
@@ -91,7 +105,6 @@ type Adapter =
     /// </summary>
     static member inline NextFunction (f : Func<obj option, unit>) : NextFunction =
         unbox f
-
 
 type ErrorRequestHandler =
     ErrorRequestHandler<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>>
@@ -148,7 +161,8 @@ type [<AllowNullLiteral>] IRouterHandler<'T> =
 
 type [<AllowNullLiteral>] IRouter =
     inherit RequestHandler
-    /// Map the given param placeholder `name`(s) to the given callback(s).
+    /// <summary>
+    /// Map the given param placeholder <c>name</c>(s) to the given callback(s).
     ///
     /// Parameter mapping is used to provide pre-conditions to routes
     /// which use normalized placeholders. For example a _:user_id_ parameter
@@ -157,9 +171,10 @@ type [<AllowNullLiteral>] IRouter =
     ///
     /// The callback uses the samesignature as middleware, the only differencing
     /// being that the value of the placeholder is passed, in this case the _id_
-    /// of the user. Once the `next()` function is invoked, just like middleware
+    /// of the user. Once the <c>next()</c> function is invoked, just like middleware
     /// it will continue on to execute the route, or subsequent parameter functions.
-    ///
+    /// </summary>
+    /// <code lang="fsharp">
     ///       app.param('user_id', function(req, res, next, id){
     ///         User.find(id, function(err, user){
     ///           if (err) {
@@ -172,155 +187,1062 @@ type [<AllowNullLiteral>] IRouter =
     ///           }
     ///         });
     ///       });
-    abstract param: name: string * handler: Func<Request, Response, NextFunction, obj, string, unit> -> IRouter
-    abstract param: name: ResizeArray<string> * handler: Func<Request, Response, NextFunction, obj, string, unit> -> IRouter
-    abstract param: name: string * regexp : RegExp -> 'T
+    /// </code>
+    abstract param: name: string * handler: Func<Request, Response, NextFunction, obj, string, unit> -> unit
+    abstract param: name: ResizeArray<string> * handler: Func<Request, Response, NextFunction, obj, string, unit> -> unit
+    abstract param: name: string * regexp : RegExp -> unit
+    /// <summary>
     /// Alternatively, you can pass only a callback, in which case you have the opportunity to alter the app.param()
-    abstract param: callback: (string -> RegExp -> RequestParamHandler) -> IRouter
-    /// Special-cased "all" method, applying the given route `path`,
-    /// middleware, and callback to _every_ HTTP method.
+    /// </summary>
+    abstract param: callback: (string -> RegExp -> RequestParamHandler) -> unit
+    ///////////////////////////
+    /// all method
+
     // abstract all: IRouterMatcher<IRouter, string> with get, set
-    abstract all: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
-    abstract all: path: string * [<ParamArray>] handlers: (Func<Request, Response, NextFunction, unit>) array -> 'T
-    abstract all: path: string * [<ParamArray>] handlers: (Func<Request, Response, unit>) array -> 'T
-    abstract all: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
+    /// <summary>
+    /// Special-cased "all" method, applying the given route <c>path</c>,
+    /// middleware, and callback to _every_ HTTP method.
+    /// </summary>
+    abstract all : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    /// <summary>
+    /// Special-cased "all" method, applying the given route <c>path</c>,
+    /// middleware, and callback to _every_ HTTP method.
+    /// </summary>
+    abstract all : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    /// <summary>
+    /// Special-cased "all" method, applying the given route <c>path</c>,
+    /// middleware, and callback to _every_ HTTP method.
+    /// </summary>
+    abstract all : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    /// <summary>
+    /// Special-cased "all" method, applying the given route <c>path</c>,
+    /// middleware, and callback to _every_ HTTP method.
+    /// </summary>
+    abstract all : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    /// <summary>
+    /// Special-cased "all" method, applying the given route <c>path</c>,
+    /// middleware, and callback to _every_ HTTP method.
+    /// </summary>
+    abstract all : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    /// <summary>
+    /// Special-cased "all" method, applying the given route <c>path</c>,
+    /// middleware, and callback to _every_ HTTP method.
+    /// </summary>
+    abstract all : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+
+    /// <summary>
+    /// Special-cased "all" method, applying the given route <c>path</c>,
+    /// middleware, and callback to _every_ HTTP method.
+    /// </summary>
+    abstract all : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    /// <summary>
+    /// Special-cased "all" method, applying the given route <c>path</c>,
+    /// middleware, and callback to _every_ HTTP method.
+    /// </summary>
+    abstract all : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    /// <summary>
+    /// Special-cased "all" method, applying the given route <c>path</c>,
+    /// middleware, and callback to _every_ HTTP method.
+    /// </summary>
+    abstract all : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    /// <summary>
+    /// Special-cased "all" method, applying the given route <c>path</c>,
+    /// middleware, and callback to _every_ HTTP method.
+    /// </summary>
+    abstract all : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    /// <summary>
+    /// Special-cased "all" method, applying the given route <c>path</c>,
+    /// middleware, and callback to _every_ HTTP method.
+    /// </summary>
+    abstract all : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    /// <summary>
+    /// Special-cased "all" method, applying the given route <c>path</c>,
+    /// middleware, and callback to _every_ HTTP method.
+    /// </summary>
+    abstract all : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+
+    /// <summary>
+    /// Special-cased "all" method, applying the given route <c>path</c>,
+    /// middleware, and callback to _every_ HTTP method.
+    /// </summary>
+    abstract all : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    /// <summary>
+    /// Special-cased "all" method, applying the given route <c>path</c>,
+    /// middleware, and callback to _every_ HTTP method.
+    /// </summary>
+    abstract all : path : string * [<ParamArray>] handlers: #RequestHandler array -> unit
+    /// <summary>
+    /// Special-cased "all" method, applying the given route <c>path</c>,
+    /// middleware, and callback to _every_ HTTP method.
+    /// </summary>
+    abstract all : path : RegExp * [<ParamArray>] handlers: #RequestHandler array -> unit
+    /// <summary>
+    /// Special-cased "all" method, applying the given route <c>path</c>,
+    /// middleware, and callback to _every_ HTTP method.
+    /// </summary>
+    abstract all : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    /// <summary>
+    /// Special-cased "all" method, applying the given route <c>path</c>,
+    /// middleware, and callback to _every_ HTTP method.
+    /// </summary>
+    abstract all : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    /// <summary>
+    /// Special-cased "all" method, applying the given route <c>path</c>,
+    /// middleware, and callback to _every_ HTTP method.
+    /// </summary>
+    abstract all : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array -> unit
+
+    /// <summary>
+    /// Special-cased "all" method, applying the given route <c>path</c>,
+    /// middleware, and callback to _every_ HTTP method.
+    /// </summary>
+    abstract all : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    /// <summary>
+    /// Special-cased "all" method, applying the given route <c>path</c>,
+    /// middleware, and callback to _every_ HTTP method.
+    /// </summary>
+    abstract all : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    /// <summary>
+    /// Special-cased "all" method, applying the given route <c>path</c>,
+    /// middleware, and callback to _every_ HTTP method.
+    /// </summary>
+    abstract all : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    /// <summary>
+    /// Special-cased "all" method, applying the given route <c>path</c>,
+    /// middleware, and callback to _every_ HTTP method.
+    /// </summary>
+    abstract all : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    /// <summary>
+    /// Special-cased "all" method, applying the given route <c>path</c>,
+    /// middleware, and callback to _every_ HTTP method.
+    /// </summary>
+    abstract all : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    /// <summary>
+    /// Special-cased "all" method, applying the given route <c>path</c>,
+    /// middleware, and callback to _every_ HTTP method.
+    /// </summary>
+    abstract all : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+
+    ///////////////////////////
+    /// get method
+
     // abstract get: IRouterMatcher<IRouter, string> with get, set
-//     abstract get: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
-//     abstract get: path: RegExp * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
-//     abstract get: path: string * [<ParamArray>] handlers: (Func<Request, Response, NextFunction, unit>) array -> 'T
-//     abstract get: path: RegExp * [<ParamArray>] handlers: (Func<Request, Response, NextFunction, unit>) array -> 'T
-//     abstract get: path: string * [<ParamArray>] handlers: #RequestHandler array -> 'T
-//     [<Emit("$0.get($1...)")>]
-//     abstract get_: path: string * [<ParamArray>] handlers: #RequestHandler array -> 'T
-// //    abstract get: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
-//     abstract get: path: string * [<ParamArray>] handlers: (Func<Request, Response, unit>) array -> 'T
-//     abstract get: path: RegExp * [<ParamArray>] handlers: (Func<Request, Response, unit>) array -> 'T
-//     abstract get: paths: ResizeArray<string> * [<ParamArray>] handlers: (Func<Request, Response, unit>) array -> 'T
+    abstract get : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract get : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract get : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract get : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract get : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract get : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
 
-    abstract get : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> 'T
-    abstract get : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> 'T
-    abstract get : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> 'T
-    abstract get : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> 'T
-    abstract get : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> 'T
-    abstract get : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> 'T
+    abstract get : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract get : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract get : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract get : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract get : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract get : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
 
-    abstract get : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> 'T
-    abstract get : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> 'T
-    abstract get : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> 'T
-    abstract get : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> 'T
-    abstract get : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> 'T
-    abstract get : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> 'T
+    abstract get : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract get : path : string * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract get : path : RegExp * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract get : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract get : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract get : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array -> unit
 
-    abstract get : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array -> 'T
-    abstract get : path : string * [<ParamArray>] handlers: #RequestHandler array -> 'T
-    abstract get : path : RegExp * [<ParamArray>] handlers: #RequestHandler array -> 'T
-    abstract get : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array -> 'T
-    abstract get : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array -> 'T
-    abstract get : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array -> 'T
+    abstract get : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract get : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract get : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract get : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract get : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract get : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
 
-    abstract get : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> 'T
-    abstract get : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> 'T
-    abstract get : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> 'T
-    abstract get : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> 'T
-    abstract get : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> 'T
-    abstract get : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> 'T
+    ///////////////////////////
+    /// post method
 
     // abstract post: IRouterMatcher<IRouter, string> with get, set
-    abstract post:path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
-    abstract post: path: string * [<ParamArray>] handlers: (Func<Request, Response, NextFunction, unit>) array -> 'T
-    // abstract put: IRouterMatcher<IRouter, string> with get, set
-    abstract put: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
-    abstract put: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
-    // abstract delete: IRouterMatcher<IRouter, string> with get, set
-    abstract delete: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
-    abstract delete: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
-    abstract del: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
-    abstract del: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
-    abstract del: path: string * [<ParamArray>] handlers: (Func<Request, Response, unit>) array -> 'T
+    abstract post : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract post : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract post : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract post : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract post : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract post : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
 
-    // abstract delete: path: string * [<ParamArray>] handlers: (obj -> unit) array -> 'T
+    abstract post : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract post : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract post : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract post : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract post : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract post : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+
+    abstract post : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract post : path : string * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract post : path : RegExp * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract post : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract post : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract post : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array -> unit
+
+    abstract post : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract post : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract post : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract post : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract post : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract post : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+
+    ///////////////////////////
+    /// put method
+
+    // abstract put: IRouterMatcher<IRouter, string> with get, set
+    abstract put : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract put : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract put : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract put : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract put : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract put : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+
+    abstract put : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract put : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract put : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract put : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract put : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract put : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+
+    abstract put : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract put : path : string * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract put : path : RegExp * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract put : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract put : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract put : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array -> unit
+
+    abstract put : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract put : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract put : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract put : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract put : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract put : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+
+    ///////////////////////////
+    /// delete method
+
+    // abstract delete: IRouterMatcher<IRouter, string> with get, set
+    abstract delete : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract delete : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract delete : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract delete : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract delete : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract delete : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+
+    abstract delete : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract delete : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract delete : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract delete : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract delete : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract delete : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+
+    abstract delete : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract delete : path : string * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract delete : path : RegExp * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract delete : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract delete : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract delete : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array -> unit
+
+    abstract delete : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract delete : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract delete : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract delete : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract delete : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract delete : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+
+    ////////////////////////////////////
+    /// del methods
+
+    abstract del : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract del : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract del : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract del : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract del : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract del : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+
+    abstract del : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract del : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract del : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract del : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract del : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract del : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+
+    abstract del : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract del : path : string * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract del : path : RegExp * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract del : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract del : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract del : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array -> unit
+
+    abstract del : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract del : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract del : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract del : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract del : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract del : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+
+    ///////////////////////////
+    /// patch method
+
 //    abstract patch: IRouterMatcher<IRouter, string> with get, set
-    abstract patch: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
+    abstract patch : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract patch : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract patch : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract patch : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract patch : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract patch : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+
+    abstract patch : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract patch : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract patch : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract patch : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract patch : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract patch : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+
+    abstract patch : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract patch : path : string * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract patch : path : RegExp * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract patch : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract patch : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract patch : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array -> unit
+
+    abstract patch : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract patch : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract patch : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract patch : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract patch : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract patch : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+
+    ///////////////////////////
+    /// options method
+
     // abstract options: IRouterMatcher<IRouter, string> with get, set
-    abstract options: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
-    abstract options: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, unit>) array -> 'T
+    abstract options : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract options : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract options : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract options : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract options : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract options : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+
+    abstract options : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract options : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract options : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract options : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract options : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract options : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+
+    abstract options : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract options : path : string * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract options : path : RegExp * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract options : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract options : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract options : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array -> unit
+
+    abstract options : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract options : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract options : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract options : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract options : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract options : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+
+    ///////////////////////////
+    /// head method
+
     // abstract head: IRouterMatcher<IRouter, string> with get, set
-    abstract head: path: string * [<ParamArray>] handlers: (Func<Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals>, Response<'ResBody, 'Locals>, NextFunction, unit>) array -> 'T
-    abstract checkout: IRouterMatcher<IRouter> with get, set
-    abstract connect: IRouterMatcher<IRouter> with get, set
-    abstract copy: IRouterMatcher<IRouter> with get, set
-    abstract lock: IRouterMatcher<IRouter> with get, set
-    abstract merge: IRouterMatcher<IRouter> with get, set
-    abstract mkactivity: IRouterMatcher<IRouter> with get, set
-    abstract mkcol: IRouterMatcher<IRouter> with get, set
-    abstract move: IRouterMatcher<IRouter> with get, set
-    abstract ``m-search``: IRouterMatcher<IRouter> with get, set
-    abstract notify: IRouterMatcher<IRouter> with get, set
-    abstract propfind: IRouterMatcher<IRouter> with get, set
-    abstract proppatch: IRouterMatcher<IRouter> with get, set
-    abstract purge: IRouterMatcher<IRouter> with get, set
-    abstract report: IRouterMatcher<IRouter> with get, set
-    abstract search: IRouterMatcher<IRouter> with get, set
-    abstract subscribe: IRouterMatcher<IRouter> with get, set
-    abstract trace: IRouterMatcher<IRouter> with get, set
-    abstract unlock: IRouterMatcher<IRouter> with get, set
-    abstract unsubscribe: IRouterMatcher<IRouter> with get, set
+    abstract head : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract head : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract head : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract head : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract head : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract head : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+
+    abstract head : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract head : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract head : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract head : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract head : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract head : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+
+    abstract head : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract head : path : string * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract head : path : RegExp * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract head : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract head : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract head : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array -> unit
+
+    abstract head : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract head : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract head : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract head : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract head : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract head : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+
+    // abstract checkout: IRouterMatcher<IRouter> with get, set
+    abstract checkout : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract checkout : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract checkout : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract checkout : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract checkout : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+    abstract checkout : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array -> unit
+
+    abstract checkout : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract checkout : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract checkout : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract checkout : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract checkout : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+    abstract checkout : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array -> unit
+
+    abstract checkout : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract checkout : path : string * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract checkout : path : RegExp * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract checkout : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract checkout : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array -> unit
+    abstract checkout : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array -> unit
+
+    abstract checkout : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract checkout : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract checkout : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract checkout : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract checkout : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+    abstract checkout : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array -> unit
+
+    // abstract connect: IRouterMatcher<IRouter> with get, set
+    abstract connect : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract connect : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract connect : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract connect : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract connect : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract connect : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+
+    abstract connect : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract connect : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract connect : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract connect : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract connect : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract connect : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+
+    abstract connect : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract connect : path : string * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract connect : path : RegExp * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract connect : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract connect : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract connect : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+
+    abstract connect : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract connect : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract connect : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract connect : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract connect : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract connect : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+
+    // abstract copy: IRouterMatcher<IRouter> with get, set
+    abstract copy : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract copy : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract copy : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract copy : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract copy : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract copy : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+
+    abstract copy : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract copy : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract copy : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract copy : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract copy : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract copy : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+
+    abstract copy : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract copy : path : string * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract copy : path : RegExp * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract copy : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract copy : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract copy : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+
+    abstract copy : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract copy : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract copy : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract copy : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract copy : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract copy : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+
+    // abstract lock: IRouterMatcher<IRouter> with get, set
+    abstract lock : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract lock : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract lock : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract lock : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract lock : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract lock : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+
+    abstract lock : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract lock : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract lock : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract lock : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract lock : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract lock : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+
+    abstract lock : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract lock : path : string * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract lock : path : RegExp * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract lock : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract lock : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract lock : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+
+    abstract lock : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract lock : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract lock : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract lock : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract lock : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract lock : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+
+    // abstract merge: IRouterMatcher<IRouter> with get, set
+    abstract merge : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract merge : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract merge : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract merge : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract merge : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract merge : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+
+    abstract merge : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract merge : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract merge : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract merge : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract merge : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract merge : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+
+    abstract merge : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract merge : path : string * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract merge : path : RegExp * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract merge : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract merge : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract merge : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+
+    abstract merge : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract merge : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract merge : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract merge : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract merge : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract merge : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+
+
+    // abstract mkactivity: IRouterMatcher<IRouter> with get, set
+    abstract mkactivity : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract mkactivity : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract mkactivity : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract mkactivity : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract mkactivity : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract mkactivity : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+
+    abstract mkactivity : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract mkactivity : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract mkactivity : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract mkactivity : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract mkactivity : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract mkactivity : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+
+    abstract mkactivity : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract mkactivity : path : string * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract mkactivity : path : RegExp * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract mkactivity : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract mkactivity : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract mkactivity : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+
+    abstract mkactivity : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract mkactivity : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract mkactivity : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract mkactivity : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract mkactivity : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract mkactivity : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+
+    // abstract mkcol: IRouterMatcher<IRouter> with get, set
+    abstract mkcol : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract mkcol : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract mkcol : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract mkcol : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract mkcol : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract mkcol : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+
+    abstract mkcol : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract mkcol : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract mkcol : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract mkcol : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract mkcol : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract mkcol : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+
+    abstract mkcol : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract mkcol : path : string * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract mkcol : path : RegExp * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract mkcol : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract mkcol : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract mkcol : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+
+    abstract mkcol : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract mkcol : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract mkcol : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract mkcol : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract mkcol : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract mkcol : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+
+    // abstract move: IRouterMatcher<IRouter> with get, set
+    abstract move : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract move : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract move : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract move : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract move : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract move : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+
+    abstract move : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract move : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract move : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract move : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract move : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract move : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+
+    abstract move : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract move : path : string * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract move : path : RegExp * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract move : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract move : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract move : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+
+    abstract move : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract move : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract move : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract move : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract move : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract move : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+
+    // abstract ``m-search``: IRouterMatcher<IRouter> with get, set
+    abstract ``m-search`` : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract ``m-search`` : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract ``m-search`` : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract ``m-search`` : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract ``m-search`` : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract ``m-search`` : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+
+    abstract ``m-search`` : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract ``m-search`` : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract ``m-search`` : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract ``m-search`` : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract ``m-search`` : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract ``m-search`` : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+
+    abstract ``m-search`` : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract ``m-search`` : path : string * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract ``m-search`` : path : RegExp * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract ``m-search`` : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract ``m-search`` : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract ``m-search`` : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+
+    abstract ``m-search`` : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract ``m-search`` : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract ``m-search`` : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract ``m-search`` : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract ``m-search`` : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract ``m-search`` : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+
+    // abstract notify: IRouterMatcher<IRouter> with get, set
+    abstract notify : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract notify : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract notify : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract notify : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract notify : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract notify : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+
+    abstract notify : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract notify : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract notify : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract notify : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract notify : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract notify : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+
+    abstract notify : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract notify : path : string * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract notify : path : RegExp * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract notify : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract notify : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract notify : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+
+    abstract notify : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract notify : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract notify : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract notify : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract notify : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract notify : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+
+    // abstract propfind: IRouterMatcher<IRouter> with get, set
+    abstract propfind : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract propfind : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract propfind : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract propfind : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract propfind : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract propfind : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+
+    abstract propfind : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract propfind : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract propfind : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract propfind : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract propfind : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract propfind : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+
+    abstract propfind : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract propfind : path : string * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract propfind : path : RegExp * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract propfind : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract propfind : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract propfind : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+
+    abstract propfind : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract propfind : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract propfind : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract propfind : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract propfind : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract propfind : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+
+    // abstract proppatch: IRouterMatcher<IRouter> with get, set
+    abstract proppatch : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract proppatch : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract proppatch : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract proppatch : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract proppatch : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract proppatch : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+
+    abstract proppatch : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract proppatch : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract proppatch : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract proppatch : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract proppatch : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract proppatch : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+
+    abstract proppatch : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract proppatch : path : string * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract proppatch : path : RegExp * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract proppatch : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract proppatch : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract proppatch : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+
+    abstract proppatch : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract proppatch : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract proppatch : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract proppatch : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract proppatch : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract proppatch : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+
+    // abstract purge: IRouterMatcher<IRouter> with get, set
+    abstract purge : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract purge : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract purge : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract purge : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract purge : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract purge : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+
+    abstract purge : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract purge : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract purge : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract purge : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract purge : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract purge : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+
+    abstract purge : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract purge : path : string * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract purge : path : RegExp * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract purge : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract purge : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract purge : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+
+    abstract purge : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract purge : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract purge : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract purge : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract purge : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract purge : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+
+    // abstract report: IRouterMatcher<IRouter> with get, set
+    abstract report : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract report : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract report : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract report : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract report : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract report : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+
+    abstract report : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract report : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract report : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract report : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract report : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract report : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+
+    abstract report : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract report : path : string * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract report : path : RegExp * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract report : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract report : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract report : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+
+    abstract report : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract report : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract report : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract report : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract report : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract report : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+
+    // abstract search: IRouterMatcher<IRouter> with get, set
+    abstract search : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract search : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract search : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract search : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract search : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract search : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+
+    abstract search : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract search : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract search : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract search : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract search : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract search : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+
+    abstract search : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract search : path : string * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract search : path : RegExp * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract search : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract search : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract search : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+
+    abstract search : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract search : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract search : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract search : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract search : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract search : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+
+    // abstract subscribe: IRouterMatcher<IRouter> with get, set
+    abstract subscribe : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract subscribe : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract subscribe : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract subscribe : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract subscribe : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract subscribe : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+
+    abstract subscribe : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract subscribe : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract subscribe : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract subscribe : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract subscribe : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract subscribe : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+
+    abstract subscribe : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract subscribe : path : string * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract subscribe : path : RegExp * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract subscribe : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract subscribe : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract subscribe : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+
+    abstract subscribe : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract subscribe : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract subscribe : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract subscribe : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract subscribe : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract subscribe : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+
+    // abstract trace: IRouterMatcher<IRouter> with get, set
+    abstract trace : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract trace : path : string * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract trace : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract trace : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract trace : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract trace : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+
+    abstract trace : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract trace : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract trace : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract trace : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract trace : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract trace : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+
+    abstract trace : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract trace : path : string * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract trace : path : RegExp * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract trace : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract trace : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract trace : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+
+    abstract trace : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract trace : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract trace : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract trace : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract trace : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract trace : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+
+    // abstract unlock: IRouterMatcher<IRouter> with get, set
+    abstract unlock : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract unlock : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract unlock : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract unlock : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract unlock : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+
+    abstract unlock : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract unlock : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract unlock : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract unlock : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract unlock : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract unlock : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+
+    abstract unlock : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract unlock : path : string * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract unlock : path : RegExp * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract unlock : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract unlock : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract unlock : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+
+    abstract unlock : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract unlock : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract unlock : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract unlock : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract unlock : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract unlock : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+
+    // abstract unsubscribe: IRouterMatcher<IRouter> with get, set
+    abstract unsubscribe : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract unsubscribe : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract unsubscribe : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract unsubscribe : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+    abstract unsubscribe : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, unit>) array-> unit
+
+    abstract unsubscribe : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract unsubscribe : path : string * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract unsubscribe : path : RegExp * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract unsubscribe : path : ResizeArray<string> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract unsubscribe : path : ResizeArray<RegExp> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+    abstract unsubscribe : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers : (Func<Request, Response, NextFunction, unit>) array-> unit
+
+    abstract unsubscribe : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract unsubscribe : path : string * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract unsubscribe : path : RegExp * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract unsubscribe : path : ResizeArray<string> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract unsubscribe : path : ResizeArray<RegExp> * [<ParamArray>] handlers: #RequestHandler array-> unit
+    abstract unsubscribe : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: #RequestHandler array-> unit
+
+    abstract unsubscribe : path : U3<string, RegExp, Array<U2<string, RegExp>>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract unsubscribe : path : string * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract unsubscribe : path : RegExp * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract unsubscribe : path : ResizeArray<string> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract unsubscribe : path : ResizeArray<RegExp> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+    abstract unsubscribe : path : ResizeArray<U2<string, RegExp>> * [<ParamArray>] handlers: Func<Error option, Request, Response, NextFunction, unit> array-> unit
+
     abstract member ``use``: #IRouter -> unit
     abstract member ``use``: path : string * router : #IRouter -> unit
-
-    abstract member ``use``: Func<Request<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>>, Response<obj option, Dictionary<obj option>>, unit> -> unit
-    abstract member ``use``: path : string * Func<Request<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>>, Response<obj option, Dictionary<obj option>>, unit> -> unit
-    abstract member ``use``: Func<Request<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>>, Response<obj option, Dictionary<obj option>>, NextFunction, unit> -> unit
-//    abstract member ``use``: Func<Error option, Request<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>>, Response<obj option, Dictionary<obj option>>, NextFunction, unit> -> unit
     abstract member ``use``: Func<Error option, Request, Response, NextFunction, unit> -> unit
-    abstract member ``use``: path : string * Func<Error option, Request, Response, NextFunction, unit> -> unit
+    abstract member ``use``: Func<Request, Response, unit> -> unit
     abstract member ``use``: Func<Request, Response, NextFunction, unit> -> unit
+    abstract member ``use``: path : string * Func<Error option, Request, Response, NextFunction, unit> -> unit
     abstract member ``use``: path : string * Func<Request, Response, NextFunction, unit> -> unit
     abstract member ``use``: path : string * Func<Request, Response, unit> -> unit
-//    abstract route: prefix: PathParams -> IRoute
+    // Original: abstract route: prefix: PathParams -> IRoute
     abstract route: prefix: string -> IRoute
     abstract route: prefix: RegExp -> IRoute
     abstract route: prefix: string array -> IRoute
     abstract route: prefix: RegExp array -> IRoute
     /// Stack of configured routes
     abstract stack: ResizeArray<obj option> with get, set
-    // Mimic `inherit RequestHandler` by adding the Invoke method
-    // [<Emit("$0($1...)")>]
-    // abstract Invoke : Func<ParamsDictionary, obj option, obj option, ParsedQs, Dictionary<obj option>, unit>
 
 type [<AllowNullLiteral>] IRoute =
     abstract path: string with get, set
     abstract stack: obj option with get, set
-//    abstract all: IRouterHandler<IRoute> with get, set
-    abstract all: Func<Request, Response, unit> -> IRoute
-    abstract all: Func<Request, Response, NextFunction, unit> -> IRoute
-    //abstract get: IRouterHandler<IRoute> with get, set
-    abstract get: Func<Request, Response, unit> -> IRoute
-    abstract get: Func<Request, Response, NextFunction, unit> -> IRoute
-//    abstract post: IRouterHandler<IRoute> with get, set
-    abstract post: Func<Request, Response, unit> -> IRoute
-    abstract post: Func<Request, Response, NextFunction, unit> -> IRoute
-    abstract put: IRouterHandler<IRoute> with get, set
-    abstract delete: IRouterHandler<IRoute> with get, set
-    abstract patch: IRouterHandler<IRoute> with get, set
-    abstract options: IRouterHandler<IRoute> with get, set
-    abstract head: IRouterHandler<IRoute> with get, set
-    abstract checkout: IRouterHandler<IRoute> with get, set
-    abstract copy: IRouterHandler<IRoute> with get, set
-    abstract lock: IRouterHandler<IRoute> with get, set
-    abstract merge: IRouterHandler<IRoute> with get, set
-    abstract mkactivity: IRouterHandler<IRoute> with get, set
-    abstract mkcol: IRouterHandler<IRoute> with get, set
-    abstract move: IRouterHandler<IRoute> with get, set
-    abstract ``m-search``: IRouterHandler<IRoute> with get, set
-    abstract notify: IRouterHandler<IRoute> with get, set
-    abstract purge: IRouterHandler<IRoute> with get, set
-    abstract report: IRouterHandler<IRoute> with get, set
-    abstract search: IRouterHandler<IRoute> with get, set
-    abstract subscribe: IRouterHandler<IRoute> with get, set
-    abstract trace: IRouterHandler<IRoute> with get, set
-    abstract unlock: IRouterHandler<IRoute> with get, set
-    abstract unsubscribe: IRouterHandler<IRoute> with get, set
+    // Original: abstract all: IRouterHandler<IRoute> with get, set
+    abstract all: [<ParamArray>] handlers : Func<Request, Response, unit> array -> IRoute
+    abstract all: [<ParamArray>] handlers : Func<Request, Response, NextFunction, unit> array -> IRoute
+    abstract all: [<ParamArray>] handlers : Func<Error option, Request, Response, NextFunction, unit> array -> IRoute
+    // Original: abstract get: IRouterHandler<IRoute> with get, set
+    abstract get: [<ParamArray>] handlers : Func<Request, Response, unit> array -> IRoute
+    abstract get: [<ParamArray>] handlers : Func<Request, Response, NextFunction, unit> array -> IRoute
+    abstract get: [<ParamArray>] handlers : Func<Error option, Request, Response, NextFunction, unit> array -> IRoute
+    // Original: abstract post: IRouterHandler<IRoute> with get, set
+    abstract post: [<ParamArray>] handlers : Func<Request, Response, unit> array -> IRoute
+    abstract post: [<ParamArray>] handlers : Func<Request, Response, NextFunction, unit> array -> IRoute
+    abstract post: [<ParamArray>] handlers : Func<Error option, Request, Response, NextFunction, unit> array -> IRoute
+    // Original: abstract put: IRouterHandler<IRoute> with get, set
+    abstract put: [<ParamArray>] handlers : Func<Request, Response, unit> array -> IRoute
+    abstract put: [<ParamArray>] handlers : Func<Request, Response, NextFunction, unit> array -> IRoute
+    abstract put: [<ParamArray>] handlers : Func<Error option, Request, Response, NextFunction, unit> array -> IRoute
+    // Original: abstract delete: IRouterHandler<IRoute> with get, set
+    abstract delete: [<ParamArray>] handlers : Func<Request, Response, unit> array -> IRoute
+    abstract delete: [<ParamArray>] handlers : Func<Request, Response, NextFunction, unit> array -> IRoute
+    abstract delete: [<ParamArray>] handlers : Func<Error option, Request, Response, NextFunction, unit> array -> IRoute
+    // Original: abstract patch: IRouterHandler<IRoute> with get, set
+    abstract patch: [<ParamArray>] handlers : Func<Request, Response, unit> array -> IRoute
+    abstract patch: [<ParamArray>] handlers : Func<Request, Response, NextFunction, unit> array -> IRoute
+    abstract patch: [<ParamArray>] handlers : Func<Error option, Request, Response, NextFunction, unit> array -> IRoute
+    // Original: abstract options: IRouterHandler<IRoute> with get, set
+    abstract options: [<ParamArray>] handlers : Func<Request, Response, unit> array -> IRoute
+    abstract options: [<ParamArray>] handlers : Func<Request, Response, NextFunction, unit> array -> IRoute
+    abstract options: [<ParamArray>] handlers : Func<Error option, Request, Response, NextFunction, unit> array -> IRoute
+    // Original: abstract head: IRouterHandler<IRoute> with get, set
+    abstract head: [<ParamArray>] handlers : Func<Request, Response, unit> array -> IRoute
+    abstract head: [<ParamArray>] handlers : Func<Request, Response, NextFunction, unit> array -> IRoute
+    abstract head: [<ParamArray>] handlers : Func<Error option, Request, Response, NextFunction, unit> array -> IRoute
+    // Original: abstract checkout: IRouterHandler<IRoute> with get, set
+    abstract checkout: [<ParamArray>] handlers : Func<Request, Response, unit> array -> IRoute
+    abstract checkout: [<ParamArray>] handlers : Func<Request, Response, NextFunction, unit> array -> IRoute
+    abstract checkout: [<ParamArray>] handlers : Func<Error option, Request, Response, NextFunction, unit> array -> IRoute
+    // Original: abstract copy: IRouterHandler<IRoute> with get, set
+    abstract copy: [<ParamArray>] handlers : Func<Request, Response, unit> array -> IRoute
+    abstract copy: [<ParamArray>] handlers : Func<Request, Response, NextFunction, unit> array -> IRoute
+    abstract copy: [<ParamArray>] handlers : Func<Error option, Request, Response, NextFunction, unit> array -> IRoute
+    // Original: abstract lock: IRouterHandler<IRoute> with get, set
+    abstract lock: [<ParamArray>] handlers : Func<Request, Response, unit> array -> IRoute
+    abstract lock: [<ParamArray>] handlers : Func<Request, Response, NextFunction, unit> array -> IRoute
+    abstract lock: [<ParamArray>] handlers : Func<Error option, Request, Response, NextFunction, unit> array -> IRoute
+    // Original: abstract merge: IRouterHandler<IRoute> with get, set
+    abstract merge: [<ParamArray>] handlers : Func<Request, Response, unit> array -> IRoute
+    abstract merge: [<ParamArray>] handlers : Func<Request, Response, NextFunction, unit> array -> IRoute
+    abstract merge: [<ParamArray>] handlers : Func<Error option, Request, Response, NextFunction, unit> array -> IRoute
+    // Original: abstract mkactivity: IRouterHandler<IRoute> with get, set
+    abstract mkactivity: [<ParamArray>] handlers : Func<Request, Response, unit> array -> IRoute
+    abstract mkactivity: [<ParamArray>] handlers : Func<Request, Response, NextFunction, unit> array -> IRoute
+    abstract mkactivity: [<ParamArray>] handlers : Func<Error option, Request, Response, NextFunction, unit> array -> IRoute
+    // Original: abstract mkcol: IRouterHandler<IRoute> with get, set
+    abstract mkcol: [<ParamArray>] handlers : Func<Request, Response, unit> array -> IRoute
+    abstract mkcol: [<ParamArray>] handlers : Func<Request, Response, NextFunction, unit> array -> IRoute
+    abstract mkcol: [<ParamArray>] handlers : Func<Error option, Request, Response, NextFunction, unit> array -> IRoute
+    // Original: abstract move: IRouterHandler<IRoute> with get, set
+    abstract move: [<ParamArray>] handlers : Func<Request, Response, unit> array -> IRoute
+    abstract move: [<ParamArray>] handlers : Func<Request, Response, NextFunction, unit> array -> IRoute
+    abstract move: [<ParamArray>] handlers : Func<Error option, Request, Response, NextFunction, unit> array -> IRoute
+    // Original: abstract ``m-search``: IRouterHandler<IRoute> with get, set
+    abstract ``m-search``: [<ParamArray>] handlers : Func<Request, Response, unit> array -> IRoute
+    abstract ``m-search``: [<ParamArray>] handlers : Func<Request, Response, NextFunction, unit> array -> IRoute
+    abstract ``m-search``: [<ParamArray>] handlers : Func<Error option, Request, Response, NextFunction, unit> array -> IRoute
+    // Original: abstract notify: IRouterHandler<IRoute> with get, set
+    abstract notify: [<ParamArray>] handlers : Func<Request, Response, unit> array -> IRoute
+    abstract notify: [<ParamArray>] handlers : Func<Request, Response, NextFunction, unit> array -> IRoute
+    abstract notify: [<ParamArray>] handlers : Func<Error option, Request, Response, NextFunction, unit> array -> IRoute
+    // Original: abstract purge: IRouterHandler<IRoute> with get, set
+    abstract purge: [<ParamArray>] handlers : Func<Request, Response, unit> array -> IRoute
+    abstract purge: [<ParamArray>] handlers : Func<Request, Response, NextFunction, unit> array -> IRoute
+    abstract purge: [<ParamArray>] handlers : Func<Error option, Request, Response, NextFunction, unit> array -> IRoute
+    // Original: abstract report: IRouterHandler<IRoute> with get, set
+    abstract report: [<ParamArray>] handlers : Func<Request, Response, unit> array -> IRoute
+    abstract report: [<ParamArray>] handlers : Func<Request, Response, NextFunction, unit> array -> IRoute
+    abstract report: [<ParamArray>] handlers : Func<Error option, Request, Response, NextFunction, unit> array -> IRoute
+    // Original: abstract search: IRouterHandler<IRoute> with get, set
+    abstract search: [<ParamArray>] handlers : Func<Request, Response, unit> array -> IRoute
+    abstract search: [<ParamArray>] handlers : Func<Request, Response, NextFunction, unit> array -> IRoute
+    abstract search: [<ParamArray>] handlers : Func<Error option, Request, Response, NextFunction, unit> array -> IRoute
+    // Original: abstract subscribe: IRouterHandler<IRoute> with get, set
+    abstract subscribe: [<ParamArray>] handlers : Func<Request, Response, unit> array -> IRoute
+    abstract subscribe: [<ParamArray>] handlers : Func<Request, Response, NextFunction, unit> array -> IRoute
+    abstract subscribe: [<ParamArray>] handlers : Func<Error option, Request, Response, NextFunction, unit> array -> IRoute
+    // Original: abstract trace: IRouterHandler<IRoute> with get, set
+    abstract trace: [<ParamArray>] handlers : Func<Request, Response, unit> array -> IRoute
+    abstract trace: [<ParamArray>] handlers : Func<Request, Response, NextFunction, unit> array -> IRoute
+    abstract trace: [<ParamArray>] handlers : Func<Error option, Request, Response, NextFunction, unit> array -> IRoute
+    // Original: abstract unlock: IRouterHandler<IRoute> with get, set
+    abstract unlock: [<ParamArray>] handlers : Func<Request, Response, unit> array -> IRoute
+    abstract unlock: [<ParamArray>] handlers : Func<Request, Response, NextFunction, unit> array -> IRoute
+    abstract unlock: [<ParamArray>] handlers : Func<Error option, Request, Response, NextFunction, unit> array -> IRoute
+    // Original: abstract unsubscribe: IRouterHandler<IRoute> with get, set
+    abstract unsubscribe: [<ParamArray>] handlers : Func<Request, Response, unit> array -> IRoute
+    abstract unsubscribe: [<ParamArray>] handlers : Func<Request, Response, NextFunction, unit> array -> IRoute
+    abstract unsubscribe: [<ParamArray>] handlers : Func<Error option, Request, Response, NextFunction, unit> array -> IRoute
 
 type [<AllowNullLiteral>] Router =
     inherit IRouter
@@ -364,12 +1286,13 @@ type Request<'P, 'ResBody, 'ReqBody, 'ReqQuery> =
 type [<AllowNullLiteral>] Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals when 'Locals :> Dictionary<obj option>> =
     inherit Http.IncomingMessage
     inherit Express.Request
+    /// <summary>
     /// Return request header.
     ///
-    /// The `Referrer` header field is special-cased,
-    /// both `Referrer` and `Referer` are interchangeable.
-    ///
-    /// Examples:
+    /// The <c>Referrer</c> header field is special-cased,
+    /// both `Referrer` and <c>Referer</c> are interchangeable.
+    /// </summary>
+    /// <example>
     ///
     ///      req.get('Content-Type');
     ///      // => "text/plain"
@@ -379,24 +1302,28 @@ type [<AllowNullLiteral>] Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals whe
     ///
     ///      req.get('Something');
     ///      // => undefined
-    ///
-    /// Aliased as `req.header()`.
+    /// </example>
+    /// <remarks>
+    /// Aliased as <c>req.header()</c>.
+    /// </remarks>
     [<Emit "$0.get('set-cookie')">] abstract ``get_set-cookie``: unit -> ResizeArray<string> option
     abstract get: name: string -> string option
     [<Emit "$0.header('set-cookie')">] abstract ``header_set-cookie``: unit -> ResizeArray<string> option
     abstract header: name: string -> string option
-    /// Check if the given `type(s)` is acceptable, returning
-    /// the best match when true, otherwise `undefined`, in which
+    /// <summary>
+    /// Check if the given <c>type(s)</c> is acceptable, returning
+    /// the best match when true, otherwise <c>undefined</c>, in which
     /// case you should respond with 406 "Not Acceptable".
     ///
-    /// The `type` value may be a single mime type string
+    /// The <c>type</c> value may be a single mime type string
     /// such as "application/json", the extension name
     /// such as "json", a comma-delimted list such as "json, html, text/plain",
-    /// or an array `["json", "html", "text/plain"]`. When a list
+    /// or an array <c>["json", "html", "text/plain"]</c>. When a list
     /// or array is given the _best_ match, if any is returned.
     ///
     /// Examples:
     ///
+    /// <code lang="js">
     ///      // Accept: text/html
     ///      req.accepts('html');
     ///      // => "html"
@@ -420,15 +1347,19 @@ type [<AllowNullLiteral>] Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals whe
     ///      req.accepts(['html', 'json']);
     ///      req.accepts('html, json');
     ///      // => "json"
+    /// </code>
+    /// </summary>
     abstract accepts: unit -> ResizeArray<string>
     abstract accepts: ``type``: string -> string
     abstract accepts: ``type``: ResizeArray<string> -> string
     abstract accepts: [<ParamArray>] ``type``: string[] -> string
+    /// <summary>
     /// Returns the first accepted charset of the specified character sets,
     /// based on the request's Accept-Charset HTTP header field.
     /// If none of the specified charsets is accepted, returns false.
     ///
     /// For more information, or if you have issues or concerns, see accepts.
+    /// </summary>
     abstract acceptsCharsets: unit -> ResizeArray<string>
     abstract acceptsCharsets: charset: string -> string
     abstract acceptsCharsets: charset: ResizeArray<string> -> string
@@ -442,72 +1373,92 @@ type [<AllowNullLiteral>] Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals whe
     abstract acceptsEncodings: encoding: string -> string
     abstract acceptsEncodings: encoding: ResizeArray<string> -> string
     abstract acceptsEncodings: [<ParamArray>] encoding: string[] -> string
+    /// <summary>
     /// Returns the first accepted language of the specified languages,
     /// based on the request's Accept-Language HTTP header field.
     /// If none of the specified languages is accepted, returns false.
     ///
     /// For more information, or if you have issues or concerns, see accepts.
+    /// </summary>
     abstract acceptsLanguages: unit -> ResizeArray<string>
     abstract acceptsLanguages: lang: string -> string
     abstract acceptsLanguages: lang: ResizeArray<string> -> string
     abstract acceptsLanguages: [<ParamArray>] lang: string[] -> string
-    /// Parse Range header field, capping to the given `size`.
+    /// <summary>
+    /// Parse Range header field, capping to the given <c>size</c>.
     ///
     /// Unspecified ranges such as "0-" require knowledge of your resource length. In
     /// the case of a byte range this is of course the total number of bytes.
-    /// If the Range header field is not given `undefined` is returned.
+    /// If the Range header field is not given <c>undefined</c> is returned.
     /// If the Range header field is given, return value is a result of range-parser.
     /// See more ./types/range-parser/index.d.ts
-    ///
-    /// NOTE: remember that ranges are inclusive, so for example "Range: users=0-3"
+    /// <remarks>
+    /// Remember that ranges are inclusive, so for example "Range: users=0-3"
     /// should respond with 4 users when available, not 3.
+    /// </remarks>
+    /// </summary>
     abstract range: size: float * ?options: RangeParserOptions -> U2<RangeParserRanges, RangeParserResult> option
+    /// <summary>
     /// Return an array of Accepted media types
     /// ordered from highest quality to lowest.
+    /// </summary>
     abstract accepted: ResizeArray<MediaType> with get, set
     abstract param: name: string * ?defaultValue: obj -> string
+    /// <summary>
     /// Check if the incoming request contains the "Content-Type"
-    /// header field, and it contains the give mime `type`.
+    /// header field, and it contains the give mime <c>type</c>.
+    /// </summary>
+    /// <example>
     ///
-    /// Examples:
+    /// <code lang="js">
     ///
-    ///       // With Content-Type: text/html; charset=utf-8
-    ///       req.is('html');
-    ///       req.is('text/html');
-    ///       req.is('text/*');
-    ///       // => true
+    /// // With Content-Type: text/html; charset=utf-8
+    /// req.is('html');
+    /// req.is('text/html');
+    /// req.is('text/*');
+    /// // => true
     ///
-    ///       // When Content-Type is application/json
-    ///       req.is('json');
-    ///       req.is('application/json');
-    ///       req.is('application/*');
-    ///       // => true
+    /// // When Content-Type is application/json
+    /// req.is('json');
+    /// req.is('application/json');
+    /// req.is('application/*');
+    /// // => true
     ///
-    ///       req.is('html');
-    ///       // => false
+    /// req.is('html');
+    /// // => false
+    /// </code>
+    /// </example>
     abstract is: ``type``: U2<string, ResizeArray<string>> -> string option
+    /// <summary>
     /// Return the protocol string "http" or "https"
     /// when requested with TLS. When the "trust proxy"
     /// setting is enabled the "X-Forwarded-Proto" header
     /// field will be trusted. If you're running behind
     /// a reverse proxy that supplies https for you this
     /// may be enabled.
+    /// </summary>
     abstract protocol: string with get, set
+    /// <summary>
     /// Short-hand for:
     ///
     ///     req.protocol == 'https'
+    /// </summary>
     abstract secure: bool with get, set
+    /// <summary>
     /// Return the remote address, or when
-    /// "trust proxy" is `true` return
+    /// "trust proxy" is <c>true</c> return
     /// the upstream addr.
+    /// </summary>
     abstract ip: string with get, set
-    /// When "trust proxy" is `true`, parse
-    /// the "X-Forwarded-For" ip address list.
+    /// <summary>
+    /// When "trust proxy" is <c>true</c>, parse the "X-Forwarded-For" ip address list.
     ///
     /// For example if the value were "client, proxy1, proxy2"
-    /// you would receive the array `["client", "proxy1", "proxy2"]`
+    /// you would receive the array <c>["client", "proxy1", "proxy2"]</c>
     /// where "proxy2" is the furthest down-stream.
+    /// </summary>
     abstract ips: ResizeArray<string> with get, set
+    /// <summary>
     /// Return subdomains as an array.
     ///
     /// Subdomains are the dot-separated parts of the host before the main domain of
@@ -515,23 +1466,34 @@ type [<AllowNullLiteral>] Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals whe
     /// parts of the host. This can be changed by setting "subdomain offset".
     ///
     /// For example, if the domain is "tobi.ferrets.example.com":
-    /// If "subdomain offset" is not set, req.subdomains is `["ferrets", "tobi"]`.
-    /// If "subdomain offset" is 3, req.subdomains is `["tobi"]`.
+    /// If "subdomain offset" is not set, req.subdomains is <c>["ferrets", "tobi"]</c>.
+    /// If "subdomain offset" is 3, req.subdomains is <c>["tobi"]</c>.
+    /// </summary>
     abstract subdomains: ResizeArray<string> with get, set
-    /// Short-hand for `url.parse(req.url).pathname`.
+    /// <summary>
+    /// Short-hand for <c>url.parse(req.url).pathname</c>.
+    /// </summary>
     abstract path: string with get, set
+    /// <summary>
     /// Parse the "Host" header field hostname.
+    /// </summary>
     abstract hostname: string with get, set
     abstract host: string with get, set
+    /// <summary>
     /// Check if the request is fresh, aka
     /// Last-Modified and/or the ETag
     /// still match.
+    /// </summary>
     abstract fresh: bool with get, set
+    /// <summary>
     /// Check if the request is stale, aka
     /// "Last-Modified" and / or the "ETag" for the
     /// resource has changed.
+    /// </summary>
     abstract stale: bool with get, set
+    /// <summary>
     /// Check if the request was an _XMLHttpRequest_.
+    /// </summary>
     abstract xhr: bool with get, set
     abstract body: 'ReqBody with get, set
     abstract cookies: obj option with get, set
@@ -544,8 +1506,10 @@ type [<AllowNullLiteral>] Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals whe
     abstract url: string with get, set
     abstract baseUrl: string with get, set
     abstract app: Application with get, set
+    /// <summary>
     /// After middleware.init executed, Request will contain res and next properties
     /// See: express/lib/middleware/init.js
+    /// </summary>
     abstract res: Response<'ResBody, 'Locals> option with get, set
     abstract next: NextFunction option with get, set
 
@@ -555,14 +1519,14 @@ type [<AllowNullLiteral>] MediaType =
     abstract ``type``: string with get, set
     abstract subtype: string with get, set
 
-type Send =
-    Send<obj option, Response<obj option>>
+// type Send =
+//     Send<obj option, Response<obj option>>
 
-type Send<'ResBody> =
-    Send<'ResBody, Response<'ResBody>>
+// type Send<'ResBody> =
+//     Send<'ResBody, Response<'ResBody>>
 
-type [<AllowNullLiteral>] Send<'ResBody, 'T> =
-    [<Emit "$0($1...)">] abstract Invoke: ?body: 'ResBody -> 'T
+// type [<AllowNullLiteral>] Send<'ResBody, 'T> =
+//     [<Emit "$0($1...)">] abstract Invoke: ?body: 'ResBody -> 'T
 
 type Response =
     Response<obj, Dictionary<obj option>, int>
@@ -576,12 +1540,12 @@ type Response<'ResBody, 'Locals when 'Locals :> Dictionary<obj option>> =
 type [<AllowNullLiteral>] Response<'ResBody, 'Locals, 'StatusCode when 'Locals :> Dictionary<obj option>> =
     inherit Http.ServerResponse
     inherit Express.Response
-    /// Set status `code`.
+    /// Set status <c>code</c>.
 //    abstract status: code: 'StatusCode -> Response<'ResBody, 'Locals, 'StatusCode>
     abstract status: code: 'StatusCode -> unit
-    /// Set the response HTTP status code to `statusCode` and send its string representation as the response body.
+    /// Set the response HTTP status code to <c>statusCode</c> and send its string representation as the response body.
     abstract sendStatus: code: 'StatusCode -> Response<'ResBody, 'Locals, 'StatusCode>
-    /// Set Link header field with the given `links`.
+    /// Set Link header field with the given <c>links</c>.
     ///
     /// Examples:
     ///
@@ -609,7 +1573,7 @@ type [<AllowNullLiteral>] Response<'ResBody, 'Locals, 'StatusCode when 'Locals :
     ///      res.status(500).json('oh noes!');
     ///      res.status(404).json('I dont have that');
 //    abstract json: Send<'ResBody, Response<'ResBody, 'Locals, 'StatusCode>> with get, set
-    abstract json: ?body: 'ResBody -> 'T
+    abstract json: ?body: 'ResBody -> unit
     /// Send JSON response with JSONP callback support.
     ///
     /// Examples:
@@ -618,29 +1582,29 @@ type [<AllowNullLiteral>] Response<'ResBody, 'Locals, 'StatusCode when 'Locals :
     ///      res.jsonp({ user: 'tj' });
     ///      res.status(500).jsonp('oh noes!');
     ///      res.status(404).jsonp('I dont have that');
-    abstract jsonp: Send<'ResBody, Response<'ResBody, 'Locals, 'StatusCode>> with get, set
-    /// Transfer the file at the given `path`.
+    abstract jsonp : ?body: 'ResBody -> unit
+    /// Transfer the file at the given <c>path</c>.
     ///
     /// Automatically sets the _Content-Type_ response header field.
-    /// The callback `fn(err)` is invoked when the transfer is complete
-    /// or when an error occurs. Be sure to check `res.headersSent`
+    /// The callback <c>fn(err)</c> is invoked when the transfer is complete
+    /// or when an error occurs. Be sure to check <c>res.headersSent</c>
     /// if you wish to attempt responding, as the header and some data
     /// may have already been transferred.
     ///
     /// Options:
     ///
-    ///    - `maxAge`   defaulting to 0 (can be string converted by `ms`)
-    ///    - `root`     root directory for relative filenames
-    ///    - `headers`  object of headers to serve with file
-    ///    - `dotfiles` serve dotfiles, defaulting to false; can be `"allow"` to send them
+    ///    - `maxAge`   defaulting to 0 (can be string converted by <c>ms</c>)
+    ///    - <c>root</c>     root directory for relative filenames
+    ///    - <c>headers</c>  object of headers to serve with file
+    ///    - `dotfiles` serve dotfiles, defaulting to false; can be <c>"allow"</c> to send them
     ///
-    /// Other options are passed along to `send`.
+    /// Other options are passed along to <c>send</c>.
     ///
     /// Examples:
     ///
-    ///   The following example illustrates how `res.sendFile()` may
-    ///   be used as an alternative for the `static()` middleware for
-    ///   dynamic situations. The code backing `res.sendFile()` is actually
+    ///   The following example illustrates how <c>res.sendFile()</c> may
+    ///   be used as an alternative for the <c>static()</c> middleware for
+    ///   dynamic situations. The code backing <c>res.sendFile()</c> is actually
     ///   the same code, so HTTP cache support etc is identical.
     ///
     ///      app.get('/user/:uid/photos/:file', function(req, res){
@@ -661,22 +1625,22 @@ type [<AllowNullLiteral>] Response<'ResBody, 'Locals, 'StatusCode when 'Locals :
     abstract sendfile: path: string * options: obj option -> unit
     abstract sendfile: path: string * fn: Errback -> unit
     abstract sendfile: path: string * options: obj option * fn: Errback -> unit
-    /// Transfer the file at the given `path` as an attachment.
+    /// Transfer the file at the given <c>path</c> as an attachment.
     ///
-    /// Optionally providing an alternate attachment `filename`,
-    /// and optional callback `fn(err)`. The callback is invoked
+    /// Optionally providing an alternate attachment <c>filename</c>,
+    /// and optional callback <c>fn(err)</c>. The callback is invoked
     /// when the data transfer is complete, or when an error has
-    /// ocurred. Be sure to check `res.headersSent` if you plan to respond.
+    /// ocurred. Be sure to check <c>res.headersSent</c> if you plan to respond.
     ///
     /// The optional options argument passes through to the underlying
     /// res.sendFile() call, and takes the exact same parameters.
     ///
-    /// This method uses `res.sendfile()`.
+    /// This method uses <c>res.sendfile()</c>.
     abstract download: path: string * ?fn: Errback -> unit
     abstract download: path: string * filename: string * ?fn: Errback -> unit
     abstract download: path: string * filename: string * options: obj option * ?fn: Errback -> unit
-    /// Set _Content-Type_ response header with `type` through `mime.lookup()`
-    /// when it does not contain "/", or set the Content-Type to `type` otherwise.
+    /// Set _Content-Type_ response header with `type` through <c>mime.lookup()</c>
+    /// when it does not contain "/", or set the Content-Type to <c>type</c> otherwise.
     ///
     /// Examples:
     ///
@@ -686,8 +1650,8 @@ type [<AllowNullLiteral>] Response<'ResBody, 'Locals, 'StatusCode when 'Locals :
     ///      res.type('application/json');
     ///      res.type('png');
     abstract contentType: ``type``: string -> Response<'ResBody, 'Locals, 'StatusCode>
-    /// Set _Content-Type_ response header with `type` through `mime.lookup()`
-    /// when it does not contain "/", or set the Content-Type to `type` otherwise.
+    /// Set _Content-Type_ response header with `type` through <c>mime.lookup()</c>
+    /// when it does not contain "/", or set the Content-Type to <c>type</c> otherwise.
     ///
     /// Examples:
     ///
@@ -697,10 +1661,10 @@ type [<AllowNullLiteral>] Response<'ResBody, 'Locals, 'StatusCode when 'Locals :
     ///      res.type('application/json');
     ///      res.type('png');
     abstract ``type``: ``type``: string -> Response<'ResBody, 'Locals, 'StatusCode>
-    /// Respond to the Acceptable formats using an `obj`
+    /// Respond to the Acceptable formats using an <c>obj</c>
     /// of mime-type callbacks.
     ///
-    /// This method uses `req.accepted`, an array of
+    /// This method uses <c>req.accepted</c>, an array of
     /// acceptable types ordered by their quality values.
     /// When "Accept" is not present the _first_ callback
     /// is invoked, otherwise the first match is used. When
@@ -708,8 +1672,8 @@ type [<AllowNullLiteral>] Response<'ResBody, 'Locals, 'StatusCode when 'Locals :
     /// 406 "Not Acceptable".
     ///
     /// Content-Type is set for you, however if you choose
-    /// you may alter this within the callback using `res.type()`
-    /// or `res.set('Content-Type', ...)`.
+    /// you may alter this within the callback using <c>res.type()</c>
+    /// or <c>res.set('Content-Type', ...)</c>.
     ///
     ///     res.format({
     ///       'text/plain': function(){
@@ -742,15 +1706,15 @@ type [<AllowNullLiteral>] Response<'ResBody, 'Locals, 'StatusCode when 'Locals :
     ///       }
     ///     });
     ///
-    /// By default Express passes an `Error`
-    /// with a `.status` of 406 to `next(err)`
+    /// By default Express passes an <c>Error</c>
+    /// with a `.status` of 406 to <c>next(err)</c>
     /// if a match is not made. If you provide
-    /// a `.default` callback it will be invoked
+    /// a <c>.default</c> callback it will be invoked
     /// instead.
     abstract format: obj: obj option -> Response<'ResBody, 'Locals, 'StatusCode>
-    /// Set _Content-Disposition_ header to _attachment_ with optional `filename`.
+    /// Set _Content-Disposition_ header to _attachment_ with optional <c>filename</c>.
     abstract attachment: ?filename: string -> Response<'ResBody, 'Locals, 'StatusCode>
-    /// Set header `field` to `val`, or pass
+    /// Set header `field` to <c>val</c>, or pass
     /// an object of header fields.
     ///
     /// Examples:
@@ -759,7 +1723,7 @@ type [<AllowNullLiteral>] Response<'ResBody, 'Locals, 'StatusCode when 'Locals :
     ///     res.set('Accept', 'application/json');
     ///     res.set({ Accept: 'text/plain', 'X-API-Key': 'tobi' });
     ///
-    /// Aliased as `res.header()`.
+    /// Aliased as <c>res.header()</c>.
     abstract set: field: obj option -> Response<'ResBody, 'Locals, 'StatusCode>
     abstract set: field: string * ?value: U2<string, ResizeArray<string>> -> Response<'ResBody, 'Locals, 'StatusCode>
     abstract set: field: string * ?value: ResizeArray<string> -> Response<'ResBody, 'Locals, 'StatusCode>
@@ -767,17 +1731,17 @@ type [<AllowNullLiteral>] Response<'ResBody, 'Locals, 'StatusCode when 'Locals :
     abstract header: field: obj option -> Response<'ResBody, 'Locals, 'StatusCode>
     abstract header: field: string * ?value: U2<string, ResizeArray<string>> -> Response<'ResBody, 'Locals, 'StatusCode>
     abstract headersSent: bool with get, set
-    /// Get value for header `field`.
+    /// Get value for header <c>field</c>.
     abstract get: field: string -> string
-    /// Clear cookie `name`.
+    /// Clear cookie <c>name</c>.
     abstract clearCookie: name: string * ?options: obj -> Response<'ResBody, 'Locals, 'StatusCode>
-    /// Set cookie `name` to `val`, with the given `options`.
+    /// Set cookie `name` to `val`, with the given <c>options</c>.
     ///
     /// Options:
     ///
-    ///     - `maxAge`   max-age in milliseconds, converted to `expires`
-    ///     - `signed`   sign the cookie
-    ///     - `path`     defaults to "/"
+    ///     - `maxAge`   max-age in milliseconds, converted to <c>expires</c>
+    ///     - <c>signed</c>   sign the cookie
+    ///     - <c>path</c>     defaults to "/"
     ///
     /// Examples:
     ///
@@ -789,9 +1753,9 @@ type [<AllowNullLiteral>] Response<'ResBody, 'Locals, 'StatusCode when 'Locals :
     abstract cookie: name: string * ``val``: string * options: CookieOptions -> Response<'ResBody, 'Locals, 'StatusCode>
     abstract cookie: name: string * ``val``: obj option * options: CookieOptions -> Response<'ResBody, 'Locals, 'StatusCode>
     abstract cookie: name: string * ``val``: obj option -> Response<'ResBody, 'Locals, 'StatusCode>
-    /// Set the location header to `url`.
+    /// Set the location header to <c>url</c>.
     ///
-    /// The given `url` can also be the name of a mapped url, for
+    /// The given <c>url</c> can also be the name of a mapped url, for
     /// example by default express supports "back" which redirects
     /// to the _Referrer_ or _Referer_ headers or "/".
     ///
@@ -803,7 +1767,7 @@ type [<AllowNullLiteral>] Response<'ResBody, 'Locals, 'StatusCode when 'Locals :
     ///
     /// Mounting:
     ///
-    ///    When an application is mounted and `res.location()`
+    ///    When an application is mounted and <c>res.location()</c>
     ///    is given a path that does _not_ lead with "/" it becomes
     ///    relative to the mount-point. For example if the application
     ///    is mounted at "/blog", the following would become "/blog/login".
@@ -814,12 +1778,12 @@ type [<AllowNullLiteral>] Response<'ResBody, 'Locals, 'StatusCode when 'Locals :
     ///
     ///       res.location('/login');
     abstract location: url: string -> Response<'ResBody, 'Locals, 'StatusCode>
-    /// Redirect to the given `url` with optional response `status`
+    /// Redirect to the given `url` with optional response <c>status</c>
     /// defaulting to 302.
     ///
-    /// The resulting `url` is determined by `res.location()`, so
+    /// The resulting `url` is determined by <c>res.location()</c>, so
     /// it will play nicely with mounted apps, relative paths,
-    /// `"back"` etc.
+    /// <c>"back"</c> etc.
     ///
     /// Examples:
     ///
@@ -831,14 +1795,14 @@ type [<AllowNullLiteral>] Response<'ResBody, 'Locals, 'StatusCode when 'Locals :
     abstract redirect: url: string -> unit
     abstract redirect: status: float * url: string -> unit
     abstract redirect: url: string * status: float -> unit
-    /// Render `view` with the given `options` and optional callback `fn`.
+    /// Render `view` with the given `options` and optional callback <c>fn</c>.
     /// When a callback function is given a response will _not_ be made
     /// automatically, otherwise a response of _200_ and _text/html_ is given.
     ///
     /// Options:
     ///
-    ///   - `cache`     boolean hinting to the engine it should cache
-    ///   - `filename`  filename of the view being rendered
+    ///   - <c>cache</c>     boolean hinting to the engine it should cache
+    ///   - <c>filename</c>  filename of the view being rendered
     abstract render: view: string * ?options: obj * ?callback: (Error -> string -> unit) -> unit
     abstract render: view: string * ?callback: (Error -> string -> unit) -> unit
     abstract locals: 'Locals with get, set
@@ -886,25 +1850,25 @@ type [<AllowNullLiteral>] Application =
     abstract init: unit -> unit
     /// Initialize application configuration.
     abstract defaultConfiguration: unit -> unit
-    /// Register the given template engine callback `fn`
-    /// as `ext`.
+    /// Register the given template engine callback <c>fn</c>
+    /// as <c>ext</c>.
     ///
-    /// By default will `require()` the engine based on the
+    /// By default will <c>require()</c> the engine based on the
     /// file extension. For example if you try to render
     /// a "foo.jade" file Express will invoke the following internally:
     ///
     ///      app.engine('jade', require('jade').__express);
     ///
-    /// For engines that do not provide `.__express` out of the box,
+    /// For engines that do not provide <c>.__express</c> out of the box,
     /// or if you wish to "map" a different extension to the template engine
     /// you may use this method. For example mapping the EJS template engine to
     /// ".html" files:
     ///
     ///      app.engine('html', require('ejs').renderFile);
     ///
-    /// In this case EJS provides a `.renderFile()` method with
-    /// the same signature that Express expects: `(path, options, callback)`,
-    /// though note that it aliases this method as `ejs.__express` internally
+    /// In this case EJS provides a <c>.renderFile()</c> method with
+    /// the same signature that Express expects: <c>(path, options, callback)</c>,
+    /// though note that it aliases this method as <c>ejs.__express</c> internally
     /// so if you're using ".ejs" extensions you dont need to do anything.
     ///
     /// Some template engines do not follow this convention, the
@@ -915,7 +1879,7 @@ type [<AllowNullLiteral>] Application =
     // abstract engine: ext: string * fn: (string -> obj -> (obj option -> string -> unit) -> unit) -> Application
 
     abstract engine: ext : string * fn: (string -> #obj -> EngineRenderFunc -> unit) -> unit
-    /// Assign `setting` to `val`, or return `setting`'s value.
+    /// Assign `setting` to `val`, or return <c>setting</c>'s value.
     ///
     ///     app.set('foo', 'bar');
     ///     app.get('foo');
@@ -933,7 +1897,7 @@ type [<AllowNullLiteral>] Application =
     /// <note>This is needed in order to have access to the <c>get</c> methods which maps the GET HTTP method</note>
     /// </summary>
     abstract Get: obj with get, set
-    /// Map the given param placeholder `name`(s) to the given callback(s).
+    /// Map the given param placeholder <c>name</c>(s) to the given callback(s).
     ///
     /// Parameter mapping is used to provide pre-conditions to routes
     /// which use normalized placeholders. For example a _:user_id_ parameter
@@ -942,7 +1906,7 @@ type [<AllowNullLiteral>] Application =
     ///
     /// The callback uses the samesignature as middleware, the only differencing
     /// being that the value of the placeholder is passed, in this case the _id_
-    /// of the user. Once the `next()` function is invoked, just like middleware
+    /// of the user. Once the <c>next()</c> function is invoked, just like middleware
     /// it will continue on to execute the route, or subsequent parameter functions.
     ///
     ///       app.param('user_id', function(req, res, next, id){
@@ -974,47 +1938,62 @@ type [<AllowNullLiteral>] Application =
     /// was mounted as "/blog" then the
     /// return value would be "/blog/admin".
     abstract path: unit -> string
-    /// Check if `setting` is enabled (truthy).
+    /// <summary>
+    /// Check if <c>setting</c> is enabled (truthy).
     ///
-    ///     app.enabled('foo')
-    ///     // => false
+    /// <code lang="fsharp">
+    /// app.enabled('foo')
+    /// // => false
     ///
-    ///     app.enable('foo')
-    ///     app.enabled('foo')
-    ///     // => true
+    /// app.enable('foo')
+    /// app.enabled('foo')
+    /// // => true
+    /// </code>
+    /// </summary>
     abstract enabled: setting: string -> bool
-    /// Check if `setting` is disabled.
+    /// <summary>
+    /// Check if <c>setting</c> is disabled.
     ///
-    ///     app.disabled('foo')
-    ///     // => true
+    /// <code lang="fsharp">
+    /// app.disabled('foo')
+    /// // => true
     ///
-    ///     app.enable('foo')
-    ///     app.disabled('foo')
-    ///     // => false
+    /// app.enable('foo')
+    /// app.disabled('foo')
+    /// // => false
+    /// </code>
+    /// </summary>
     abstract disabled: setting: string -> bool
-    /// Enable `setting`.
+    /// <summary>
+    /// Enable <c>setting</c>.
+    /// </summary>
     abstract enable: setting: string -> Application
-    /// Disable `setting`.
+    /// <summary>
+    /// Disable <c>setting</c>.
+    /// </summary>
     abstract disable: setting: string -> Application
-    /// Render the given view `name` name with `options`
+    /// <summary>
+    /// Render the given view `name` name with <c>options</c>
     /// and a callback accepting an error and the
     /// rendered template string.
-    ///
-    /// Example:
-    ///
+    /// </summary>
+    /// <example>
     ///     app.render('email', { name: 'Tobi' }, function(err, html){
     ///       // ...
     ///     })
+    /// </example>
     abstract render: name: string * ?options: obj * ?callback: (Error option -> string -> unit) -> unit
     abstract render: name: string * callback: (Error option -> string -> unit) -> unit
+    /// <summary>
     /// Listen for connections.
     ///
-    /// A node `http.Server` is returned, with this
-    /// application (which is a `Function`) as its
+    /// A node <c>http.Server</c> is returned, with this
+    /// application (which is a <c>Function</c>) as its
     /// callback. If you wish to create both an HTTP
     /// and HTTPS server you may do so with the "http"
     /// and "https" modules as shown here:
-    ///
+    /// </summary>
+    /// <example>
     ///     var http = require('http')
     ///       , https = require('https')
     ///       , express = require('express')
@@ -1022,7 +2001,26 @@ type [<AllowNullLiteral>] Application =
     ///
     ///     http.createServer(app).listen(80);
     ///     https.createServer({ ... }, app).listen(443);
+    /// </example>
     abstract listen: port: int * hostname: string * backlog: int * ?callback: (unit -> unit) -> Http.Server
+    /// <summary>
+    /// Listen for connections.
+    ///
+    /// A node <c>http.Server</c> is returned, with this
+    /// application (which is a <c>Function</c>) as its
+    /// callback. If you wish to create both an HTTP
+    /// and HTTPS server you may do so with the "http"
+    /// and "https" modules as shown here:
+    /// </summary>
+    /// <example>
+    ///     var http = require('http')
+    ///       , https = require('https')
+    ///       , express = require('express')
+    ///       , app = express();
+    ///
+    ///     http.createServer(app).listen(80);
+    ///     https.createServer({ ... }, app).listen(443);
+    /// </example>
     abstract listen: port: int * hostname: string * ?callback: (unit -> unit) -> Http.Server
     abstract listen: port: int * ?callback: (unit -> unit) -> Http.Server
     abstract listen: ?callback: (unit -> unit) -> Http.Server
@@ -1033,25 +2031,34 @@ type [<AllowNullLiteral>] Application =
     abstract resource: obj option with get, set
     abstract map: obj option with get, set
     abstract locals: Dictionary<obj> with get, set
+    /// <summary>
     /// The app.routes object houses all of the routes defined mapped by the
     /// associated HTTP verb. This object may be used for introspection
     /// capabilities, for example Express uses this internally not only for
     /// routing but to provide default OPTIONS behaviour unless app.options()
     /// is used. Your application or framework may also remove routes by
     /// simply by removing them from this object.
+    /// </summary>
     abstract routes: obj option with get, set
+    /// <summary>
     /// Used to get all registered routes in Express Application
+    /// </summary>
     abstract _router: obj option with get, set
 //    abstract ``use``: ApplicationRequestHandler<Application> with get, set
+    /// <summary>
     /// The mount event is fired on a sub-app, when it is mounted on a parent app.
     /// The parent app is passed to the callback function.
     ///
-    /// NOTE:
+    /// <remarks>
     /// Sub-apps will:
     ///   - Not inherit the value of settings that have a default value. You must set the value in the sub-app.
     ///   - Inherit the value of settings with no default value.
+    /// </remarks>
+    /// </summary>
     abstract on: string * (Application -> unit) -> Application
+    /// <summary>
     /// The app.mountpath property contains one or more path patterns on which a sub-app was mounted.
+    /// </summary>
     abstract mountpath: U2<string, ResizeArray<string>> with get, set
 
 type [<AllowNullLiteral>] Express =

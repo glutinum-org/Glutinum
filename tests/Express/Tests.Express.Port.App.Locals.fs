@@ -1,12 +1,9 @@
-module Tests.Express.App.Locals
+module Tests.Express.Port.App.Locals
 
 open Fable.Core.JS
 open Fable.Core.JsInterop
 open Mocha
 open ExpressServeStaticCore
-// open Fable.Core.Testing
-open Fable.Core.JS
-
 
 describe "app" (fun _ ->
 

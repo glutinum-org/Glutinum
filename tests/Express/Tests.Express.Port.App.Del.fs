@@ -1,4 +1,4 @@
-module Tests.Express.App.Del
+module Tests.Express.Port.App.Del
 
 open Mocha
 open ExpressServeStaticCore

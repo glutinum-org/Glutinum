@@ -16,22 +16,22 @@
     <Compile Include="BodyParser\BodyParser.Tests.Json.fs" />
     <Compile Include="BodyParser\BodyParser.Tests.Text.fs" />
     <Compile Include="ServeStatic\ServeStatic.Tests.fs" />
-    <Compile Include="Express\Express.Tests.App.fs" />
-    <Compile Include="Express\Express.Tests.App.Listen.fs" />
-    <Compile Include="Express\Express.Tests.App.Del.fs" />
-    <Compile Include="Express\Express.Tests.App.All.fs" />
-    <Compile Include="Express\Express.Tests.App.Engine.fs" />
-    <Compile Include="Express\Express.Tests.App.Head.fs" />
-    <Compile Include="Express\Express.Tests.App.Locals.fs" />
-    <Compile Include="Express\Express.Tests.App.Options.fs" />
-    <Compile Include="Express\Express.Tests.App.Params.fs" />
-    <Compile Include="Express\Express.Tests.App.Render.fs" />
-    <Compile Include="Express\Express.Tests.App.Request.fs" />
-    <Compile Include="Express\Express.Tests.App.Response.fs" />
-    <Compile Include="Express\Express.Tests.App.Route.fs" />
-    <Compile Include="Express\Express.Tests.App.Router.fs" />
-    <Compile Include="Express\Express.App.Routes.Error.fs" />
-    <Compile Include="Express\Express.Tests.Application.fs" />
+    <Compile Include="Express\Tests.Express.Port.App.fs" />
+    <Compile Include="Express\Tests.Express.Port.App.Listen.fs" />
+    <Compile Include="Express\Tests.Express.Port.App.Del.fs" />
+    <Compile Include="Express\Tests.Express.Port.App.All.fs" />
+    <Compile Include="Express\Tests.Express.Port.App.Engine.fs" />
+    <Compile Include="Express\Tests.Express.Port.App.Head.fs" />
+    <Compile Include="Express\Tests.Express.Port.App.Locals.fs" />
+    <Compile Include="Express\Tests.Express.Port.App.Options.fs" />
+    <Compile Include="Express\Tests.Express.Port.App.Params.fs" />
+    <Compile Include="Express\Tests.Express.Port.App.Render.fs" />
+    <Compile Include="Express\Tests.Express.Port.App.Request.fs" />
+    <Compile Include="Express\Tests.Express.Port.App.Response.fs" />
+    <Compile Include="Express\Tests.Express.Port.App.Route.fs" />
+    <Compile Include="Express\Tests.Express.Port.App.Router.fs" />
+    <Compile Include="Express\Tests.Express.Port.App.Routes.Error.fs" />
+    <Compile Include="Express\Tests.Express.Binding.HTTPMethodsOverload.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fable.Core" Version="3.2.3" />

@@ -1,20 +1,17 @@
-module Tests.Express.App.Route
+module Tests.Express.Port.App.Route
 
 open ExpressServeStaticCore
-open Fable.Core.JsInterop
 open Mocha
-open Node
-
 
 describe "app.route" (fun _ ->
     itAsync "should return a new route" (fun d ->
         let app = Express.e.express()
 
         app.route("/foo")
-            .get(fun req res ->
+            .get(fun (req : Request) (res : Response) ->
                 res.send("get")
             )
-            .post(fun req res ->
+            .post(fun (req : Request) (res : Response) ->
                 res.send("post")
             )
             |> ignore
@@ -29,13 +26,13 @@ describe "app.route" (fun _ ->
         let app = Express.e.express()
 
         app.route("/foo")
-            .all(fun req res next ->
+            .all(fun req res (next : NextFunction) ->
                 next.Invoke()
             )
-            .get(fun req res ->
+            .get(fun req (res : Response) ->
                 res.send("get")
             )
-            .post(fun req res ->
+            .post(fun (req : Request) (res : Response) ->
                 res.send("post")
             )
             |> ignore
@@ -50,7 +47,7 @@ describe "app.route" (fun _ ->
         let app = Express.e.express()
 
         app.route("/:foo")
-            .get(fun req res ->
+            .get(fun (req : Request) (res : Response) ->
                 res.send(req.``params``.["foo"])
             )
             |> ignore
