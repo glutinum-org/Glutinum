@@ -1,9 +1,7 @@
 // ts2fable 0.8.0
 module rec After
 
-open System
 open Fable.Core
-open Fable.Core.JS
 
 [<Import("default", "after")>]
 let e : IExports = jsNative

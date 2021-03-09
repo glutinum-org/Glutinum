@@ -35,7 +35,7 @@ module Connect =
             Func<IncomingMessage, Http.ServerResponse ,unit>
 
         type NextHandleFunction =
-            Func<IncomingMessage, Http.ServerResponse, NextFunction, unit>
+            Func<IncomingMessage, Http.ServerResponse, Func<obj, unit>, unit>
 
         type ErrorHandleFunction =
             Func<obj option, IncomingMessage, Http.ServerResponse, NextFunction, unit>

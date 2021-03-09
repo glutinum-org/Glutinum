@@ -65,6 +65,7 @@ module Qs =
 
     type [<AllowNullLiteral>] ParsedQs =
         [<EmitIndexer>] abstract Item: key: string -> U4<string, ResizeArray<string>, ParsedQs, ResizeArray<ParsedQs>> option with get, set
+        [<EmitIndexer>] abstract Item: key: int -> U4<string, ResizeArray<string>, ParsedQs, ResizeArray<ParsedQs>> option with get, set
 
     type [<StringEnum(CaseRules.LowerFirst)>] [<RequireQualifiedAccess>] IStringifyOptionsEncoder =
         | Key

@@ -8,8 +8,6 @@ open Connect
 [<Import("*", "body-parser")>]
 let bodyParser : BodyParser.IExports = jsNative
 
-type NextHandleFunction = Connect.CreateServer.NextHandleFunction
-
 module BodyParser =
 
     type [<AllowNullLiteral>] IExports =
@@ -17,22 +15,22 @@ module BodyParser =
         /// Returns middleware that only parses json and only looks at requests
         /// where the Content-Type header matches the type option.
         /// </summary>
-        abstract json: ?options: OptionsJson -> NextHandleFunction
+        abstract json: ?options: OptionsJson -> Func<Http.IncomingMessage, Http.ServerResponse, Func<obj, unit>, unit>
         /// <summary>
         /// Returns middleware that parses all bodies as a Buffer and only looks at requests
         /// where the Content-Type header matches the type option.
         /// </summary>
-        abstract raw: ?options: Options -> NextHandleFunction
+        abstract raw: ?options: Options -> Func<Http.IncomingMessage, Http.ServerResponse, Func<obj, unit>, unit>
         /// <summary>
         /// Returns middleware that parses all bodies as a string and only looks at requests
         /// where the Content-Type header matches the type option.
         /// </summary>
-        abstract text: ?options: OptionsText -> NextHandleFunction
+        abstract text: ?options: OptionsText -> Func<Http.IncomingMessage, Http.ServerResponse, Func<obj, unit>, unit>
         /// <summary>
         /// Returns middleware that only parses urlencoded bodies and only looks at requests
         /// where the Content-Type header matches the type option
         /// </summary>
-        abstract urlencoded: ?options: OptionsUrlencoded -> NextHandleFunction
+        abstract urlencoded: ?options: OptionsUrlencoded -> Func<Http.IncomingMessage, Http.ServerResponse, Func<obj, unit>, unit>
 
     type [<AllowNullLiteral>] Options =
         /// <summary>

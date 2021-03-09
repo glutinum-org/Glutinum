@@ -1136,6 +1136,10 @@ type [<AllowNullLiteral>] IRouter =
     abstract member ``use``: path : string * Func<Error option, Request, Response, NextFunction, unit> -> unit
     abstract member ``use``: path : string * Func<Request, Response, NextFunction, unit> -> unit
     abstract member ``use``: path : string * Func<Request, Response, unit> -> unit
+    // Overload to support APIs defined in the style of the Connect binding
+    // For example, BodyParser, CookieParser
+    abstract member ``use``: Func<#Http.IncomingMessage, #Http.ServerResponse, Func<obj, unit>, unit> -> unit
+    abstract member ``use``: path : string * Func<#Http.IncomingMessage, #Http.ServerResponse, Func<obj, unit>, unit> -> unit
     // Original: abstract route: prefix: PathParams -> IRoute
     abstract route: prefix: string -> IRoute
     abstract route: prefix: RegExp -> IRoute

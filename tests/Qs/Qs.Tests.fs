@@ -21,7 +21,7 @@ let private parseApi () =
         it "parses a simple string" (fun _ ->
             let res = qs.parse("0=foo")
 
-            Assert.AreEqual(res.["0"], Some (!^ "foo"))
+            Assert.AreEqual(res.[0], Some (!^ "foo"))
         )
 
         it "arrayFormat: brackets allows only explicit arrays" (fun _ ->
@@ -83,9 +83,7 @@ let private stringifyApi () =
     describe "qs.stringify()" (fun _ ->
         it "stringifies a querystring object" (fun _ ->
             let res =
-                qs.stringify(createObj [
-                    "a" ==> "b"
-                ])
+                qs.stringify({| a = "b" |})
 
             Assert.AreEqual(res, "a=b")
 
