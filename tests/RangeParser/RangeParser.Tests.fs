@@ -81,7 +81,7 @@ describe "RangeParser" (fun _ ->
                 Assert.AreEqual(range.[0].start, 0)
                 Assert.AreEqual(range.[0].``end``, 75 )
                 Assert.AreEqual(range.[1].start, 90)
-                Assert.AreEqual(range.[1].``end``, 149)
+                Assert.AreEqual(range.[1].``end``, 19)
         )
 
         it "overload npm.rangeParser with direct combine argument works" (fun _ ->

@@ -4,10 +4,10 @@ open System
 open Fable.Core
 open Fable.Core.JS
 
+[<Import("default", "supertest")>]
 let supertest : IExports = jsNative
 
 type IExports =
-    [<Import("default", "supertest")>]
     [<Emit("$0($1)")>]
     abstract supertest : app : obj -> SuperTest.SuperTest<SuperTest.Test>
     abstract agent: ?app: obj * ?options: SuperTest.AgentOptions -> SuperTest.SuperAgentTest

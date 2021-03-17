@@ -1,11 +1,42 @@
 #!/usr/bin/env node
 
+// IMPORTANT: The declaration order control how we will update/publish the packages
+// Example: Express is dependant on BodyParser, Qs
+// So we need to write: [ Qs, BodyParser, Express ]
+const projects =
+    [
+        "After",
+        "Connect",
+        "BodyParser",
+        "Methods",
+        "Mime",
+        "Qs",
+        "RangeParser",
+        "ExpressServeStaticCore",
+        "ServeStatic",
+        "SuperAgent",
+        "SuperTest",
+        "Express"
+    ]
+
 const yargs = require('yargs')
 const { hideBin } = require('yargs/helpers')
 const concurrently = require('concurrently')
 const path = require("path")
 const fs = require('fs').promises
 const fg = require("fast-glob")
+const util = require('util')
+const exec = util.promisify(require('child_process').exec)
+const spawn = util.promisify(require("child_process").spawn)
+const parseChangelog = require('changelog-parser')
+const awaitSpawn = require("./Scripts/await-spawn")
+const chalk = require("chalk")
+
+const info = chalk.blueBright
+const warn = chalk.yellow
+const error = chalk.red
+const success = chalk.green
+const log = console.log
 
 const cleanCompiledFiles = async function () {
     const entries =
@@ -23,8 +54,18 @@ const cleanCompiledFiles = async function () {
     await fs.rm("./tests/.fable", { recursive: true, force: true })
 }
 
+const getEnvVariable = function (varName) {
+    const value = process.env[varName];
+    if (value === undefined) {
+        log(error(`Missing environnement variable ${varName}`))
+        process.exit(1)
+    } else {
+        return value;
+    }
+}
+
 // Watch handler
-const watchHandler = async function (argv) {
+const watchHandler = async (argv) => {
     await cleanCompiledFiles();
 
     const mochaPattern = argv.pattern || 'tests/';
@@ -32,7 +73,7 @@ const watchHandler = async function (argv) {
     concurrently(
         [
             {
-                command: `nodemon --inspect --watch tests --exec "npx mocha -r esm -r tests/env.js --recursive ${mochaPattern}"`,
+                command: `nodemon --inspect --watch tests --exec "npx mocha -r esm -r tests/env.js --reporter dot --recursive ${mochaPattern}"`,
             },
             {
                 // There is a bug in concurrently where cwd in command options is not taken into account
@@ -48,6 +89,220 @@ const watchHandler = async function (argv) {
     )
 }
 
+const updateTestsCountHandler = async () => {
+    // Get the list of root test folders suffixed with a trailing '/'
+    const rootTestFolders =
+        await fg([
+            "tests/*",
+            "!tests/bin",
+            "!tests/obj"
+        ], {
+            onlyDirectories: true,
+            markDirectories: true
+        })
+
+    let bindingsTestInfo = []
+    let testRunnerCount = 0
+
+    for (const rootFolder of rootTestFolders) {
+        testRunnerCount++
+
+        const bindingNamePrefix = "/tests"
+        // Remove '/tests' prefix and the trailing '/' from the rootFolder
+        const bindingName = rootFolder.substr(bindingNamePrefix.length).slice(0, -1)
+
+        log(`Executing ${bindingName} - ${testRunnerCount}/${rootTestFolders.length}`)
+
+        const res = await exec(`npx mocha -r esm -r tests/env.js --reporter json --recursive ${rootFolder}`);
+        const jsonResult = JSON.parse(res.stdout);
+
+        bindingsTestInfo.push({
+            bindingName: bindingName,
+            count: jsonResult.stats.tests
+        });
+    }
+
+    const testStatusTableBody =
+        bindingsTestInfo
+            .map((info) => {
+                return `| ${info.bindingName} | ${info.count} |`
+            })
+
+    const readmePath = path.resolve(__dirname, "README.md")
+
+    const readmeContent = await fs.readFile(readmePath)
+
+    const readmeLines =
+        readmeContent
+            .toString()
+            .replace("\r\n", "\n")
+            .split("\n")
+
+    const beginTestsStatusLineIndex = readmeLines.indexOf("<!-- DON'T REMOVE - begin tests status -->");
+    const endTestsStatusLineIndex = readmeLines.indexOf("<!-- DON'T REMOVE - end tests status -->");
+
+    const newReadmeContent =
+        []
+            .concat(
+                readmeLines.slice(0, beginTestsStatusLineIndex + 1),
+                [
+                    "", // This create an empty line
+                    "| Binding | Number of tests |",
+                    "|---------|-----------------|"
+                ],
+                testStatusTableBody,
+                readmeLines.slice(endTestsStatusLineIndex - 1)
+            )
+            .join("\n")
+
+    await fs.writeFile(readmePath, newReadmeContent)
+}
+
+const publishHandler = async () => {
+    // Check if all the required env variables are defined
+    const NUGET_KEY = getEnvVariable("NUGET_KEY")
+
+    // 1. Remove Fable compiled files
+    await cleanCompiledFiles()
+    // // 2. Compile the tests from scratch
+    // await awaitSpawn(
+    //     "dotnet",
+    //     "fable Tests.fsproj".split(" "),
+    //     {
+    //         stdio: "inherit",
+    //         shell: true,
+    //         cwd: path.resolve(__dirname, "tests")
+    //     }
+    // )
+    // // 3. Run the tests
+    // await awaitSpawn(
+    //     "npx",
+    //     "mocha -r esm -r tests/env.js --reporter dot --recursive tests/".split(" "),
+    //     {
+    //         stdio: "inherit",
+    //         shell: true,
+    //     }
+    // )
+    // 4. Update the fsproj versions
+    for (const project of projects) {
+        const fsprojGlob = await fg(`src/${project}/*.fsproj`)
+
+        // Check if a fsproj file is found and only one exist in the project directory
+        if (fsprojGlob.length === 0) {
+            log(error(`fsproj file not found in src/${project}`))
+            process.exit(1)
+        }
+
+        if (fsprojGlob.length > 1) {
+            log(error(`Several fsproj file found in src/${project}. It should only have one`))
+            process.exit(1)
+        }
+
+        const fsprojPath = fsprojGlob[0]
+
+        const changelogPath = path.resolve(__dirname, "src", project, "CHANGELOG.md")
+
+        // Check that changelog file exist
+        try {
+            await fs.access(changelogPath)
+        } catch (error) {
+            log(error(`Missing ${changelogPath} file`))
+            process.exit(1)
+        }
+
+        const fsprojContent = (await fs.readFile(fsprojPath)).toString()
+
+        // Normalize the new lines otherwise parseChangelog isn't able to parse the file correctly
+        const changelogContent = (await fs.readFile(changelogPath)).toString().replace("\r\n", "\n")
+        const changelog = await parseChangelog({ text : changelogContent})
+
+        // Check if the changelog has at least 2 versions in it
+        // Unreleased & X.Y.Z
+        if (changelog.versions.length < 2) {
+            log(error(`No version to publish for ${project}`))
+            process.exit(1)
+        }
+
+        const unreleased = changelog.versions[0];
+
+        // Check malformed changelog
+        if (unreleased.title !== "Unreleased") {
+            log(error(`Malformed CHANGELOG.md file in ${project}`))
+            log(error("The changelog should first version should be 'Unreleased'"))
+            process.exit(1)
+        }
+
+        // Access via index is ok we checked the lenght before
+        const newVersion = changelog.versions[1].version;
+
+        if (newVersion.version === null) {
+            log(error(`Malformed CHANGELOG.md file in ${project}`))
+            log(error("Please verify the last version format, it should be SEMVER compliant"))
+            process.exit(1)
+        }
+
+        const fsprojVersionRegex = /<Version>(.*)<\/Version>/gmi
+
+        const m = fsprojVersionRegex.exec(fsprojContent)
+
+        if (m === null) {
+            log(error(`Missing <Version>..</Version> tag in ${fsprojPath}`))
+            process.exit(1)
+        }
+
+        const lastPublishedVersion = m[1];
+
+        if (lastPublishedVersion === newVersion) {
+            log(`Version ${lastPublishedVersion} of ${project}, has already been published. Skipping this project`)
+            break;
+        }
+
+        log(`New version detected for ${project}, starting publish process for it`)
+
+        const newFsprojContent = fsprojContent.replace(fsprojVersionRegex, `<Version>${newVersion}</Version>`)
+
+        // Start a try-catch here, because we modfied the file on the disk
+        // This allows to revert the changes made to the file is something goes wrong
+        try {
+            // Update fsproj file on the disk
+            await fs.writeFile(fsprojPath, newFsprojContent)
+
+            await awaitSpawn(
+                "dotnet",
+                `pack -c Release ${fsprojPath}`.split(' '),
+                {
+                    stdio: "inherit",
+                    shell: true
+                }
+            )
+
+            const nugetPackagePath = await fg(`src/${project}/bin/Release/*${newVersion}.nupkg`)
+
+            // await awaitSpawn(
+            //     "dotnet",
+            //     `nuget push -s nuget.org -k ${NUGET_KEY} ${nugetPackagePath}`.split(' '),
+            //     {
+            //         stdio: "inherit",
+            //         shell: true
+            //     }
+            // )
+
+            log(success(`Project ${project} has been published`))
+
+        } catch (e) {
+            log(error(`Something went wrong while publish ${project}`))
+            log("Reverting changes made to the files")
+            await fs.writeFile(fsprojPath, fsprojContent)
+            log("Revert done")
+        }
+
+        process.exit(1)
+
+
+    }
+
+}
+
 yargs(hideBin(process.argv))
     .completion()
     .strict()
@@ -58,17 +313,35 @@ yargs(hideBin(process.argv))
         "Start Fable and mocha in watch mode. You should use this target when working on the bindings",
         (argv) => {
             argv
-            .option(
-                "pattern",
-                {
-                    description:
-                        `Pattern used to determine which tests are run by mocha.
+                .option(
+                    "pattern",
+                    {
+                        description:
+                            `Pattern used to determine which tests are run by mocha.
                         By default, we run all the tests but if you want to focus on the tests of Mime only you can pass '--pattern tests/Mime/'`,
-                    type: "string"
-                }
-            )
+                        type: "string"
+                    }
+                )
         },
         watchHandler
+    )
+    .command(
+        "update-tests-count",
+        "Execute the different tests and update tests count section of the README file",
+        () => { },
+        updateTestsCountHandler
+    )
+    .command(
+        "publish",
+        `1. Clean files
+        2. Make a fresh compilation
+        3. Run tests against the bindings
+        4. Update the version in the fsproj using the changelog as reference
+        5. Generate the packages
+        6. Publish new packages on NuGet
+        `,
+        () => { },
+        publishHandler
     )
     .version(false)
     .argv

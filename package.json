@@ -21,6 +21,8 @@
         "supertest": "6.0.1"
     },
     "devDependencies": {
+        "chalk": "^4.1.0",
+        "changelog-parser": "^2.8.0",
         "concurrently": "^6.0.0",
         "del-cli": "^3.0.1",
         "esm": "^3.2.25",

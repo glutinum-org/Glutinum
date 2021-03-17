@@ -6,6 +6,21 @@ For each bindings, you can find the documentation in the `README.md` file from t
 
 You can also take a look at the `tests` folder. Each binding comes with his own set of tests. Currently, we have around 450 tests.
 
+## Tests status
+
+<!-- DON'T REMOVE - begin tests status -->
+
+| Binding | Number of tests |
+|---------|-----------------|
+| BodyParser | 5 |
+| Connect | 3 |
+| Express | 424 |
+| Mime | 4 |
+| Qs | 5 |
+| RangeParser | 5 |
+| ServeStatic | 2 |
+
+<!-- DON'T REMOVE - end tests status -->
 ## How to use this repository?
 
 If you are on Windows using the standard terminal you need to run `node build.js`.
