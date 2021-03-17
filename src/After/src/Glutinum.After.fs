@@ -4,8 +4,8 @@ module rec Glutinum.After
 open Fable.Core
 
 [<Import("default", "after")>]
-let e : IExports = jsNative
+let after : IExports = jsNative
 
 type [<AllowNullLiteral>] IExports =
     [<Emit("$0($1...)")>]
-    abstract after : count : int * callback : 'Callback * ?errCallback : (obj option -> unit) -> 'T
+    abstract Invoke : count : int * callback : 'Callback * ?errCallback : (obj option -> unit) -> 'T

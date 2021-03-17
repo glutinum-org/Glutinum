@@ -1,9 +1,10 @@
 ﻿module Tests.Express.Binding.HTTPMethodsOverload
 
 open Mocha
-open ExpressServeStaticCore
+open Glutinum.ExpressServeStaticCore
 open System.Text.RegularExpressions
 open Fable.Core
+open Glutinum.Express
 
 describe "Express" (fun () ->
 
@@ -12,7 +13,7 @@ describe "Express" (fun () ->
         describe ".get" (fun () ->
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.get(U3.Case1 "/user/:id", fun (req : Request) (res : Response) ->
                     res.``end``(req.``params``.["id"])
@@ -25,7 +26,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.get("/user/:id", fun (req : Request) (res : Response) ->
                     res.``end``(req.``params``.["id"])
@@ -38,7 +39,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.get(Regex("^\/user\/([0-9]+)$"), fun (req : Request) (res : Response) ->
                     res.``end``("fetching user " + req.``params``.[0])
@@ -51,7 +52,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.get(ResizeArray(["/user/:userId"; "/post/:postId"]), fun (req : Request) (res : Response) ->
@@ -74,7 +75,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.get(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]), fun (req : Request) (res : Response) ->
@@ -103,7 +104,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.get(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]), fun (req : Request) (res : Response) ->
@@ -137,7 +138,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.get(U3.Case1 "/user/:id", fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -161,7 +162,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.get("/user/:id", fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -185,7 +186,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.get(Regex("^\/user\/([0-9]+)$"), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -209,7 +210,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.get(ResizeArray(["/user/:userId"; "/post/:postId"]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -246,7 +247,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.get(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -283,7 +284,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.get(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -320,7 +321,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.get("/user",
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -339,7 +340,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a Regex and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.get(Regex("^\/user\/([0-9]+)$"),
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -358,7 +359,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.get(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -393,7 +394,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.get(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -428,7 +429,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of Regex and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.get(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]),
@@ -463,7 +464,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.get(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]),
@@ -498,7 +499,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.get(U3.Case1 "/user/:userId",
@@ -525,7 +526,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.get("/user/:userId",
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -544,7 +545,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.get(Regex("^\/user\/([0-9]+)$"),
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -563,7 +564,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.get(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -599,7 +600,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.get(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]),
@@ -635,7 +636,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.get(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]),
@@ -671,7 +672,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.get(U3.Case1 "/user/:userId",
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -694,7 +695,7 @@ describe "Express" (fun () ->
         describe ".post" (fun () ->
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.post(U3.Case1 "/user/:id", fun (req : Request) (res : Response) ->
                     res.``end``(req.``params``.["id"])
@@ -707,7 +708,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.post("/user/:id", fun (req : Request) (res : Response) ->
                     res.``end``(req.``params``.["id"])
@@ -720,7 +721,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.post(Regex("^\/user\/([0-9]+)$"), fun (req : Request) (res : Response) ->
                     res.``end``("fetching user " + req.``params``.[0])
@@ -733,7 +734,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.post(ResizeArray(["/user/:userId"; "/post/:postId"]), fun (req : Request) (res : Response) ->
@@ -756,7 +757,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.post(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]), fun (req : Request) (res : Response) ->
@@ -785,7 +786,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.post(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]), fun (req : Request) (res : Response) ->
@@ -819,7 +820,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.post(U3.Case1 "/user/:id", fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -843,7 +844,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.post("/user/:id", fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -867,7 +868,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.post(Regex("^\/user\/([0-9]+)$"), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -891,7 +892,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.post(ResizeArray(["/user/:userId"; "/post/:postId"]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -928,7 +929,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.post(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -965,7 +966,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.post(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -1002,7 +1003,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.post("/user",
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -1021,7 +1022,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a Regex and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.post(Regex("^\/user\/([0-9]+)$"),
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -1040,7 +1041,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.post(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -1075,7 +1076,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.post(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -1110,7 +1111,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of Regex and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.post(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]),
@@ -1145,7 +1146,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.post(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]),
@@ -1180,7 +1181,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.post(U3.Case1 "/user/:userId",
@@ -1207,7 +1208,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.post("/user/:userId",
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -1226,7 +1227,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.post(Regex("^\/user\/([0-9]+)$"),
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -1245,7 +1246,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.post(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -1281,7 +1282,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.post(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]),
@@ -1317,7 +1318,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.post(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]),
@@ -1353,7 +1354,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.post(U3.Case1 "/user/:userId",
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -1376,7 +1377,7 @@ describe "Express" (fun () ->
         describe ".put" (fun () ->
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.put(U3.Case1 "/user/:id", fun (req : Request) (res : Response) ->
                     res.``end``(req.``params``.["id"])
@@ -1389,7 +1390,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.put("/user/:id", fun (req : Request) (res : Response) ->
                     res.``end``(req.``params``.["id"])
@@ -1402,7 +1403,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.put(Regex("^\/user\/([0-9]+)$"), fun (req : Request) (res : Response) ->
                     res.``end``("fetching user " + req.``params``.[0])
@@ -1415,7 +1416,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.put(ResizeArray(["/user/:userId"; "/post/:postId"]), fun (req : Request) (res : Response) ->
@@ -1438,7 +1439,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.put(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]), fun (req : Request) (res : Response) ->
@@ -1467,7 +1468,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.put(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]), fun (req : Request) (res : Response) ->
@@ -1501,7 +1502,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.put(U3.Case1 "/user/:id", fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -1525,7 +1526,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.put("/user/:id", fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -1549,7 +1550,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.put(Regex("^\/user\/([0-9]+)$"), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -1573,7 +1574,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.put(ResizeArray(["/user/:userId"; "/post/:postId"]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -1610,7 +1611,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.put(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -1647,7 +1648,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.put(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -1684,7 +1685,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.put("/user",
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -1703,7 +1704,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a Regex and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.put(Regex("^\/user\/([0-9]+)$"),
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -1722,7 +1723,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.put(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -1757,7 +1758,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.put(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -1792,7 +1793,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of Regex and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.put(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]),
@@ -1827,7 +1828,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.put(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]),
@@ -1862,7 +1863,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.put(U3.Case1 "/user/:userId",
@@ -1889,7 +1890,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.put("/user/:userId",
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -1908,7 +1909,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.put(Regex("^\/user\/([0-9]+)$"),
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -1927,7 +1928,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.put(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -1963,7 +1964,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.put(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]),
@@ -1999,7 +2000,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.put(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]),
@@ -2035,7 +2036,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.put(U3.Case1 "/user/:userId",
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -2058,7 +2059,7 @@ describe "Express" (fun () ->
         describe ".del" (fun () ->
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.del(U3.Case1 "/user/:id", fun (req : Request) (res : Response) ->
                     res.``end``(req.``params``.["id"])
@@ -2071,7 +2072,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.del("/user/:id", fun (req : Request) (res : Response) ->
                     res.``end``(req.``params``.["id"])
@@ -2084,7 +2085,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.del(Regex("^\/user\/([0-9]+)$"), fun (req : Request) (res : Response) ->
                     res.``end``("fetching user " + req.``params``.[0])
@@ -2097,7 +2098,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.del(ResizeArray(["/user/:userId"; "/post/:postId"]), fun (req : Request) (res : Response) ->
@@ -2120,7 +2121,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.del(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]), fun (req : Request) (res : Response) ->
@@ -2149,7 +2150,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.del(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]), fun (req : Request) (res : Response) ->
@@ -2183,7 +2184,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.del(U3.Case1 "/user/:id", fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -2207,7 +2208,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.del("/user/:id", fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -2231,7 +2232,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.del(Regex("^\/user\/([0-9]+)$"), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -2255,7 +2256,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.del(ResizeArray(["/user/:userId"; "/post/:postId"]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -2292,7 +2293,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.del(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -2329,7 +2330,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.del(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -2366,7 +2367,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.del("/user",
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -2385,7 +2386,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a Regex and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.del(Regex("^\/user\/([0-9]+)$"),
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -2404,7 +2405,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.del(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -2439,7 +2440,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.del(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -2474,7 +2475,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of Regex and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.del(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]),
@@ -2509,7 +2510,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.del(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]),
@@ -2544,7 +2545,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.del(U3.Case1 "/user/:userId",
@@ -2571,7 +2572,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.del("/user/:userId",
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -2590,7 +2591,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.del(Regex("^\/user\/([0-9]+)$"),
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -2609,7 +2610,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.del(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -2645,7 +2646,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.del(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]),
@@ -2681,7 +2682,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.del(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]),
@@ -2717,7 +2718,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.del(U3.Case1 "/user/:userId",
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -2740,7 +2741,7 @@ describe "Express" (fun () ->
         describe ".delete" (fun () ->
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.delete(U3.Case1 "/user/:id", fun (req : Request) (res : Response) ->
                     res.``end``(req.``params``.["id"])
@@ -2753,7 +2754,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.delete("/user/:id", fun (req : Request) (res : Response) ->
                     res.``end``(req.``params``.["id"])
@@ -2766,7 +2767,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.delete(Regex("^\/user\/([0-9]+)$"), fun (req : Request) (res : Response) ->
                     res.``end``("fetching user " + req.``params``.[0])
@@ -2779,7 +2780,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.delete(ResizeArray(["/user/:userId"; "/post/:postId"]), fun (req : Request) (res : Response) ->
@@ -2802,7 +2803,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.delete(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]), fun (req : Request) (res : Response) ->
@@ -2831,7 +2832,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.delete(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]), fun (req : Request) (res : Response) ->
@@ -2865,7 +2866,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.delete(U3.Case1 "/user/:id", fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -2889,7 +2890,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.delete("/user/:id", fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -2913,7 +2914,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.delete(Regex("^\/user\/([0-9]+)$"), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -2937,7 +2938,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.delete(ResizeArray(["/user/:userId"; "/post/:postId"]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -2974,7 +2975,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.delete(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -3011,7 +3012,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.delete(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -3048,7 +3049,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.delete("/user",
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -3067,7 +3068,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a Regex and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.delete(Regex("^\/user\/([0-9]+)$"),
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -3086,7 +3087,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.delete(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -3121,7 +3122,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.delete(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -3156,7 +3157,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of Regex and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.delete(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]),
@@ -3191,7 +3192,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.delete(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]),
@@ -3226,7 +3227,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.delete(U3.Case1 "/user/:userId",
@@ -3253,7 +3254,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.delete("/user/:userId",
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -3272,7 +3273,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.delete(Regex("^\/user\/([0-9]+)$"),
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -3291,7 +3292,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.delete(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -3327,7 +3328,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.delete(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]),
@@ -3363,7 +3364,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.delete(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]),
@@ -3399,7 +3400,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.delete(U3.Case1 "/user/:userId",
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -3422,7 +3423,7 @@ describe "Express" (fun () ->
         describe ".all" (fun () ->
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.all(U3.Case1 "/user/:id", fun (req : Request) (res : Response) ->
                     res.``end``(req.``params``.["id"])
@@ -3435,7 +3436,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.all("/user/:id", fun (req : Request) (res : Response) ->
                     res.``end``(req.``params``.["id"])
@@ -3448,7 +3449,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.all(Regex("^\/user\/([0-9]+)$"), fun (req : Request) (res : Response) ->
                     res.``end``("fetching user " + req.``params``.[0])
@@ -3461,7 +3462,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.all(ResizeArray(["/user/:userId"; "/post/:postId"]), fun (req : Request) (res : Response) ->
@@ -3484,7 +3485,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.all(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]), fun (req : Request) (res : Response) ->
@@ -3513,7 +3514,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.all(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]), fun (req : Request) (res : Response) ->
@@ -3547,7 +3548,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.all(U3.Case1 "/user/:id", fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -3571,7 +3572,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.all("/user/:id", fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -3595,7 +3596,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.all(Regex("^\/user\/([0-9]+)$"), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -3619,7 +3620,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.all(ResizeArray(["/user/:userId"; "/post/:postId"]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -3656,7 +3657,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.all(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -3693,7 +3694,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.all(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -3730,7 +3731,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.all("/user",
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -3749,7 +3750,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a Regex and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.all(Regex("^\/user\/([0-9]+)$"),
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -3768,7 +3769,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.all(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -3803,7 +3804,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.all(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -3838,7 +3839,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of Regex and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.all(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]),
@@ -3873,7 +3874,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.all(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]),
@@ -3908,7 +3909,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.all(U3.Case1 "/user/:userId",
@@ -3935,7 +3936,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.all("/user/:userId",
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -3954,7 +3955,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.all(Regex("^\/user\/([0-9]+)$"),
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -3973,7 +3974,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.all(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -4009,7 +4010,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.all(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]),
@@ -4045,7 +4046,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.all(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]),
@@ -4081,7 +4082,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.all(U3.Case1 "/user/:userId",
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -4104,7 +4105,7 @@ describe "Express" (fun () ->
         describe ".patch" (fun () ->
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.patch(U3.Case1 "/user/:id", fun (req : Request) (res : Response) ->
                     res.``end``(req.``params``.["id"])
@@ -4117,7 +4118,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.patch("/user/:id", fun (req : Request) (res : Response) ->
                     res.``end``(req.``params``.["id"])
@@ -4130,7 +4131,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.patch(Regex("^\/user\/([0-9]+)$"), fun (req : Request) (res : Response) ->
                     res.``end``("fetching user " + req.``params``.[0])
@@ -4143,7 +4144,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.patch(ResizeArray(["/user/:userId"; "/post/:postId"]), fun (req : Request) (res : Response) ->
@@ -4166,7 +4167,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.patch(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]), fun (req : Request) (res : Response) ->
@@ -4195,7 +4196,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.patch(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]), fun (req : Request) (res : Response) ->
@@ -4229,7 +4230,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.patch(U3.Case1 "/user/:id", fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -4253,7 +4254,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.patch("/user/:id", fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -4277,7 +4278,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.patch(Regex("^\/user\/([0-9]+)$"), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -4301,7 +4302,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.patch(ResizeArray(["/user/:userId"; "/post/:postId"]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -4338,7 +4339,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.patch(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -4375,7 +4376,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.patch(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -4412,7 +4413,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.patch("/user",
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -4431,7 +4432,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a Regex and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.patch(Regex("^\/user\/([0-9]+)$"),
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -4450,7 +4451,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.patch(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -4485,7 +4486,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.patch(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -4520,7 +4521,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of Regex and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.patch(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]),
@@ -4555,7 +4556,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.patch(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]),
@@ -4590,7 +4591,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.patch(U3.Case1 "/user/:userId",
@@ -4617,7 +4618,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.patch("/user/:userId",
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -4636,7 +4637,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.patch(Regex("^\/user\/([0-9]+)$"),
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -4655,7 +4656,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.patch(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -4691,7 +4692,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.patch(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]),
@@ -4727,7 +4728,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.patch(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]),
@@ -4763,7 +4764,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.patch(U3.Case1 "/user/:userId",
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -4786,7 +4787,7 @@ describe "Express" (fun () ->
         describe ".options" (fun () ->
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.options(U3.Case1 "/user/:id", fun (req : Request) (res : Response) ->
                     res.``end``(req.``params``.["id"])
@@ -4799,7 +4800,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.options("/user/:id", fun (req : Request) (res : Response) ->
                     res.``end``(req.``params``.["id"])
@@ -4812,7 +4813,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.options(Regex("^\/user\/([0-9]+)$"), fun (req : Request) (res : Response) ->
                     res.``end``("fetching user " + req.``params``.[0])
@@ -4825,7 +4826,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.options(ResizeArray(["/user/:userId"; "/post/:postId"]), fun (req : Request) (res : Response) ->
@@ -4848,7 +4849,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.options(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]), fun (req : Request) (res : Response) ->
@@ -4877,7 +4878,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.options(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]), fun (req : Request) (res : Response) ->
@@ -4911,7 +4912,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.options(U3.Case1 "/user/:id", fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -4935,7 +4936,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.options("/user/:id", fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -4959,7 +4960,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.options(Regex("^\/user\/([0-9]+)$"), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -4983,7 +4984,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.options(ResizeArray(["/user/:userId"; "/post/:postId"]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -5020,7 +5021,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.options(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -5057,7 +5058,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.options(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -5094,7 +5095,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.options("/user",
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -5113,7 +5114,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a Regex and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.options(Regex("^\/user\/([0-9]+)$"),
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -5132,7 +5133,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.options(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -5167,7 +5168,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.options(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -5202,7 +5203,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of Regex and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.options(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]),
@@ -5237,7 +5238,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.options(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]),
@@ -5272,7 +5273,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.options(U3.Case1 "/user/:userId",
@@ -5299,7 +5300,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.options("/user/:userId",
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -5318,7 +5319,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.options(Regex("^\/user\/([0-9]+)$"),
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -5337,7 +5338,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.options(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -5373,7 +5374,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.options(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]),
@@ -5409,7 +5410,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.options(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]),
@@ -5445,7 +5446,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
 
                 app.options(U3.Case1 "/user/:userId",
                     fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -5468,7 +5469,7 @@ describe "Express" (fun () ->
         describe ".head" (fun () ->
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable called = false
 
                 app.head(U3.Case1 "/user/:id", fun (req : Request) (res : Response) ->
@@ -5489,7 +5490,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable called = false
 
                 app.head("/user/:id", fun (req : Request) (res : Response) ->
@@ -5510,7 +5511,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable called = false
 
                 app.head(Regex("^\/user\/([0-9]+)$"), fun (req : Request) (res : Response) ->
@@ -5531,7 +5532,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.head(ResizeArray(["/user/:userId"; "/post/:postId"]), fun (req : Request) (res : Response) ->
@@ -5554,7 +5555,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.head(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]), fun (req : Request) (res : Response) ->
@@ -5583,7 +5584,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a 'simple handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.head(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]), fun (req : Request) (res : Response) ->
@@ -5612,7 +5613,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.head(U3.Case1 "/user/:id", fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -5636,7 +5637,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.head("/user/:id", fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -5660,7 +5661,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.head(Regex("^\/user\/([0-9]+)$"), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -5684,7 +5685,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.head(ResizeArray(["/user/:userId"; "/post/:postId"]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -5721,7 +5722,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.head(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -5758,7 +5759,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a 'next handler'" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.head(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]), fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -5795,7 +5796,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.head("/user",
@@ -5822,7 +5823,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a Regex and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.head(Regex("^\/user\/([0-9]+)$"),
@@ -5849,7 +5850,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.head(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -5884,7 +5885,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.head(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -5919,7 +5920,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of Regex and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.head(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]),
@@ -5954,7 +5955,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|RegExp and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.head(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]),
@@ -5989,7 +5990,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and a list of RequestHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.head(U3.Case1 "/user/:userId",
@@ -6016,7 +6017,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a string and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable captured = false
 
                 app.head("/user/:userId",
@@ -6043,7 +6044,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable captured = false
 
                 app.head(Regex("^\/user\/([0-9]+)$"),
@@ -6070,7 +6071,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.head(ResizeArray(["/user/:userId"; "/post/:postId"]),
@@ -6106,7 +6107,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.head(ResizeArray([Regex("^\/user\/([0-9]+)$"); Regex("^\/post\/([0-9]+)$")]),
@@ -6142,7 +6143,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking an array of string|Regex and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable count = 0
 
                 app.head(ResizeArray([U2.Case1 "/user/:userId"; U2.Case2 (Regex("^\/post\/([0-9]+)$"))]),
@@ -6178,7 +6179,7 @@ describe "Express" (fun () ->
             )
 
             itAsync "should have an overload taking a U3<string, RegExp, Array<U2<string, RegExp>>> and an ErrorHandler" (fun d ->
-                let app = Express.e.express()
+                let app = express.express()
                 let mutable captured = false
 
                 app.head(U3.Case1 "/user/:userId",

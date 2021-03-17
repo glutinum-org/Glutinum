@@ -1,6 +1,7 @@
 module Tests.Express.Port.App.Render
 
-open ExpressServeStaticCore
+open Glutinum.ExpressServeStaticCore
+open Glutinum.Express
 open Fable.Core.JsInterop
 open Mocha
 open Node
@@ -8,7 +9,7 @@ open Node
 let tmpl (_ : string) (_ : obj) _ = import "default" "./support/tmpl.js"
 
 let createApp() =
-  let app = Express.e.express()
+  let app = express.express ()
   app.engine(".tmpl", tmpl);
   app
 
@@ -76,7 +77,7 @@ describe "app" (fun _ ->
         )
 
         itAsync "should handle render error throws" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             emitJsStatement () """
 function View(name, options){
@@ -241,7 +242,7 @@ $0.set('view', View);
 
         describe "caching" (fun _ ->
             itAsync "should always lookup view without cache" (fun d ->
-                let app = Express.e.express()
+                let app = express.express ()
                 let mutable count = 0
 
 
@@ -278,7 +279,7 @@ fn(null, 'abstract engine');
             )
 
             itAsync "should cache with 'view cache' setting" (fun d ->
-                let app = Express.e.express()
+                let app = express.express ()
                 let mutable count = 0 // Force a "unique" name because we emit raw JavaScript
 
                 emitJsStatement count """
@@ -363,7 +364,7 @@ fn(null, 'abstract engine');
 
             describe "caching" (fun _ ->
                 itAsync "should cache with cache option" (fun d ->
-                    let app = Express.e.express()
+                    let app = express.express ()
                     let mutable count = 0 // Force a "unique" name because we emit raw JavaScript
 
                     // Abuse emit helpers to mimic the JavaScript code as Fable emit flat arrows functions

@@ -1,12 +1,13 @@
 module Tests.Express.Port.App.Options
 
 open Mocha
-open ExpressServeStaticCore
+open Glutinum.ExpressServeStaticCore
+open Glutinum.Express
 
 describe "OPTIONS" (fun _ ->
 
     itAsync "should default to the routes defined" (fun d ->
-        let app = Express.e.express ()
+        let app = express.express ()
 
         app.del("/", fun (_ : Request) (_ : Response) -> ())
         app.get("/users", fun _ _ -> ())
@@ -20,7 +21,7 @@ describe "OPTIONS" (fun _ ->
     )
 
     itAsync "should only include each method once" (fun d ->
-        let app = Express.e.express ()
+        let app = express.express ()
 
         app.del("/", fun (_ : Request) (_ : Response) -> ())
         app.get("/users", fun _ _ -> ())
@@ -36,7 +37,7 @@ describe "OPTIONS" (fun _ ->
     )
 
     itAsync "should not be affected by app.all" (fun d ->
-        let app = Express.e.express ()
+        let app = express.express ()
 
         app.del("/", fun (_ : Request) (_ : Response) -> ())
         app.get("/users", fun _ _ -> ())
@@ -56,7 +57,7 @@ describe "OPTIONS" (fun _ ->
     )
 
     itAsync "should not respond if the path is not defined" (fun d ->
-        let app = Express.e.express ()
+        let app = express.express ()
 
         app.get("/users", fun _ _ -> ())
 
@@ -67,8 +68,8 @@ describe "OPTIONS" (fun _ ->
     )
 
     itAsync "should forward requests down the middleware chain" (fun d ->
-        let app = Express.e.express()
-        let router = Express.e.Router()
+        let app = express.express ()
+        let router = express.Router()
 
         router.get("/users", fun _ _ -> ())
         app.``use``(router)
@@ -85,8 +86,8 @@ describe "OPTIONS" (fun _ ->
     describe "when error occurs in response handler" (fun _ ->
 
         itAsync "should pass error to callback" (fun d ->
-            let app = Express.e.express ()
-            let router = Express.e.Router()
+            let app = express.express ()
+            let router = express.Router()
 
             router.get("/users", fun _ _ -> ())
 
@@ -112,7 +113,7 @@ describe "OPTIONS" (fun _ ->
 describe "app.options()" (fun _ ->
 
     itAsync "should override the default behaviour" (fun d ->
-        let app = Express.e.express()
+        let app = express.express ()
 
         app.options("/users", fun (req : Request) (res : Response) ->
             res.set("Allow", "GET") |> ignore

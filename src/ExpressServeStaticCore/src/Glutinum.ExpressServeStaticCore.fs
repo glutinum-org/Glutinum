@@ -2,7 +2,7 @@
 module rec Glutinum.ExpressServeStaticCore
 
 open System
-open ExpressServeStaticCore
+open Glutinum.ExpressServeStaticCore
 open Fable.Core
 open Node
 open Qs

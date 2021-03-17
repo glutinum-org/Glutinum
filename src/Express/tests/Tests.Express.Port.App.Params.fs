@@ -4,14 +4,15 @@ open System
 open Fable.Core.JS
 open Fable.Core.JsInterop
 open Mocha
-open ExpressServeStaticCore
+open Glutinum.ExpressServeStaticCore
+open Glutinum.Express
 open Node
 
 describe "app" (fun _ ->
 
     describe ".param(fn)" (fun _ ->
         itAsync "should map app.param(name, ...) logic" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.param(fun name regexp ->
                 if Constructors.Object?prototype?toString?call(regexp) = "[object RegExp]" then
@@ -58,7 +59,7 @@ describe "app" (fun _ ->
 
     describe ".params(names, fn)" (fun _ ->
         itAsync "should map the array" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.param(ResizeArray(["id"; "uid"]), fun (req : Request) res next id ->
                 let id = Constructors.Number.Create(id)
@@ -107,7 +108,7 @@ describe "app" (fun _ ->
 
     describe ".params(name, fn)" (fun _ ->
         itAsync "should map logic for a single param" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.param("id", fun req res next id ->
                 let id = Constructors.Number.Create(id)
@@ -135,7 +136,7 @@ describe "app" (fun _ ->
         )
 
         itAsync "should only call once per request" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
             let mutable called = 0
             let mutable count = 0
 
@@ -168,7 +169,7 @@ describe "app" (fun _ ->
 
 
         itAsync "should call when values differ" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
             let mutable called = 0
             let mutable count = 0
 
@@ -206,7 +207,7 @@ describe "app" (fun _ ->
         )
 
         itAsync "should support altering req.params across routes" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.param("user", fun req res next user ->
                 req.``params``.["user"] <- "loki"
@@ -228,7 +229,7 @@ describe "app" (fun _ ->
         )
 
         itAsync "should not invoke without route handler" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.param("thing", fun req res next thing ->
                 req?thing <- thing
@@ -254,7 +255,7 @@ describe "app" (fun _ ->
         )
 
         itAsync "should work with encoded values" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.param("name", fun req res next name ->
                 req.``params``.["name"] <- string name
@@ -273,7 +274,7 @@ describe "app" (fun _ ->
         )
 
         itAsync "should catch thrown error" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.param("id", fun req res next id ->
                 raise (Exception("err!"))
@@ -291,7 +292,7 @@ describe "app" (fun _ ->
         )
 
         itAsync "should catch thrown secondary error" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.param("id", fun req res next value ->
                 ``process``.nextTick(unbox next)
@@ -313,7 +314,7 @@ describe "app" (fun _ ->
         )
 
         itAsync "should defer to next route" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.param("id", fun req res next id ->
                 next.Invoke("route")
@@ -335,7 +336,7 @@ describe "app" (fun _ ->
         )
 
         itAsync "should defer all the param routes" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.param("id", fun req res next value ->
                 if value = box "new" then
@@ -363,7 +364,7 @@ describe "app" (fun _ ->
         )
 
         itAsync "should not call when values differ on error" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
             let mutable called = 0
             let mutable count = 0
 
@@ -399,7 +400,7 @@ describe "app" (fun _ ->
         )
 
         itAsync "should call when values differ when using 'next'" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
             let mutable called = 0
             let mutable count = 0
 

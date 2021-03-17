@@ -1,13 +1,14 @@
 module Tests.Express.Port.App.Request
 
-open ExpressServeStaticCore
+open Glutinum.ExpressServeStaticCore
+open Glutinum.Express
 open Fable.Core.JsInterop
 open Mocha
 
 describe "app" (fun _ ->
     describe ".request" (fun _ ->
         itAsync "should extend the request prototype" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             emitJsStatement app """
 $0.request.querystring = function(){

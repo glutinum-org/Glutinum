@@ -1,13 +1,14 @@
 module Tests.Express.Port.App.Head
 
 open Mocha
-open ExpressServeStaticCore
+open Glutinum.ExpressServeStaticCore
+open Glutinum.Express
 open Fable.Core.JsInterop
 
 describe "HEAD" (fun _ ->
 
     itAsync "should default to GET" (fun d ->
-        let app = Express.e.express()
+        let app = express.express ()
 
         app.get("/tobi", fun (req : Request) (res : Response) (next : NextFunction) ->
             res.send("tobi")
@@ -20,7 +21,7 @@ describe "HEAD" (fun _ ->
     )
 
     itAsync "should output the same headers as GET requests" (fun d ->
-        let app = Express.e.express()
+        let app = express.express ()
 
         app.get("/tobi", fun req (res : Response) next ->
             res.send("tobi")
@@ -63,7 +64,7 @@ describe "app.head()" (fun _ ->
 
     itAsync "should override" (fun d ->
 
-        let app = Express.e.express()
+        let app = express.express ()
         let mutable called = false
 
         app.head("/tobi", fun req (res : Response<_,_>) next ->

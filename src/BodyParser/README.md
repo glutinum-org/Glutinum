@@ -18,6 +18,6 @@ let bodyParser =
 // If used with Express
 open Express
 
-let app = Express.e.express()
+let app = express.express ()
 app.``use``(bodyParser)
 ```

@@ -1,8 +1,8 @@
-namespace RangeParser
+namespace Glutinum.RangeParser
 
 open Fable.Core
 
-module Interop =
+module internal Interop =
 
     [<Emit("typeof $0")>]
     let internal jsTypeOf _ : string = jsNative

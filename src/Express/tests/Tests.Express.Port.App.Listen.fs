@@ -2,14 +2,15 @@ module Tests.Express.Port.App.Listen
 
 open Node
 open Mocha
-open ExpressServeStaticCore
+open Glutinum.ExpressServeStaticCore
+open Glutinum.Express
 
 #nowarn "40"
 
 describe "app.listen()" (fun _ ->
 
     itAsync "should wrap with an HTTP server" (fun d ->
-        let app = Express.e.express ()
+        let app = express.express ()
 
         app.del("/tobi", fun req (res : Response<_,_>) next ->
             res.``end``("deleted tobi")

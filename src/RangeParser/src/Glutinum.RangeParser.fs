@@ -1,4 +1,4 @@
-namespace rec RangeParser
+namespace rec Glutinum.RangeParser
 
 open System
 open Fable.Core

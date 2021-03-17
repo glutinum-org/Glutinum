@@ -3,7 +3,7 @@ module Tests.RangeParser
 open Mocha
 open Fable.Core.Testing
 open Fable.Core.JsInterop
-open RangeParser
+open Glutinum.RangeParser
 
 // Code adapted from: https://github.com/jshttp/range-parser/tree/5f48dfc7996b18242dfa1fbddcc03f39b42a4554
 

@@ -1,17 +1,21 @@
 module Tests.Express.Port.App.Router
 
 open System.Text.RegularExpressions
-open ExpressServeStaticCore
+open Glutinum.ExpressServeStaticCore
+open Glutinum.Express
+open Glutinum.After
+open Glutinum.SuperTest
 open Fable.Core.JsInterop
 open Mocha
 open Node
-open SuperTest
 open Fable.Core
+
+module Methods = Glutinum.Methods
 
 describe "app.router" (fun _ ->
     itAsync "should restore req.params after leaving router" (fun d ->
-        let app = Express.e.express()
-        let router = Express.e.Router()
+        let app = express.express ()
+        let router = express.Router()
 
         let handler1 =
             fun (req : Request) (res : Response) (next : NextFunction)  ->
@@ -57,7 +61,7 @@ describe "app.router" (fun _ ->
                 () // Do nothing
             else
                 itAsync ("should include " + (string method).ToUpper()) (fun d ->
-                    let app = Express.e.express()
+                    let app = express.express ()
 
                     app?(method)$("/foo", fun (_ : Request) (res : Response) ->
                         res.send(method)
@@ -71,7 +75,7 @@ $1($0)
                 )
 
                 it ("should reject numbers for app." + (string method)) (fun _ ->
-                    let app = Express.e.express()
+                    let app = express.express ()
 
                     Assert.throws(app?(method)?bind$(app, "/", 3))
                 )
@@ -79,8 +83,8 @@ $1($0)
 
 
         itAsync "should re-route when method is altered" (fun d ->
-            let app = Express.e.express()
-            let cb : System.Func<obj option, SuperTest.Response,unit> = After.e.after(3, d)
+            let app = express.express ()
+            let cb : System.Func<obj option, SuperTest.Response,unit> = after.Invoke(3, d)
 
             app.``use``(fun (req : Request) (res : Response) (next : NextFunction) ->
                 if req.method <> "POST" then
@@ -126,7 +130,7 @@ $1($0)
 
     describe "decode params" (fun _ ->
         itAsync "should decode correct params" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("/:name", fun (req : Request) (res : Response) (next : NextFunction) ->
                 res.send(req.``params``.["name"])
@@ -142,7 +146,7 @@ $1($0)
         )
 
         itAsync "should not accept params in malformed paths" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("/:name", fun (req : Request) (res : Response) (next : NextFunction) ->
                 res.send(req.``params``.["name"])
@@ -155,7 +159,7 @@ $1($0)
         )
 
         itAsync "should not decode spaces" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("/:name", fun (req : Request) (res : Response) (next : NextFunction) ->
                 res.send(req.``params``.["name"])
@@ -168,7 +172,7 @@ $1($0)
         )
 
         itAsync "should work with unicode" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("/:name", fun (req : Request) (res : Response) (next : NextFunction) ->
                 res.send(req.``params``.["name"])
@@ -182,7 +186,7 @@ $1($0)
     )
 
     itAsync "should be .use()able" (fun d ->
-        let app = Express.e.express()
+        let app = express.express ()
         let calls = ResizeArray()
 
         app.``use``(fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -208,7 +212,7 @@ $1($0)
 
     describe "when given a regexp" (fun _ ->
         itAsync "should match the pathname" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get(Regex("^\/user\/[0-9]+$"), fun (req : Request) (res : Response) ->
                 res.``end``("user")
@@ -221,7 +225,7 @@ $1($0)
         )
 
         itAsync "should populate req.params with the captures" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get(Regex("^\/user\/([0-9]+)\/(view|edit)?$"), fun (req : Request) (res : Response) ->
                 let id = req.``params``.[0]
@@ -239,7 +243,7 @@ $1($0)
 
     describe "case sensitivity" (fun _ ->
         itAsync "should be disabled by default" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("/user", fun (req : Request) (res : Response) ->
                 res.``end``("tj")
@@ -253,7 +257,7 @@ $1($0)
 
         describe "when \"case sensitive routing\" is enabled" (fun _ ->
             itAsync "should match identical casing" (fun d ->
-                let app = Express.e.express()
+                let app = express.express ()
 
                 app.enable("case sensitive routing") |> ignore
 
@@ -268,7 +272,7 @@ $1($0)
             )
 
             itAsync "should not match otherwise" (fun d ->
-                let app = Express.e.express()
+                let app = express.express ()
 
                 app.enable("case sensitive routing") |> ignore
 
@@ -286,8 +290,8 @@ $1($0)
 
     describe "params" (fun _ ->
         itAsync "should overwrite existing req.params by default" (fun d ->
-            let app = Express.e.express()
-            let router = Express.e.Router()
+            let app = express.express ()
+            let router = express.Router()
 
             router.get("/:action", fun (req : Request) (res : Response) ->
                 res.send(req.``params``)
@@ -302,9 +306,9 @@ $1($0)
         )
 
         itAsync "should allow merging existing req.params" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
             let router =
-                Express.e.Router(jsOptions<Express.E.RouterOptions> (fun o ->
+                express.Router(jsOptions<Express.RouterOptions> (fun o ->
                     o.mergeParams <- true
                 ))
 
@@ -334,8 +338,8 @@ $1($0)
         )
 
         itAsync "should use params from router" (fun d ->
-            let app = Express.e.express()
-            let router = Express.e.Router()
+            let app = express.express ()
+            let router = express.Router()
 
             router.get("/:thing", fun (req : Request) (res : Response) ->
                 let keys = JS.Constructors.Object.keys(req.``params``)
@@ -363,9 +367,9 @@ $1($0)
         )
 
         itAsync "should merge numeric indices req.params" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
             let router =
-                Express.e.Router(jsOptions<Express.E.RouterOptions> (fun o ->
+                express.Router(jsOptions<Express.RouterOptions> (fun o ->
                     o.mergeParams <- true
                 ))
 
@@ -395,9 +399,9 @@ $1($0)
         )
 
         itAsync "should merge numeric indices req.params when more in parent" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
             let router =
-                Express.e.Router(jsOptions<Express.E.RouterOptions> (fun o ->
+                express.Router(jsOptions<Express.RouterOptions> (fun o ->
                     o.mergeParams <- true
                 ))
 
@@ -427,9 +431,9 @@ $1($0)
         )
 
         itAsync "should merge numeric indices req.params when parent has same number" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
             let router =
-                Express.e.Router(jsOptions<Express.E.RouterOptions> (fun o ->
+                express.Router(jsOptions<Express.RouterOptions> (fun o ->
                     o.mergeParams <- true
                 ))
 
@@ -459,9 +463,9 @@ $1($0)
         )
 
         itAsync "should ignore invalid incoming req.params" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
             let router =
-                Express.e.Router(jsOptions<Express.E.RouterOptions> (fun o ->
+                express.Router(jsOptions<Express.RouterOptions> (fun o ->
                     o.mergeParams <- true
                 ))
 
@@ -494,9 +498,9 @@ $1($0)
         )
 
         itAsync "should restore req.params" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
             let router =
-                Express.e.Router(jsOptions<Express.E.RouterOptions> (fun o ->
+                express.Router(jsOptions<Express.RouterOptions> (fun o ->
                     o.mergeParams <- true
                 ))
 
@@ -534,7 +538,7 @@ $1($0)
     describe "trailing slashes" (fun _ ->
 
         itAsync "should be optional by default" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("/user", fun (req : Request) (res : Response) ->
                 res.``end``("tj")
@@ -549,7 +553,7 @@ $1($0)
         describe "when \"strict routing\" is enabled" (fun _ ->
 
             itAsync "should match trailing slashes" (fun d ->
-                let app = Express.e.express()
+                let app = express.express ()
 
                 app.enable("strict routing") |> ignore
 
@@ -565,7 +569,7 @@ $1($0)
 
 
             itAsync "should pass-though middleware" (fun d ->
-                let app = Express.e.express()
+                let app = express.express ()
 
                 app.enable("strict routing") |> ignore
 
@@ -586,7 +590,7 @@ $1($0)
             )
 
             itAsync "should pass-though mounted middleware" (fun d ->
-                let app = Express.e.express()
+                let app = express.express ()
 
                 app.enable("strict routing") |> ignore
 
@@ -607,7 +611,7 @@ $1($0)
             )
 
             itAsync "should match no slashes" (fun d ->
-                let app = Express.e.express()
+                let app = express.express ()
 
                 app.enable("strict routing") |> ignore
 
@@ -622,7 +626,7 @@ $1($0)
             )
 
             itAsync "should match middleware when omitting the trailing slash" (fun d ->
-                let app = Express.e.express()
+                let app = express.express ()
 
                 app.enable("strict routing") |> ignore
 
@@ -638,7 +642,7 @@ $1($0)
 
 
             itAsync "should match middleware" (fun d ->
-                let app = Express.e.express()
+                let app = express.express ()
 
                 app.enable("strict routing") |> ignore
 
@@ -653,7 +657,7 @@ $1($0)
             )
 
             itAsync "should match middleware when adding the trailing slash" (fun d ->
-                let app = Express.e.express()
+                let app = express.express ()
 
                 app.enable("strict routing") |> ignore
 
@@ -668,7 +672,7 @@ $1($0)
             )
 
             itAsync "should fail when omitting the trailing slash" (fun d ->
-                let app = Express.e.express()
+                let app = express.express ()
 
                 app.enable("strict routing") |> ignore
 
@@ -683,7 +687,7 @@ $1($0)
             )
 
             itAsync "should fail when adding the trailing slash" (fun d ->
-                let app = Express.e.express()
+                let app = express.express ()
 
                 app.enable("strict routing") |> ignore
 
@@ -700,7 +704,7 @@ $1($0)
     )
 
     itAsync "should allow escaped regexp" (fun d ->
-        let app = Express.e.express()
+        let app = express.express ()
 
         app.get("/user/\\d+", fun (req : Request) (res : Response) ->
             res.``end``("woot")
@@ -721,7 +725,7 @@ $1($0)
     )
 
     itAsync "should allow literal \".\"" (fun d ->
-        let app = Express.e.express()
+        let app = express.express ()
 
         app.get("/api/users/:from..:to", fun (req : Request) (res : Response) ->
             let from = req.``params``.["from"]
@@ -738,7 +742,7 @@ $1($0)
 
     describe "*" (fun d ->
         itAsync "should capture everything" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("*", fun (req : Request) (res : Response) ->
                 res.``end``(req.``params``.[0])
@@ -751,7 +755,7 @@ $1($0)
         )
 
         itAsync "should decode the capture" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("*", fun (req : Request) (res : Response) ->
                 res.``end``(req.``params``.[0])
@@ -765,7 +769,7 @@ $1($0)
 
 
         itAsync "should denote a greedy capture group" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("/user/*.json", fun (req : Request) (res : Response) ->
                 res.``end``(req.``params``.[0])
@@ -779,7 +783,7 @@ $1($0)
 
 
         itAsync "should work with several" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("/api/*.*", fun (req : Request) (res : Response) ->
                 let resource = req.``params``.[0]
@@ -795,7 +799,7 @@ $1($0)
         )
 
         itAsync "should work cross-segment" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("/api*", fun (req : Request) (res : Response) ->
                 res.send(req.``params``.[0]);
@@ -813,7 +817,7 @@ $1($0)
         )
 
         itAsync "should allow naming" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("/api/:resource(*)", fun (req : Request) (res : Response) ->
                 res.``end``(req.``params``.["resource"])
@@ -827,7 +831,7 @@ $1($0)
 
 
         itAsync "should not be greedy immediately after param" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("/user/:user*", fun (req : Request) (res : Response) ->
                 res.``end``(req.``params``.["user"])
@@ -840,7 +844,7 @@ $1($0)
         )
 
         itAsync "should eat everything after /" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("/user/:user*", fun (req : Request) (res : Response) ->
                 res.``end``(req.``params``.["user"])
@@ -853,7 +857,7 @@ $1($0)
         )
 
         itAsync "should span multiple segments" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("/file/*", fun (req : Request) (res : Response) ->
                 res.``end``(req.``params``.[0])
@@ -866,7 +870,7 @@ $1($0)
         )
 
         itAsync "should be optional" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("/file/*", fun (req : Request) (res : Response) ->
                 res.``end``(req.``params``.[0])
@@ -879,7 +883,7 @@ $1($0)
         )
 
         itAsync "should require a preceding /" (fun d  ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("/file/*", fun (req : Request) (res : Response) ->
                 res.``end``(req.``params``.[0])
@@ -892,7 +896,7 @@ $1($0)
         )
 
         itAsync "should keep correct parameter indexes" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("/*/user/:id", fun (req : Request) (res : Response) ->
                 res.send(req.``params``)
@@ -905,7 +909,7 @@ $1($0)
         )
 
         itAsync "should work within arrays" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get(ResizeArray [|"/user/:id"; "/foo/*"; "/:bar"|], fun (req : Request) (res : Response) ->
                 res.send(req.``params``.["bar"])
@@ -921,7 +925,7 @@ $1($0)
     describe ":name" (fun _ ->
 
         itAsync "should denote a capture group" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("/user/:user", fun (req : Request) (res : Response) ->
                 res.send(req.``params``.["user"])
@@ -934,7 +938,7 @@ $1($0)
         )
 
         itAsync "should match a single segment only" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("/user/:user", fun (req : Request) (res : Response) ->
                 res.send(req.``params``.["user"])
@@ -947,7 +951,7 @@ $1($0)
         )
 
         itAsync "should allow several capture groups" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("/user/:user/:op", fun (req : Request) (res : Response) ->
                 res.send(req.``params``.["op"] + "ing " + req.``params``.["user"])
@@ -960,8 +964,8 @@ $1($0)
         )
 
         itAsync "should work following a partial capture group" (fun d ->
-            let app = Express.e.express()
-            let cb : System.Func<obj option, unit> = After.e.after(2, d)
+            let app = express.express ()
+            let cb : System.Func<obj option, unit> = after.Invoke(2, d)
 
             app.get("/user(s)?/:user/:op", fun (req : Request) (res : Response) ->
                 let endOfStr =
@@ -984,7 +988,7 @@ $1($0)
         )
 
         itAsync "should work inside literal parenthesis" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("/:user\\(:op\\)", fun (req : Request) (res : Response) ->
                 res.send(req.``params``.["op"] + "ing " + req.``params``.["user"])
@@ -997,8 +1001,8 @@ $1($0)
         )
 
         itAsync "should work in array of paths" (fun d ->
-            let app = Express.e.express()
-            let cb : System.Func<obj option, unit> = After.e.after(2, d)
+            let app = express.express ()
+            let cb : System.Func<obj option, unit> = after.Invoke(2, d)
 
             app.get(ResizeArray [|"/user/:user/poke"; "/user/:user/pokes"|], fun (req : Request) (res : Response) ->
                 res.send("poking " + req.``params``.["user"])
@@ -1018,7 +1022,7 @@ $1($0)
 
     describe ":name?" (fun () ->
         itAsync "should denote an optional capture group" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("/user/:user/:op?", fun (req : Request) (res : Response) ->
                 let op =
@@ -1037,7 +1041,7 @@ $1($0)
         )
 
         itAsync "should populate the capture group" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("/user/:user/:op?", fun (req : Request) (res : Response) ->
                 let op =
@@ -1058,7 +1062,7 @@ $1($0)
 
     describe ".:name" (fun () ->
         itAsync "should denote a format" (fun d  ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("/:name.:format", fun (req : Request) (res : Response) ->
                 res.send(req.``params``.["name"] + " as " + req.``params``.["format"])
@@ -1078,7 +1082,7 @@ $1($0)
 
     describe ".:name?" (fun () ->
         itAsync "should denote an optional format" (fun d  ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.get("/:name.:format?", fun (req : Request) (res : Response) ->
                 let format =
@@ -1105,7 +1109,7 @@ $1($0)
 
     describe "when next() is called" (fun () ->
         itAsync "should continue lookup" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
             let calls = ResizeArray()
 
             app.get("/foo/:bar?", fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -1136,7 +1140,7 @@ $1($0)
 
     describe "when next(\"route\") is called" (fun () ->
         itAsync "should jump to next route" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             let fn (req : Request) (res : Response) (next : NextFunction) =
                 res.set("X-Hit", "1") |> ignore
@@ -1160,8 +1164,8 @@ $1($0)
 
     describe "when next(\"router\") is called" (fun () ->
         itAsync "should jump out of router" (fun d ->
-            let app = Express.e.express()
-            let router = Express.e.Router()
+            let app = express.express ()
+            let router = express.Router()
 
             let fn (req : Request) (res : Response) (next : NextFunction) =
                 res.set("X-Hit", "1") |> ignore
@@ -1191,7 +1195,7 @@ $1($0)
 
     describe "when next(err) is called" (fun () ->
         itAsync "should break out of app.router" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
             let calls = ResizeArray()
 
             app.get("/foo/:bar?", fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -1234,7 +1238,7 @@ $1($0)
 
 
         itAsync "should call handler in same route, if exists" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             let fn1 =
                 fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -1266,7 +1270,7 @@ $1($0)
     )
 
     itAsync "should allow rewriting of the url" (fun d ->
-        let app = Express.e.express()
+        let app = express.express ()
 
         app.get("/account/edit", fun (req : Request) (res : Response) (next : NextFunction) ->
             req?user <- {| id = 12  |} // Faux authenticated user
@@ -1285,7 +1289,7 @@ $1($0)
     )
 
     itAsync "should run in order added" (fun d ->
-        let app = Express.e.express()
+        let app = express.express ()
         let path = ResizeArray()
 
         app.get("*", fun (req : Request) (res : Response) (next : NextFunction) ->
@@ -1325,7 +1329,7 @@ $1($0)
     )
 
     it "should be chainable" (fun () ->
-        let app = Express.e.express()
+        let app = express.express ()
 
         Assert.strictEqual(app.get("/", fun (req : Request) (res : Response) -> ()), app)
     )

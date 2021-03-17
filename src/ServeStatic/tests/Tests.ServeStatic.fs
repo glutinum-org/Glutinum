@@ -3,9 +3,9 @@ module Tests.ServeStatic
 open Mocha
 open Fable.Core.Testing
 open Fable.Core.JsInterop
-open ServeStatic
+open Glutinum.ServeStatic
 open Node
-open Connect
+open Glutinum.Connect
 
 // Code adapted from: https://github.com/expressjs/serve-static/blob/94feedb81682f4503ed9f8dc6d51a5c1b9bfa091/test/test.js
 

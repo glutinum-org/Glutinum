@@ -1,7 +1,8 @@
 module Tests.Express.Port.App.Engine
 
 open Mocha
-open ExpressServeStaticCore
+open Glutinum.ExpressServeStaticCore
+open Glutinum.Express
 open Node
 
 type RenderOption =
@@ -25,7 +26,7 @@ let render path (options : RenderOption) (fn : EngineRenderFunc) =
 describe "app.engine(ext, fn)" (fun _ ->
 
     itAsync "should map a template engine" (fun d ->
-        let app = Express.e.express ()
+        let app = express.express ()
 
         app.set("views", path.join(__dirname, "fixtures")) |> ignore
         app.engine(".html", render) |> ignore
@@ -44,7 +45,7 @@ describe "app.engine(ext, fn)" (fun _ ->
     )
 
     it "should throw when the callback is missing" (fun _ ->
-        let app = Express.e.express ()
+        let app = express.express ()
 
         Assert.throws(
             (fun () ->
@@ -54,7 +55,7 @@ describe "app.engine(ext, fn)" (fun _ ->
     )
 
     itAsync """should work without leading "." """ (fun d ->
-        let app = Express.e.express ()
+        let app = express.express ()
 
         app.set("views", path.join(__dirname, "fixtures")) |> ignore
         app.engine("html", render) |> ignore
@@ -74,7 +75,7 @@ describe "app.engine(ext, fn)" (fun _ ->
     )
 
     itAsync """should work "view engine" setting""" (fun d ->
-        let app = Express.e.express ()
+        let app = express.express ()
 
         app.set("views", path.join(__dirname, "fixtures")) |> ignore
         app.engine("html", render) |> ignore
@@ -94,7 +95,7 @@ describe "app.engine(ext, fn)" (fun _ ->
     )
 
     itAsync """should work "view engine" with leading "." """ (fun d ->
-        let app = Express.e.express ()
+        let app = express.express ()
 
         app.set("views", path.join(__dirname, "fixtures")) |> ignore
         app.engine(".html", render) |> ignore

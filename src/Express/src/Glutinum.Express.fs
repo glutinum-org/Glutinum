@@ -7,9 +7,9 @@ open Qs
 module ServeStatic = Glutinum.ServeStatic
 module Core = ExpressServeStaticCore
 
-let [<Import("default","express")>] e : E.IExports = jsNative
+let [<Import("default","express")>] express : Express.IExports = jsNative
 
-module E =
+module Express =
 
     type [<AllowNullLiteral>] IExports =
         abstract json: obj

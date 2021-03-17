@@ -4,7 +4,7 @@ open Mocha
 open Fable.Core
 open Fable.Core.Testing
 open Fable.Core.JsInterop
-open Qs
+open Glutinum.Qs
 
 // Code adapted from: https://github.com/ljharb/qs/tree/b04febd9cb1c94b466aa2bd81b6452b44712414e
 

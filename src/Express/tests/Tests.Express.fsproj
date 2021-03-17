@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <RelativePathToTestsShared>../../../tests-shared</RelativePathToTestsShared>
+    </PropertyGroup>
+    <Import Project="$(RelativePathToTestsShared)/Tests.Shared.props" />
+    <ItemGroup>
+        <Compile Include="Tests.Express.Binding.HTTPMethodsOverload.fs" />
+        <Compile Include="Tests.Express.Port.App.All.fs" />
+        <Compile Include="Tests.Express.Port.App.Del.fs" />
+        <Compile Include="Tests.Express.Port.App.Engine.fs" />
+        <Compile Include="Tests.Express.Port.App.fs" />
+        <Compile Include="Tests.Express.Port.App.Head.fs" />
+        <Compile Include="Tests.Express.Port.App.Listen.fs" />
+        <Compile Include="Tests.Express.Port.App.Locals.fs" />
+        <Compile Include="Tests.Express.Port.App.Options.fs" />
+        <Compile Include="Tests.Express.Port.App.Params.fs" />
+        <Compile Include="Tests.Express.Port.App.Render.fs" />
+        <Compile Include="Tests.Express.Port.App.Request.fs" />
+        <Compile Include="Tests.Express.Port.App.Response.fs" />
+        <Compile Include="Tests.Express.Port.App.Route.fs" />
+        <Compile Include="Tests.Express.Port.App.Router.fs" />
+        <Compile Include="Tests.Express.Port.App.Routes.Error.fs" />
+    </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="Fable.Core" Version="3.2.5" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="../src/Glutinum.Express.fsproj" />
+      <ProjectReference Include="../../SuperTest/src/Glutinum.SuperTest.fsproj" />
+      <ProjectReference Include="../../After/src/Glutinum.After.fsproj" />
+      <ProjectReference Include="../../Methods/src/Glutinum.Methods.fsproj" />
+    </ItemGroup>
+</Project>

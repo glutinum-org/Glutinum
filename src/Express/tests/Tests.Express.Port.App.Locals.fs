@@ -3,14 +3,15 @@ module Tests.Express.Port.App.Locals
 open Fable.Core.JS
 open Fable.Core.JsInterop
 open Mocha
-open ExpressServeStaticCore
+open Glutinum.ExpressServeStaticCore
+open Glutinum.Express
 
 describe "app" (fun _ ->
 
     describe ".locals(obj" (fun _ ->
 
         it "should merge locals" (fun _ ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             Assert.deepStrictEqual(Constructors.Object.keys(app.locals), ResizeArray ["settings"])
             app.locals.["user"] <- "tobi"
@@ -25,7 +26,7 @@ describe "app" (fun _ ->
 
     describe ".locals.settings" (fun _ ->
         it "should expose app settings" (fun _ ->
-            let app = Express.e.express()
+            let app = express.express ()
             app.set("title", "House of Manny") |> ignore
 
             let o = app.locals.["settings"]

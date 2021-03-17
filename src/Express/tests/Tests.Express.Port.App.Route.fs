@@ -1,11 +1,12 @@
 module Tests.Express.Port.App.Route
 
-open ExpressServeStaticCore
+open Glutinum.ExpressServeStaticCore
+open Glutinum.Express
 open Mocha
 
 describe "app.route" (fun _ ->
     itAsync "should return a new route" (fun d ->
-        let app = Express.e.express()
+        let app = express.express ()
 
         app.route("/foo")
             .get(fun (req : Request) (res : Response) ->
@@ -23,7 +24,7 @@ describe "app.route" (fun _ ->
     )
 
     itAsync "should all .VERB after .all" (fun d ->
-        let app = Express.e.express()
+        let app = express.express ()
 
         app.route("/foo")
             .all(fun req res (next : NextFunction) ->
@@ -44,7 +45,7 @@ describe "app.route" (fun _ ->
     )
 
     itAsync "should support dynamic routes" (fun d ->
-        let app = Express.e.express()
+        let app = express.express ()
 
         app.route("/:foo")
             .get(fun (req : Request) (res : Response) ->
@@ -59,7 +60,7 @@ describe "app.route" (fun _ ->
     )
 
     itAsync "should not error on empty routes" (fun d ->
-        let app = Express.e.express()
+        let app = express.express ()
 
         app.route("/:foo") |> ignore
 

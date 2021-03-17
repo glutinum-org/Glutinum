@@ -3,11 +3,9 @@ module Tests.Connect
 open Mocha
 open Fable.Core.JsInterop
 open Node
-open Connect
+open Glutinum.Connect
 
 // Code adapted from: https://github.com/senchalabs/connect/blob/52cf21b211272519caeef3bb5064c3430f4feb43/test/server.js
-
-
 
 describe "Connect" (fun _ ->
 

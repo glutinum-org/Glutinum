@@ -1,12 +1,13 @@
 module Tests.Express.Port.App.All
 
 open Mocha
-open ExpressServeStaticCore
+open Glutinum.ExpressServeStaticCore
+open Glutinum.Express
 
 describe "app.all()" (fun _ ->
 
     itAsync "should add a router per method" (fun d ->
-        let app = Express.e.express ()
+        let app = express.express ()
 
         app.all("/tobi", fun (req : Request) (res : Response) next ->
             res.``end``(req.``method``)
@@ -26,7 +27,7 @@ describe "app.all()" (fun _ ->
     )
 
     itAsync "should run the callback for a method just once" (fun d ->
-        let app = Express.e.express ()
+        let app = express.express ()
         let mutable n = 0
 
         app.all("/*", fun (req : Request) (res : Response) (next : NextFunction) ->

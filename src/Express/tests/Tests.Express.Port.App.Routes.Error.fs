@@ -1,11 +1,11 @@
 ﻿module Tests.Express.Port.App.Routes.Error
 
 open System.Text.RegularExpressions
-open ExpressServeStaticCore
+open Glutinum.ExpressServeStaticCore
+open Glutinum.Express
 open Fable.Core.JsInterop
 open Mocha
 open Node
-open SuperTest
 open Fable.Core
 
 describe "app" (fun () ->
@@ -13,7 +13,7 @@ describe "app" (fun () ->
     describe ".VERB()" (fun () ->
 
         itAsync "should not get invoked without error handler on error" (fun d ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             app.``use``(fun (req : Request) (res : Response) (next : NextFunction) ->
                 next.Invoke(System.Exception("boom!"))
@@ -30,7 +30,7 @@ describe "app" (fun () ->
         )
 
         itAsync "should only call an error handling routing callback when an error is propagated" (fun ``done`` ->
-            let app = Express.e.express()
+            let app = express.express ()
 
             let mutable a = false
             let mutable b = false
