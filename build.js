@@ -31,8 +31,6 @@ const spawn = util.promisify(require("child_process").spawn)
 const parseChangelog = require('changelog-parser')
 const awaitSpawn = require("./Scripts/await-spawn")
 const chalk = require("chalk")
-const { cpuUsage } = require('process')
-const FastGlob = require('fast-glob')
 
 const info = chalk.blueBright
 const warn = chalk.yellow
@@ -427,7 +425,7 @@ const publishHandler = async () => {
                 }
             )
 
-            const nugetPackagePath = await fg(`src/${project}/bin/Release/*${newVersion}.nupkg`)
+            const nugetPackagePath = await findRequiredSingleFile(`glues/${project}/src/bin/Release/*${newVersion}.nupkg`)
 
             await awaitSpawn(
                 "dotnet",
