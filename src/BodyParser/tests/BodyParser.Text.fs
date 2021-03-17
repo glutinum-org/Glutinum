@@ -4,9 +4,9 @@ open Mocha
 open Node
 open Fable.Core
 open Fable.Core.JsInterop
-open BodyParser
-open Connect
-open SuperTest
+open Glutinum.BodyParser
+open Glutinum.Connect
+open Glutinum.SuperTest
 
 // Code adapted from: https://github.com/expressjs/body-parser/blob/480b1cfe29af19c070f4ae96e0d598c099f42a12/test/text.js
 

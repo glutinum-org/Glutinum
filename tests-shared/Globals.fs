@@ -3,11 +3,12 @@ module Globals
 
 open Fable.Core
 open Fable.Core.JS
+open Glutinum.SuperTest
 
 [<Import("*", "assert")>]
 let Assert: Node.Assert.IExports = jsNative
 
-let request (app : #obj) = SuperTest.supertest.supertest app
+let request (app : #obj) = supertest.supertest app
 
 type Node.Http.ServerResponse with
     [<Emit("$0.setHeader($1...)")>]

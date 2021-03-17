@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <ItemGroup>
+        <Compile Include="$(TestsSharedRelativePath)/Node.Assert.fs" />
+        <Compile Include="$(TestsSharedRelativePath)/Fable.Core.JsInterop.fs" />
+        <Compile Include="$(TestsSharedRelativePath)/Globals.fs" />
+        <Compile Include="$(TestsSharedRelativePath)/Mocha.fs" />
+    </ItemGroup>
+</Project>
