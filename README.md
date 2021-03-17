@@ -1,10 +1,18 @@
-# Npm bindings
+# Glutinum
 
-The goal of this repository is to provide a collection of Npm bindings and mutualize the infrastructure code to lower the maintenance cost.
+Glutinum is a tentative to bring an equivalent to [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped) for Fable ecosystem.
 
-For each bindings, you can find the documentation in the `README.md` file from their respective folders.
+Right now Glutinum contains bindings generated using [ts2fable](https://github.com/fable-compiler/ts2fable/) and improved manually.
 
-You can also take a look at the `tests` folder. Each binding comes with his own set of tests. Currently, we have around 450 tests.
+In the future, Glutinum will try to use it's own converter to experiment with a new way to write bindings.
+
+## Can I use the packages from this repository?
+
+Yes, you can.
+
+Most of the package already have a battery of tests to check regression and if they works.
+
+For now, I decided to not release them using a stable version because I am not 100% fixed on the exposed API yet. I am also lacking feedback and experience on the API structuure.
 
 ## Tests status
 
@@ -36,3 +44,9 @@ Run `build.js --help` for more information about which command are supported.
 It is possible to have `TAB` completation support from your terminal.
 
 Run `./build.js completion` and follow the instruction.
+
+### Why this name?
+
+It comes from the ideas that this project is trying to **glue** together F# and TypeScript.
+
+Glutinum is from the Latin word gluten ("glue") with the suffix -um.
