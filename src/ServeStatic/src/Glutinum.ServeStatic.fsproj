@@ -10,15 +10,14 @@
         </Description>
     </PropertyGroup>
     <ItemGroup>
-        <Compile Include="ServeStatic.Types.fs" />
-        <Compile Include="ServeStatic.Exports.fs" />
+        <Compile Include="Glutinum.ServeStatic.fs" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Fable.Core" Version="3.1.2" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\Mime\Fable.Npm.Mime.fsproj" />
-      <ProjectReference Include="..\Connect\Fable.Npm.Connect.fsproj" />
+      <ProjectReference Include="../../Mime/src/Glutinum.Mime.fsproj" />
+      <ProjectReference Include="../../Connect/src/Glutinum.Connect.fsproj" />
     </ItemGroup>
     <!-- This package doesn't contain actual code
         so we don't need to add the sources -->

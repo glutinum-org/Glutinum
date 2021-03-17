@@ -1,4 +1,4 @@
-module rec SuperTest
+module rec Glutinum.SuperTest
 
 open System
 open Fable.Core

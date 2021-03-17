@@ -1,10 +1,10 @@
 // ts2fable 0.8.0
-module rec Express
+module rec Glutinum.Express
 
 open Fable.Core
 open Qs
 
-module ServeStatic = ServeStatic.Types.ServeStatic
+module ServeStatic = Glutinum.ServeStatic
 module Core = ExpressServeStaticCore
 
 let [<Import("default","express")>] e : E.IExports = jsNative
@@ -18,7 +18,7 @@ module E =
         abstract application: Application
         abstract request: Request
         abstract response: Response
-        abstract ``static``: ServeStatic.Types.ServeStatic.RequestHandlerConstructor<Response>
+        abstract ``static``: ServeStatic.RequestHandlerConstructor<Response>
         abstract urlencoded: obj
         /// This is a built-in middleware function in Express. It parses incoming request query parameters.
         abstract query: options: U2<Qs.IParseOptions, obj> -> Handler

@@ -1,5 +1,5 @@
 [<AutoOpen>]
-module Connect.Ext
+module Glutinum.Connect.Ext
 
 open Fable.Core
 

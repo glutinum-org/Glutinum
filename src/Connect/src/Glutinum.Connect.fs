@@ -1,4 +1,4 @@
-namespace rec Connect
+namespace rec Glutinum.Connect
 
 open System
 open Fable.Core

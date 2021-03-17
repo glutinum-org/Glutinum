@@ -1,4 +1,4 @@
-module rec SuperAgent
+module rec Glutinum.SuperAgent
 
 open System
 open Fable.Core

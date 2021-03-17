@@ -1,5 +1,5 @@
 // ts2fable 0.8.0
-module rec ExpressServeStaticCore
+module rec Glutinum.ExpressServeStaticCore
 
 open System
 open ExpressServeStaticCore

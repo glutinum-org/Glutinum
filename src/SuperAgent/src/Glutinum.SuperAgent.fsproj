@@ -10,7 +10,7 @@
         </Description>
     </PropertyGroup>
     <ItemGroup>
-        <Compile Include="SuperAgent.fs" />
+        <Compile Include="Glutinum.SuperAgent.fs" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Fable.Browser.Blob" Version="1.1.0" />

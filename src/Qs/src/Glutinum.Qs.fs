@@ -1,4 +1,4 @@
-module rec Qs
+module rec Glutinum.Qs
 
 open System
 open Fable.Core

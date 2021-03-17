@@ -1,9 +1,8 @@
-module rec BodyParser
+module rec Glutinum.BodyParser
 
 open System
 open Fable.Core
 open Node
-open Connect
 
 [<Import("*", "body-parser")>]
 let bodyParser : BodyParser.IExports = jsNative

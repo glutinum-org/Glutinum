@@ -10,18 +10,17 @@
         </Description>
     </PropertyGroup>
     <ItemGroup>
-        <Compile Include="Express.fs" />
-        <!-- <Compile Include="Mime.Api.fs" /> -->
+        <Compile Include="Glutinum.Express.fs" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Fable.Core" Version="3.1.2" />
         <PackageReference Include="Fable.Node" Version="1.2.0" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\BodyParser\Fable.Npm.BodyParser.fsproj" />
-      <ProjectReference Include="..\ServeStatic\Fable.Npm.ServeStatic.fsproj" />
-      <ProjectReference Include="..\ExpressServeStaticCore\Fable.Npm.ExpressServeStaticCore.fsproj" />
-      <ProjectReference Include="..\Qs\Fable.Npm.Qs.fsproj" />
+      <ProjectReference Include="../../BodyParser/src/Glutinum.BodyParser.fsproj" />
+      <ProjectReference Include="../../ServeStatic/src/Glutinum.ServeStatic.fsproj" />
+      <ProjectReference Include="../../ExpressServeStaticCore/src/Glutinum.ExpressServeStaticCore.fsproj" />
+      <ProjectReference Include="../../Qs/src/Glutinum.Qs.fsproj" />
     </ItemGroup>
     <!-- This package doesn't contain actual code
         so we don't need to add the sources -->

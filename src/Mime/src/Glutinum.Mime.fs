@@ -1,4 +1,4 @@
-module rec Mime
+module rec Glutinum.Mime
 
 // Exported from: https://github.com/DefinitelyTyped/DefinitelyTyped/blob/0893371fea43bfdf1777b6d835424961ba0d1dbb/types/mime/index.d.ts
 

@@ -1,5 +1,5 @@
 // ts2fable 0.8.0
-module rec Methods
+module rec Glutinum.Methods
 
 open System
 open Fable.Core
