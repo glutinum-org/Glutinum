@@ -6,7 +6,7 @@ open Glutinum.ExpressServeStaticCore
 open Fable.Core
 open Node
 open Qs
-open RangeParser
+open Glutinum.RangeParser
 
 type Array<'T> = System.Collections.Generic.IList<'T>
 type Error = System.Exception
