@@ -118,30 +118,6 @@ const findOptionalSingleFile = async (pattern, projectPath) => {
     return glob[0];
 }
 
-// Watch handler
-// const watchHandler = async (argv) => {
-//     await cleanCompiledFiles();
-
-//     const mochaPattern = argv.pattern || 'src/*/tests/';
-
-//     concurrently(
-//         [
-//             {
-//                 command: `nodemon --inspect --watch tests --exec "npx mocha -r esm -r tests-shared/mocha.env.js --reporter dot --recursive ${mochaPattern}"`,
-//             },
-//             {
-//                 // There is a bug in concurrently where cwd in command options is not taken into account
-//                 // Waiting for https://github.com/kimmobrunfeldt/concurrently/pull/266 to merge
-//                 command: "cd tests && dotnet fable Tests.fsproj --watch",
-//                 cwd: path.resolve(__dirname, "tests")
-//             }
-//         ],
-//         {
-//             prefix: "none" // Disable name prefix
-//         }
-//     )
-// }
-
 const updateTestsCountHandler = async () => {
     log(warn("Command not yet ready"))
     // Get the list of root test folders suffixed with a trailing '/'
@@ -570,29 +546,12 @@ yargs(hideBin(process.argv))
     .strict()
     .help()
     .alias("help", "h")
-    // .command(
-    //     "watch",
-    //     "Start Fable and mocha in watch mode. You should use this target when working on the bindings",
-    //     (argv) => {
-    //         argv
-    //             .option(
-    //                 "pattern",
-    //                 {
-    //                     description:
-    //                         `Pattern used to determine which tests are run by mocha.
-    //                     By default, we run all the tests but if you want to focus on the tests of Mime only you can pass '--pattern tests/Mime/'`,
-    //                     type: "string"
-    //                 }
-    //             )
-    //     },
-    //     watchHandler
-    // )
-    // .command(
-    //     "update-tests-count",
-    //     "Execute the different tests and update tests count section of the README file",
-    //     () => { },
-    //     updateTestsCountHandler
-    // )
+    .command(
+        "update-tests-count",
+        "Execute the different tests and update tests count section of the README file",
+        () => { },
+        updateTestsCountHandler
+    )
     .command(
         "clean",
         "Delete all the compiled or cached files from dotnet, Fable.",

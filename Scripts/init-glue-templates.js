@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 const initialReadme = (glueName, npmPackageName, npmPackageUrl) => {
     return `
-# ${glueName}
+# Glutinum.${glueName}
 
 Binding for [${npmPackageName}](${npmPackageUrl})
 
