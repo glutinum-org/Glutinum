@@ -17,7 +17,7 @@ const initialReadme = (glueName, npmPackageName, npmPackageUrl) => {
 
 Binding for [${npmPackageName}](${npmPackageUrl})
 
-# Usage
+## Usage
 
     `.trimStart()
 }
@@ -63,6 +63,7 @@ let ${lowerFirstLetter(glueName)} : ${glueName}.IExports = jsNative
 module ${glueName} =
 
     type [<AllowNullLiteral>] IExports =
+        class end
     `.trimStart()
 }
 
@@ -80,7 +81,7 @@ const initialGlueTestFsproj = (glueName) => {
         <Compile Include="Tests.${glueName}.fs" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\src\Glutinum.${glueName}.fsproj" />
+        <ProjectReference Include="../src/Glutinum.${glueName}.fsproj" />
     </ItemGroup>
 </Project>
     `.trimStart()
@@ -97,7 +98,7 @@ open Glutinum.${glueName}
 describe "${glueName}" (fun _ ->
 
     it "Mime new constructor works" (fun _ ->
-        throw "Tests should go here"
+        failwith "Tests should go here"
     )
 )
     `.trimStart()
