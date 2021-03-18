@@ -520,40 +520,46 @@ const initNewGlue = async (argv) => {
     }
 
     // Glue doens't exist we can create it
-    await fs.mkdir(glueRootPath)
+    try {
+        await fs.mkdir(glueRootPath)
 
-    // Init root files like CHANGELOG, README
-    await fs.writeFile(glueChangelog, gluleInitialTemplates.initialChangelog())
-    await fs.writeFile(glueReadme, gluleInitialTemplates.initialReadme(response.glueName, response.npmUrl, response.npmPackageName))
+        // Init root files like CHANGELOG, README
+        await fs.writeFile(glueChangelog, gluleInitialTemplates.initialChangelog())
+        await fs.writeFile(glueReadme, gluleInitialTemplates.initialReadme(response.glueName, response.npmUrl, response.npmPackageName))
 
-    // Init the src folder
-    await fs.mkdir(glueSrcPath)
-    await fs.writeFile(glueFsproj, gluleInitialTemplates.initialGlueFsproj(response.glueName, response.authors, response.npmUrl))
-    await fs.writeFile(glueFsarpFile, gluleInitialTemplates.initialGlueFsharpFile(response.glueName, response.npmPackageName))
-    // Add latest version of the Fable.Core to the fsproj
-    await awaitSpawn(
-        "dotnet",
-        `add ${glueFsproj} package Fable.Core`.split(" "),
-        {
-            stdio: "inherit",
-            shell: true
-        }
-    )
+        // Init the src folder
+        await fs.mkdir(glueSrcPath)
+        await fs.writeFile(glueFsproj, gluleInitialTemplates.initialGlueFsproj(response.glueName, response.authors, response.npmUrl))
+        await fs.writeFile(glueFsarpFile, gluleInitialTemplates.initialGlueFsharpFile(response.glueName, response.npmPackageName))
+        // Add latest version of the Fable.Core to the fsproj
+        await awaitSpawn(
+            "dotnet",
+            `add ${glueFsproj} package Fable.Core`.split(" "),
+            {
+                stdio: "inherit",
+                shell: true
+            }
+        )
 
-    // Init tests folder
-    await fs.mkdir(glueTestsPath)
-    await fs.writeFile(glueTestsFsproj, gluleInitialTemplates.initialGlueTestFsproj(response.glueName))
-    await fs.writeFile(glueTestsFsarpFile, gluleInitialTemplates.initialGlueTestFsharpFile(response.glueName))
+        // Init tests folder
+        await fs.mkdir(glueTestsPath)
+        await fs.writeFile(glueTestsFsproj, gluleInitialTemplates.initialGlueTestFsproj(response.glueName))
+        await fs.writeFile(glueTestsFsarpFile, gluleInitialTemplates.initialGlueTestFsharpFile(response.glueName))
 
-    // Add latest version of the Fable.Core to the fsproj
-    await awaitSpawn(
-        "dotnet",
-        `add ${glueTestsFsproj} package Fable.Core`.split(" "),
-        {
-            stdio: "inherit",
-            shell: true
-        }
-    )
+        // Add latest version of the Fable.Core to the fsproj
+        await awaitSpawn(
+            "dotnet",
+            `add ${glueTestsFsproj} package Fable.Core`.split(" "),
+            {
+                stdio: "inherit",
+                shell: true
+            }
+        )
+
+        log(success(`Glue ${response.glueName} has been created`))
+    } catch (e) {
+        log(error(`An error occured during the glue creation. Please check the console for error message and delete the folder 'glues/${response.glueName}' before retrying`))
+    }
 }
 
 yargs(hideBin(process.argv))
