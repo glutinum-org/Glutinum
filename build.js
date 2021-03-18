@@ -31,12 +31,23 @@ const spawn = util.promisify(require("child_process").spawn)
 const parseChangelog = require('changelog-parser')
 const awaitSpawn = require("./Scripts/await-spawn")
 const chalk = require("chalk")
+const prompts = require("prompts")
+const gluleInitialTemplates = require("./scripts/init-glue-templates")
 
 const info = chalk.blueBright
 const warn = chalk.yellow
 const error = chalk.red
 const success = chalk.green
 const log = console.log
+
+const checkIfFileExist = async function (filePath) {
+    try {
+        await fs.access(filePath)
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
 
 const cleanCompiledFiles = async function () {
     const entries =
@@ -449,6 +460,102 @@ const publishHandler = async () => {
     }
 }
 
+const initNewGlue = async (argv) => {
+    const requiredTextPrompt = (input) => {
+        if (input !== undefined && input !== null && input !== "") {
+            return true
+        } else {
+            return "This field is required"
+        }
+    }
+
+    const response = await prompts([
+        {
+            type: "text",
+            name: "glueName",
+            message: "What is the glue name?",
+            validate: requiredTextPrompt
+        },
+        {
+            type: "text",
+            name: "npmPackageName",
+            message: "What is the Npm package name?",
+            validate: requiredTextPrompt
+        },
+        {
+            type: "text",
+            name: "npmUrl",
+            message: "What is the Npm package url?",
+            validate: requiredTextPrompt
+        },
+        {
+            type: "text",
+            name: "authors",
+            message: "What is the authors value that should be added in the NuGet package?",
+            validate: requiredTextPrompt
+        }
+    ])
+
+    const glueRootPath = path.resolve(__dirname, "glues", response.glueName)
+
+    // Src folder
+    const glueSrcPath = path.join(glueRootPath, "src")
+
+    const glueChangelog = path.join(glueRootPath, "CHANGELOG.md")
+    const glueReadme = path.join(glueRootPath, "README.md")
+
+    const glueFsproj = path.join(glueSrcPath, `Glutinum.${response.glueName}.fsproj`)
+    const glueFsarpFile = path.join(glueSrcPath, `Glutinum.${response.glueName}.fs`)
+
+    // Tests folder
+    const glueTestsPath = path.join(glueRootPath, "tests")
+    const glueTestsFsproj = path.join(glueTestsPath, `Tests.${response.glueName}.fsproj`)
+    const glueTestsFsarpFile = path.join(glueTestsPath, `Tests.${response.glueName}.fs`)
+
+    const glueAlreadyExist = await checkIfFileExist(glueRootPath)
+
+    if (glueAlreadyExist) {
+        log(error(`A glue already exist with the same name`))
+        process.exit(1)
+    }
+
+    // Glue doens't exist we can create it
+    await fs.mkdir(glueRootPath)
+
+    // Init root files like CHANGELOG, README
+    await fs.writeFile(glueChangelog, gluleInitialTemplates.initialChangelog())
+    await fs.writeFile(glueReadme, gluleInitialTemplates.initialReadme(response.glueName, response.npmUrl, response.npmPackageName))
+
+    // Init the src folder
+    await fs.mkdir(glueSrcPath)
+    await fs.writeFile(glueFsproj, gluleInitialTemplates.initialGlueFsproj(response.glueName, response.authors, response.npmUrl))
+    await fs.writeFile(glueFsarpFile, gluleInitialTemplates.initialGlueFsharpFile(response.glueName, response.npmPackageName))
+    // Add latest version of the Fable.Core to the fsproj
+    await awaitSpawn(
+        "dotnet",
+        `add ${glueFsproj} package Fable.Core`.split(" "),
+        {
+            stdio: "inherit",
+            shell: true
+        }
+    )
+
+    // Init tests folder
+    await fs.mkdir(glueTestsPath)
+    await fs.writeFile(glueTestsFsproj, gluleInitialTemplates.initialGlueTestFsproj(response.glueName))
+    await fs.writeFile(glueTestsFsarpFile, gluleInitialTemplates.initialGlueTestFsharpFile(response.glueName))
+
+    // Add latest version of the Fable.Core to the fsproj
+    await awaitSpawn(
+        "dotnet",
+        `add ${glueTestsFsproj} package Fable.Core`.split(" "),
+        {
+            stdio: "inherit",
+            shell: true
+        }
+    )
+}
+
 yargs(hideBin(process.argv))
     .completion()
     .strict()
@@ -530,6 +637,12 @@ yargs(hideBin(process.argv))
                 )
         },
         testRunner
+    )
+    .command(
+        "init",
+        "Initialize a new glue package, you will be guided during the initialization process",
+        () => {},
+        initNewGlue
     )
     .version(false)
     .argv
