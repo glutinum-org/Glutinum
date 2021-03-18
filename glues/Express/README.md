@@ -1,23 +1,11 @@
-# BodyParser
+# Glutinum.Express
 
-Binding for [body-parser](https://www.npmjs.com/package/body-parser)
+Binding for [Express-parser](https://github.com/expressjs/express)
 
 # Usage
 
 ```fs
-open BodyParser
-
-let bodyParser =
-    let options =
-        jsOptions<BodyParser.OptionsJson>(fun o ->
-            o.limit <- !^ "1kb"
-        )
-
-    bodyParser.json(options)
-
-// If used with Express
-open Express
+open Glutinum.Express
 
 let app = express.express ()
-app.``use``(bodyParser)
 ```

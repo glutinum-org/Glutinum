@@ -403,7 +403,7 @@ const publishHandler = async () => {
 
         if (lastPublishedVersion === newVersion) {
             log(`Version ${lastPublishedVersion} of ${project}, has already been published. Skipping this project`)
-            break;
+            continue;
         }
 
         log(`New version detected for ${project}, starting publish process for it`)
