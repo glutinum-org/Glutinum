@@ -5,6 +5,8 @@
 // So we need to write: [ Qs, BodyParser, Express ]
 const projects =
     [
+        "Chalk",
+
         "After",
         "Connect",
         "BodyParser",
@@ -557,6 +559,7 @@ const initNewGlue = async (argv) => {
         )
 
         log(success(`Glue ${response.glueName} has been created`))
+        log(success(`You need to add ${response.glueName} to the projects list in the 'build.js' file (at the top of the file)`))
     } catch (e) {
         log(error(`An error occured during the glue creation. Please check the console for error message and delete the folder 'glues/${response.glueName}' before retrying`))
     }
