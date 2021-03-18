@@ -21,6 +21,7 @@ For now, I decided to not release them using a stable version because I am not 1
 | Binding | Number of tests |
 |---------|-----------------|
 | BodyParser | 5 |
+| Chalk | 30 |
 | Connect | 3 |
 | Express | 424 |
 | Mime | 4 |
@@ -29,6 +30,7 @@ For now, I decided to not release them using a stable version because I am not 1
 | ServeStatic | 2 |
 
 <!-- DON'T REMOVE - end tests status -->
+
 ## How to use this repository?
 
 If you are on Windows using the standard terminal you need to run `node build.js`.

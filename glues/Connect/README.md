@@ -1,4 +1,4 @@
-# Connect
+# Glutinum.Connect
 
 Binding for [connect](https://www.npmjs.com/package/connect)
 

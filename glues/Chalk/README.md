@@ -1,4 +1,4 @@
-# Chalk
+# Glutinum.Chalk
 
 Binding for [https://github.com/chalk/chalk](chalk)
 
@@ -8,10 +8,11 @@ This package doesn't support template literal style notation from chalk.
 
 ## Usage
 
+*If you want to compare the F# code with JavaScript the section below is a port of [Chalk - Usage](https://github.com/chalk/chalk/tree/4dab5e1fb6f42c6c9fdacbe34b9dafd24359208e#usage)*
+
 ```fs
 open Glutinum.Chalk
 open Fable.Core
-
 
 let log x = JS.console.log(x)
 
