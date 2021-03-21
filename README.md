@@ -12,7 +12,7 @@ Yes, you can.
 
 Most of the package already have a battery of tests to check regression and if they works.
 
-For now, I decided to not release them using a stable version because I am not 100% fixed on the exposed API yet. I am also lacking feedback and experience on the API structuure.
+For now, I decided to not release them using a stable version because I am not 100% fixed on the exposed API yet. I am also lacking feedback and experience on the API structure.
 
 ## Tests status
 

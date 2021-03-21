@@ -7,8 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
-
-    `.trimStart()
+`.trimStart()
 }
 
 const initialReadme = (glueName, npmPackageName, npmPackageUrl) => {
@@ -18,8 +17,7 @@ const initialReadme = (glueName, npmPackageName, npmPackageUrl) => {
 Binding for [${npmPackageName}](${npmPackageUrl})
 
 ## Usage
-
-    `.trimStart()
+`.trimStart()
 }
 
 const initialGlueFsproj = (glueName, authors, npmPackageUrl) => {
@@ -44,7 +42,7 @@ const initialGlueFsproj = (glueName, authors, npmPackageUrl) => {
     <Content Include="*.fsproj; *.fs" PackagePath="fable\" />
     </ItemGroup> -->
 </Project>
-    `.trimStart()
+`.trimStart()
 }
 
 const lowerFirstLetter = (txt) => {
@@ -64,7 +62,7 @@ module ${glueName} =
 
     type [<AllowNullLiteral>] IExports =
         class end
-    `.trimStart()
+`.trimStart()
 }
 
 const initialGlueTestFsproj = (glueName) => {
@@ -84,7 +82,7 @@ const initialGlueTestFsproj = (glueName) => {
         <ProjectReference Include="../src/Glutinum.${glueName}.fsproj" />
     </ItemGroup>
 </Project>
-    `.trimStart()
+`.trimStart()
 }
 
 const initialGlueTestFsharpFile = (glueName) => {
@@ -101,7 +99,7 @@ describe "${glueName}" (fun _ ->
         failwith "Tests should go here"
     )
 )
-    `.trimStart()
+`.trimStart()
 }
 
 exports.initialChangelog = initialChangelog

@@ -21,4 +21,3 @@
     <Content Include="*.fsproj; *.fs" PackagePath="fable" />
     </ItemGroup> -->
 </Project>
-    
