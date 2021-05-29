@@ -1,6 +1,6 @@
 # Glutinum.Express
 
-Binding for [Express-parser](https://github.com/expressjs/express)
+Binding for [Express](https://github.com/expressjs/express)
 
 # Usage
 
