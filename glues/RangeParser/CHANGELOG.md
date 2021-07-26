@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.0.1 - 2021-07-26
+
+### Fixed
+
+* Do not publish the code under `.fable` directory, this package is now no code.
+
 ## 1.0.0 - 2021-07-26
 
 ### Changed
