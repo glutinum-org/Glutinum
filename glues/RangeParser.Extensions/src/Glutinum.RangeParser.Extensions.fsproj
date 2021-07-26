@@ -6,16 +6,19 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <Authors>Maxime Mangel</Authors>
         <Description>
-            Fable bindings for npm https://github.com/jshttp/range-parser package
+            Extensions for Glutinum.RangeParser glues
         </Description>
     </PropertyGroup>
     <ItemGroup>
-        <Compile Include="Glutinum.RangeParser.fs" />
+        <Compile Include="Glutinum.RangeParser.Extensions.fs" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Fable.Core" Version="3.1.2" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="*.fsproj; *.fs" PackagePath="fable\" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\..\RangeParser\src\Glutinum.RangeParser.fsproj" />
     </ItemGroup>
 </Project>

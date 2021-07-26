@@ -14,6 +14,7 @@ const projects =
         "Mime",
         "Qs",
         "RangeParser",
+        "RangeParser.Extensions",
         "ExpressServeStaticCore",
         "ServeStatic",
         "SuperAgent",

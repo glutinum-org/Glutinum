@@ -6,12 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-## 0.1.0-alpha-003 - 2021-07-26
-
-### Fixed
-
-* Fix #8: body-parser import doesn't work when targetting es module in node
-
 ## 0.1.0-alpha-002 - 2021-03-17
 
 * Fix package description
