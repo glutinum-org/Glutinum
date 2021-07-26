@@ -12,7 +12,15 @@ Yes, you can.
 
 Most of the package already have a battery of tests to check regression and if they works.
 
-For now, I decided to not release them using a stable version because I am not 100% fixed on the exposed API yet. I am also lacking feedback and experience on the API structure.
+## Structure of a glue
+
+A glue, is always no-code bindings between F# and JavaScript code.
+
+If there are code addition made to improve the user experience when working with the package then it goes into another package `Glutinum.XXX.Extensions`.
+
+Example: `Glutinum.RangeParser.Extensions`
+
+This is so we don't have to make all the packages includes their source code under `.fable` directory and should improve Fable memory consumption and performance.
 
 ## Tests status
 
@@ -43,7 +51,7 @@ Run `build.js --help` for more information about which command are supported.
 
 ### Getting completion from Linux, OSX, Windows bash-like
 
-It is possible to have `TAB` completation support from your terminal.
+It is possible to have `TAB` completion support from your terminal.
 
 Run `./build.js completion` and follow the instruction.
 
