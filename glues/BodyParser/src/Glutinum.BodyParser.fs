@@ -4,7 +4,7 @@ open System
 open Fable.Core
 open Node
 
-[<Import("*", "body-parser")>]
+[<Import("default", "body-parser")>]
 let bodyParser : BodyParser.IExports = jsNative
 
 module BodyParser =
