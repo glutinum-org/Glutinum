@@ -7,13 +7,14 @@ Binding for [Express](https://github.com/expressjs/express)
 ```fs
 open Fable.Core
 open Glutinum.Express
+open Glutinum.ExpressServeStaticCore
 
 let port = 2700
 let app = express.express ()
 
 app.get (
     "/",
-    fun (req: Glutinum.ExpressServeStaticCore.Request) (res: Glutinum.ExpressServeStaticCore.Response) ->
+    fun (req: Request) (res: Response) ->
         JS.console.log ($"New request, %s{req.hostname}")
         res.send ("Hello world")
 )
