@@ -1432,7 +1432,7 @@ type [<AllowNullLiteral>] Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals whe
     /// // => false
     /// </code>
     /// </example>
-    abstract is: ``type``: U2<string, ResizeArray<string>> -> string option
+    abstract is: ``type``: U2<string, ResizeArray<string>> -> U2<string option, bool>
     /// <summary>
     /// Return the protocol string "http" or "https"
     /// when requested with TLS. When the "trust proxy"

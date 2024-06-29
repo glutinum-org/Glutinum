@@ -43,7 +43,7 @@ const error = chalk.red
 const success = chalk.green
 const log = console.log
 
-const checkIfFileExist = async function (filePath) {
+const checkIfFileExist = async function(filePath) {
     try {
         await fs.access(filePath)
         return true;
@@ -52,7 +52,7 @@ const checkIfFileExist = async function (filePath) {
     }
 }
 
-const cleanCompiledFiles = async function () {
+const cleanCompiledFiles = async function() {
     const entries =
         await fg([
             "glues/**/*.fs.js",
@@ -78,7 +78,7 @@ const cleanCompiledFiles = async function () {
     }
 }
 
-const getEnvVariable = function (varName) {
+const getEnvVariable = function(varName) {
     const value = process.env[varName];
     if (value === undefined) {
         log(error(`Missing environnement variable ${varName}`))
@@ -240,7 +240,7 @@ const runTestForAProject = async (project) => {
 
     // If there is no tests project, we compile the glues definition to make sure everything is ok in the project
     if (testFsprojPath === null) {
-        log(`No tests project found for ${project}, testing the bindings using 'dotnet buil'`)
+        log(`No tests project found for ${project}, testing the bindings using 'dotnet build'`)
         try {
             await awaitSpawn(
                 "dotnet",
@@ -556,7 +556,7 @@ yargs(hideBin(process.argv))
     .command(
         "clean",
         "Delete all the compiled or cached files from dotnet, Fable.",
-        () => {},
+        () => { },
         async () => {
             await cleanCompiledFiles()
         }
@@ -610,7 +610,7 @@ yargs(hideBin(process.argv))
     .command(
         "init",
         "Initialize a new glue package, you will be guided during the initialization process",
-        () => {},
+        () => { },
         initNewGlue
     )
     .version(false)
