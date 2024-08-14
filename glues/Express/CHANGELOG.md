@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 0.2.0 - 2024-08-14
+
+* Release to force update of `ExpressServeStaticCore` dependency to `0.2.0`
+
 ## 0.1.0-alpha-002 - 2021-03-17
 
 * Fix package description
