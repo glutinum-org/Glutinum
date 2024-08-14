@@ -1407,6 +1407,7 @@ type [<AllowNullLiteral>] Request<'P, 'ResBody, 'ReqBody, 'ReqQuery, 'Locals whe
     /// ordered from highest quality to lowest.
     /// </summary>
     abstract accepted: ResizeArray<MediaType> with get, set
+    [<Obsolete("since 4.11.0 - Use req.params, req.body, or req.query instead")>]
     abstract param: name: string * ?defaultValue: obj -> string
     /// <summary>
     /// Check if the incoming request contains the "Content-Type"
