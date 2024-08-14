@@ -1,4 +1,4 @@
-const initialChangelog = () => {
+export const initialChangelog = () => {
     return `
     # Changelog
 All notable changes to this project will be documented in this file.
@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 `.trimStart()
 }
 
-const initialReadme = (glueName, npmPackageName, npmPackageUrl) => {
+export const initialReadme = (glueName, npmPackageName, npmPackageUrl) => {
     return `
 # Glutinum.${glueName}
 
@@ -20,7 +20,7 @@ Binding for [${npmPackageName}](${npmPackageUrl})
 `.trimStart()
 }
 
-const initialGlueFsproj = (glueName, authors, npmPackageUrl) => {
+export const initialGlueFsproj = (glueName, authors, npmPackageUrl) => {
     return `
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
@@ -49,7 +49,7 @@ const lowerFirstLetter = (txt) => {
     return txt.charAt(0).toLowerCase() + txt.slice(1)
 }
 
-const initialGlueFsharpFile = (glueName, npmPackageName) => {
+export const initialGlueFsharpFile = (glueName, npmPackageName) => {
     return `
 module rec Glutinum.${glueName}
 
@@ -65,7 +65,7 @@ module ${glueName} =
 `.trimStart()
 }
 
-const initialGlueTestFsproj = (glueName) => {
+export const initialGlueTestFsproj = (glueName) => {
     return `
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
@@ -85,7 +85,7 @@ const initialGlueTestFsproj = (glueName) => {
 `.trimStart()
 }
 
-const initialGlueTestFsharpFile = (glueName) => {
+export const initialGlueTestFsharpFile = (glueName) => {
     return `
 module Tests.${glueName}
 
@@ -101,10 +101,3 @@ describe "${glueName}" (fun _ ->
 )
 `.trimStart()
 }
-
-exports.initialChangelog = initialChangelog
-exports.initialReadme = initialReadme
-exports.initialGlueFsproj = initialGlueFsproj
-exports.initialGlueFsharpFile = initialGlueFsharpFile
-exports.initialGlueTestFsproj = initialGlueTestFsproj
-exports.initialGlueTestFsharpFile = initialGlueTestFsharpFile

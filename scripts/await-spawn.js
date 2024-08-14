@@ -1,6 +1,6 @@
-const { spawn } = require('child_process')
+import { spawn } from 'child_process'
 
-module.exports = (...args) => {
+export default (...args) => {
     const child = spawn(...args)
 
     const promise = new Promise((resolve, reject) => {

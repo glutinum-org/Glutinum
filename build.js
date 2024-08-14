@@ -22,25 +22,27 @@ const projects =
         "Express"
     ]
 
-const yargs = require('yargs')
-const { hideBin } = require('yargs/helpers')
-const concurrently = require('concurrently')
-const path = require("path")
-const fs = require('fs').promises
-const fg = require("fast-glob")
-const util = require('util')
-const exec = util.promisify(require('child_process').exec)
-const spawn = util.promisify(require("child_process").spawn)
-const parseChangelog = require('changelog-parser')
-const awaitSpawn = require("./scripts/await-spawn")
-const chalk = require("chalk")
-const prompts = require("prompts")
-const gluleInitialTemplates = require("./scripts/init-glue-templates")
+import yargs from 'yargs'
+import { hideBin } from 'yargs/helpers'
+import concurrently from 'concurrently'
+import { resolve, dirname, join } from "path"
+import { promises as fs } from 'fs'
+import fg from "fast-glob"
+import { promisify } from 'util'
+import execOriginal from 'child_process'
+const exec = promisify(execOriginal.exec)
+const spawn = promisify(execOriginal.spawn)
+import parseChangelog from 'changelog-parser'
+import awaitSpawn from "./scripts/await-spawn.js"
+import pkg from 'chalk';
+const { blueBright, yellow, red, green } = pkg;
+import prompts from "prompts"
+import { initialChangelog, initialReadme, initialGlueFsproj, initialGlueFsharpFile, initialGlueTestFsproj, initialGlueTestFsharpFile } from "./scripts/init-glue-templates.js"
 
-const info = chalk.blueBright
-const warn = chalk.yellow
-const error = chalk.red
-const success = chalk.green
+const info = blueBright
+const warn = yellow
+const error = red
+const success = green
 const log = console.log
 
 const checkIfFileExist = async function (filePath) {
@@ -194,7 +196,7 @@ const findProjectFsproj = async (project) => {
 }
 
 const findProjectChangelog = async (project) => {
-    const changelogPath = path.resolve(__dirname, "glues", project, "CHANGELOG.md")
+    const changelogPath = resolve(__dirname, "glues", project, "CHANGELOG.md")
 
     // Check that changelog file exist
     try {
@@ -210,13 +212,13 @@ const findProjectChangelog = async (project) => {
 const runtestForProjectInWatchMode = async (project) => {
     const testFsprojPath = await findRequiredSingleFile(`glues/${project}/tests/*.fsproj`, `glues/${project}/tests`)
 
-    const testFsprojDirectory = path.dirname(testFsprojPath)
+    const testFsprojDirectory = dirname(testFsprojPath)
     const testFolderToWatch = `glues/${project}/tests`
 
     await concurrently(
         [
             {
-                command: `nodemon --inspect --watch ${testFolderToWatch} --exec "npx mocha -r esm -r tests-shared/mocha.env.js --reporter dot --recursive ${testFolderToWatch}"`,
+                command: `nodemon --inspect --watch ${testFolderToWatch} --exec "npx mocha -r tests-shared/mocha.env.js --reporter dot --recursive ${testFolderToWatch}"`,
             },
             {
                 // There is a bug in concurrently where cwd in command options is not taken into account
@@ -274,7 +276,7 @@ const runTestForAProject = async (project) => {
         // Run the tests using mocha
         await awaitSpawn(
             "npx",
-            `mocha -r esm -r tests-shared/mocha.env.js --reporter dot --reporter dot --recursive glues/${project}/tests`.split(" "),
+            `mocha -r tests-shared/mocha.env.js --reporter dot --recursive glues/${project}/tests`.split(" "),
             {
                 stdio: "inherit",
                 shell: true,
@@ -475,21 +477,21 @@ const initNewGlue = async (argv) => {
         }
     ])
 
-    const glueRootPath = path.resolve(__dirname, "glues", response.glueName)
+    const glueRootPath = resolve(__dirname, "glues", response.glueName)
 
     // Src folder
-    const glueSrcPath = path.join(glueRootPath, "src")
+    const glueSrcPath = join(glueRootPath, "src")
 
-    const glueChangelog = path.join(glueRootPath, "CHANGELOG.md")
-    const glueReadme = path.join(glueRootPath, "README.md")
+    const glueChangelog = join(glueRootPath, "CHANGELOG.md")
+    const glueReadme = join(glueRootPath, "README.md")
 
-    const glueFsproj = path.join(glueSrcPath, `Glutinum.${response.glueName}.fsproj`)
-    const glueFsarpFile = path.join(glueSrcPath, `Glutinum.${response.glueName}.fs`)
+    const glueFsproj = join(glueSrcPath, `Glutinum.${response.glueName}.fsproj`)
+    const glueFsarpFile = join(glueSrcPath, `Glutinum.${response.glueName}.fs`)
 
     // Tests folder
-    const glueTestsPath = path.join(glueRootPath, "tests")
-    const glueTestsFsproj = path.join(glueTestsPath, `Tests.${response.glueName}.fsproj`)
-    const glueTestsFsarpFile = path.join(glueTestsPath, `Tests.${response.glueName}.fs`)
+    const glueTestsPath = join(glueRootPath, "tests")
+    const glueTestsFsproj = join(glueTestsPath, `Tests.${response.glueName}.fsproj`)
+    const glueTestsFsarpFile = join(glueTestsPath, `Tests.${response.glueName}.fs`)
 
     const glueAlreadyExist = await checkIfFileExist(glueRootPath)
 
@@ -503,13 +505,13 @@ const initNewGlue = async (argv) => {
         await fs.mkdir(glueRootPath)
 
         // Init root files like CHANGELOG, README
-        await fs.writeFile(glueChangelog, gluleInitialTemplates.initialChangelog())
-        await fs.writeFile(glueReadme, gluleInitialTemplates.initialReadme(response.glueName, response.npmUrl, response.npmPackageName))
+        await fs.writeFile(glueChangelog, initialChangelog())
+        await fs.writeFile(glueReadme, initialReadme(response.glueName, response.npmUrl, response.npmPackageName))
 
         // Init the src folder
         await fs.mkdir(glueSrcPath)
-        await fs.writeFile(glueFsproj, gluleInitialTemplates.initialGlueFsproj(response.glueName, response.authors, response.npmUrl))
-        await fs.writeFile(glueFsarpFile, gluleInitialTemplates.initialGlueFsharpFile(response.glueName, response.npmPackageName))
+        await fs.writeFile(glueFsproj, initialGlueFsproj(response.glueName, response.authors, response.npmUrl))
+        await fs.writeFile(glueFsarpFile, initialGlueFsharpFile(response.glueName, response.npmPackageName))
         // Add latest version of the Fable.Core to the fsproj
         await awaitSpawn(
             "dotnet",
@@ -522,8 +524,8 @@ const initNewGlue = async (argv) => {
 
         // Init tests folder
         await fs.mkdir(glueTestsPath)
-        await fs.writeFile(glueTestsFsproj, gluleInitialTemplates.initialGlueTestFsproj(response.glueName))
-        await fs.writeFile(glueTestsFsarpFile, gluleInitialTemplates.initialGlueTestFsharpFile(response.glueName))
+        await fs.writeFile(glueTestsFsproj, initialGlueTestFsproj(response.glueName))
+        await fs.writeFile(glueTestsFsarpFile, initialGlueTestFsharpFile(response.glueName))
 
         // Add latest version of the Fable.Core to the fsproj
         await awaitSpawn(

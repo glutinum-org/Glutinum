@@ -5,7 +5,14 @@ open Glutinum.Express
 open Fable.Core.JsInterop
 open Mocha
 open Node
+open Fable.Core.JsInterop
 
+let __dirname =
+    emitJsExpr () """
+import { dirname } from 'dirname-filename-esm';
+dirname(import.meta);
+    """
+    
 let tmpl (_ : string) (_ : obj) _ = import "default" "./support/tmpl.js"
 
 let createApp() =
@@ -404,4 +411,3 @@ fn(null, 'abstract engine');
         )
     )
 )
-

@@ -1,8 +1,8 @@
-var fs = require('fs');
+import { readFile } from 'fs';
 
 var variableRegExp = /\$([0-9a-zA-Z\.]+)/g;
 
-module.exports = function renderFile(fileName, options, callback) {
+export default function renderFile(fileName, options, callback) {
     function onReadFile(err, str) {
         if (err) {
             callback(err);
@@ -19,7 +19,7 @@ module.exports = function renderFile(fileName, options, callback) {
         callback(err, str);
     }
 
-    fs.readFile(fileName, 'utf8', onReadFile);
+    readFile(fileName, 'utf8', onReadFile);
 };
 
 function generateVariableLookup(data) {

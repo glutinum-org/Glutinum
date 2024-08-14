@@ -4,6 +4,13 @@ open Mocha
 open Glutinum.ExpressServeStaticCore
 open Glutinum.Express
 open Node
+open Fable.Core.JsInterop
+
+let __dirname =
+    emitJsExpr () """
+import { dirname } from 'dirname-filename-esm';
+dirname(import.meta);
+    """
 
 type RenderOption =
     {
@@ -116,4 +123,3 @@ describe "app.engine(ext, fn)" (fun _ ->
     )
 
 )
-

@@ -5,14 +5,16 @@ open Glutinum.Express
 open Fable.Core.JsInterop
 open Mocha
 
+let url : obj = import "*" "url"
+
 describe "app" (fun _ ->
     describe ".request" (fun _ ->
         itAsync "should extend the request prototype" (fun d ->
             let app = express.express ()
 
-            emitJsStatement app """
+            emitJsStatement (app, url) """
 $0.request.querystring = function(){
-return require('url').parse(this.url).query;
+return $1.parse(this.url).query;
 };
 """
 

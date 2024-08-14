@@ -5,6 +5,7 @@
     "description": "This repo is a meta repo for working on the binding for Express ecosystem",
     "author": "Mangel Maxime <mangel.maxime@protonmail.com>",
     "license": "MIT",
+    "type": "module",
     "scripts": {
         "postinstall": "dotnet tool restore"
     },
@@ -13,8 +14,9 @@
         "body-parser": "^1.19.0",
         "connect": "^3.7.0",
         "cookie-parser": "^1.4.5",
+        "dirname-filename-esm": "^1.1.2",
         "express": "^4.17.1",
-        "mime": "^2.5.0",
+        "mime": "^4.0.4",
         "qs": "^6.9.6",
         "range-parser": "^1.2.1",
         "serve-static": "^1.14.1",
@@ -26,8 +28,8 @@
         "concurrently": "^6.0.0",
         "del-cli": "^3.0.1",
         "esm": "^3.2.25",
-        "fast-glob": "^3.2.5",
-        "mocha": "^8.2.1",
+        "fast-glob": "^3.3.2",
+        "mocha": "^10.7.3",
         "nodemon": "^2.0.7",
         "prompts": "^2.4.0",
         "yargs": "^16.2.0"

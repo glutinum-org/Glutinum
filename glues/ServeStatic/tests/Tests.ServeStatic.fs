@@ -1,6 +1,7 @@
 module Tests.ServeStatic
 
 open Mocha
+open Fable.Core
 open Fable.Core.Testing
 open Fable.Core.JsInterop
 open Glutinum.ServeStatic
@@ -8,6 +9,12 @@ open Node
 open Glutinum.Connect
 
 // Code adapted from: https://github.com/expressjs/serve-static/blob/94feedb81682f4503ed9f8dc6d51a5c1b9bfa091/test/test.js
+
+let __dirname =
+    emitJsExpr () """
+import { dirname } from 'dirname-filename-esm';
+dirname(import.meta);
+    """
 
 let private createServer opts =
     let dir = path.join(__dirname, "files")

@@ -10,7 +10,7 @@ let mime : Mime.IExports = jsNative
 module Mime =
 
     type [<AllowNullLiteral>] IExports =
-        [<Import("default", "mime/Mime");EmitConstructor>]
+        [<Import("Mime", "mime");EmitConstructor>]
         abstract Mime: mimes: TypeMap -> Mime
         abstract getType: path: string -> string option
         abstract getExtension: mime: string -> string option
