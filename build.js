@@ -34,10 +34,12 @@ const exec = promisify(execOriginal.exec)
 const spawn = promisify(execOriginal.spawn)
 import parseChangelog from 'changelog-parser'
 import awaitSpawn from "./scripts/await-spawn.js"
-import pkg from 'chalk';
-const { blueBright, yellow, red, green } = pkg;
+import chalkPkg from 'chalk';
+const { blueBright, yellow, red, green } = chalkPkg;
 import prompts from "prompts"
 import { initialChangelog, initialReadme, initialGlueFsproj, initialGlueFsharpFile, initialGlueTestFsproj, initialGlueTestFsharpFile } from "./scripts/init-glue-templates.js"
+import { dirname as dirnameEsm } from 'dirname-filename-esm';
+const __dirname = dirnameEsm(import.meta);
 
 const info = blueBright
 const warn = yellow
